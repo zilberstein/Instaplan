@@ -1,5 +1,7 @@
 package main;
 
+import java.util.ArrayList;
+
 public class Business {
 	
 	public int id;
@@ -11,6 +13,8 @@ public class Business {
 	public float lon;
 	public int stars;
 	public String photo;
+	public ArrayList<Category> categories = new ArrayList<Category>();
+	public ArrayList<Review> reviews = new ArrayList<Review>();
 	
 	public Business (int i, String n, String a, String c, String s, float la, float lo, int st, String p) {
 		id = i;
@@ -22,6 +26,18 @@ public class Business {
 		lon = lo;
 		stars = st;
 		photo = p;
+	}
+	
+	public void addCategory(Category c) {
+		if (!categories.contains(c)) {
+			categories.add(c);
+		}
+	}
+	
+	public void addReview(Review r) {
+		if (!reviews.contains(r)) {
+			reviews.add((r));
+		}
 	}
 
 }
