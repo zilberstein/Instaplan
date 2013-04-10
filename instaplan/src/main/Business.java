@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 public class Business {
 	
-	public int id;
+	public String id;
 	public String name;
 	public String address;
 	public String city;
@@ -16,7 +16,7 @@ public class Business {
 	public ArrayList<Category> categories = new ArrayList<Category>();
 	public ArrayList<Review> reviews = new ArrayList<Review>();
 	
-	public Business (int i, String n, String a, String c, String s, float la, float lo, int st, String p) {
+	public Business (String i, String n, String a, String c, String s, float la, float lo, int st, String p) {
 		id = i;
 		name = n;
 		address = a;

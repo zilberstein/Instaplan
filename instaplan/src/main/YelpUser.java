@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 public class YelpUser {
 	
-	public int id;
+	public String id;
 	public int num_review;
 	public int avg_stars;
 	public int useful;
@@ -12,7 +12,7 @@ public class YelpUser {
 	public int cool;
 	public ArrayList<Review> reviews = new ArrayList<Review>();
 	
-	public YelpUser(int i, int n, int a, int u, int f, int c) {
+	public YelpUser(String i, int n, int a, int u, int f, int c) {
 		id = i;
 		num_review = n;
 		avg_stars = a;
