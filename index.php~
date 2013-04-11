@@ -1,0 +1,28 @@
+<!DOCTYPE HTML>
+
+
+<html>
+<head>
+
+<title>Instaplan</title>
+
+<link rel="stylesheet" type="text/css" href="style.css" />
+</head>
+<body>
+<div id="container">
+<img src='instaplan.png' width=600px />
+<table id='tb' align="center">
+	<tr>
+		<td style="text-align:left">
+			<form action="query.py" method="get">
+				<input type="text" name="plan" />
+				<input type="submit" />
+			</form>
+		</td>
+		<td style="text-align:right">
+				<a href="page.html"><img src="button.png" height=50px/></a>
+		</td>
+	</tr>
+</table>
+</div>
+</body></html>

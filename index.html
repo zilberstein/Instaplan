@@ -1,27 +1,25 @@
 <!DOCTYPE HTML>
-
-
 <html>
-<head>
-
-<title>Instaplan</title>
-
-<link rel="stylesheet" type="text/css" href="style.css" />
-</head>
-<body>
-<div id="container">
-<img src='Instaplan.png' width=600px />
-<table id='tb' align="center">
+  <head>
+    <title>Instaplan</title>  
+    <link rel="stylesheet" type="text/css" href="style.css" /><!--
+    <script src="planningfont7_400.font.js">-->
+  </head>
+  <body>
+    <div id="container">
+      <img src='images/instaplan.png' width=600px />
+      <table id='tb' align="center">
 	<tr>
-		<td style="text-align:left">
-			<form>
-				<input type="text" name="plan" />
-			</form>
-		</td>
-		<td style="text-align:right">
-				<a href="page.html"><img src="button.png" height=50px/></a>
-		</td>
+	  <form action="http://127.0.0.1:5000/query/plan" method="get">
+	    <td style="text-align:left">
+	      <input class="query" placeholder="What would you like to do?" type="text" name="plan" />
+	    </td>
+	    <td style="text-align:right">
+	      <input class="submit" value="Plan It" type="submit" src="button.png" height="50px" />
+	    </td>
+	  </form>
 	</tr>
-</table>
-</div>
-</body></html>
+      </table>
+    </div>
+  </body>
+</html>

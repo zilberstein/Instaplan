@@ -1,12 +1,21 @@
 body {
-	background-image: url('stripe.jpg');
-	text-align: center;
-	padding-top 10px;
-	margin-top -10px;
-	font-family: FreightSans,Avenir Next;
+    background-image: url('images/skyline.jpg');
+    text-align: center;
+    padding-top: 10px;
+    margin-top: -10px;
+    font-family: FreightSans Medium,Avenir Next;
+    background-attachment: fixed;
+    background-position: center center;
 }
 
-#container input {
+#map-canvas {
+    height: 350px;
+    width: 50%;
+    float: right;
+    border: 3px solid #ccc;
+}
+
+#container input.query {
 	font-size: 14pt;
 	/*text-transform:uppercase;*/
 	padding: 10px;
@@ -19,6 +28,23 @@ body {
 	text-align: left;
 	box-shadow: 0 0 8px #000 inset;
 	background-color: #eee;
+	font-family: FreightSans Medium,Avenir Next;
+}
+
+#container input.submit {
+    width: 80px;
+    height: 30px;
+    padding: 10px;
+    border-radius: 10px;
+    background-color: #ff0000;
+    background-image: url('button_grad.png');
+    border: none;
+    color: #fff;
+    vertical-align: middle;
+    font-weight: bold;
+    text-shadow: 2px 2px 5px #000;
+    font-size: 14pt;
+    text-align: center;
 }
 
 #tb {
@@ -63,27 +89,25 @@ body {
 }
 
 #container2 {
-	margin: -20px auto;
-	border-bottom-left-radius: 50px;
-	border-bottom-right-radius: 50px;
-	/*border-color: #ccc;
-	border-width: 8px;
-	border-style: solid;*/
-	background-color: #ebebeb;
-	height: 100%;
-	width: 60%;
-	min-width: 800px;
-	box-shadow: 0px 0px 25px #000;
-	position:relative;
-	text-align: left;
-	padding: 0;
-	font-size: 14pt;
-
+    margin: -20px auto;
+    border-bottom-left-radius: 50px;
+    border-bottom-right-radius: 50px;
+    /*border-color: #ccc;
+      border-width: 8px;
+      border-style: solid;*/
+    background-color: #ebebeb;
+    height: 100%;
+    width: 75%;
+    box-shadow: 0px 0px 25px #000;
+    position:relative;
+    text-align: left;
+    padding: 0;
+    font-size: 12pt;
 }
 
 #content {
-	padding: 75px 25px 25px 275px;
-
+    padding: 75px 25px 25px 275px;
+    text-align: justify;
 }
 
 #adjust {
@@ -114,13 +138,15 @@ body {
 	font-size: 10pt;
 }
 
-#content img {
-	position: relative;
-	float: right;
-	right: -100px;
-	-webkit-transform:rotate(12deg);
-	border-radius: 15px;
-	}
+.activity img {
+    position: relative;
+    float: right;
+    /*right: -100px;
+    -webkit-transform:rotate(12deg);*/
+    border-radius: 15px;
+    margin-left: 25px;
+    box-shadow: 0 0 25px #000;
+}
 
 @keyframes mymove {
 from {top:0px;}
@@ -143,4 +169,19 @@ to {top:0px;}
 	color: #136f9d;
 	padding: 0;
 	margin: 10px 0;
+}
+
+.activity {
+    clear: both;
+}
+
+.activity h2 {
+    border-bottom: 3px solid #ccc;
+    margin-bottom: 0;
+}
+
+.activity h3 {
+    margin: 0;
+    color: #666;
+    font-weight: normal;
 }
