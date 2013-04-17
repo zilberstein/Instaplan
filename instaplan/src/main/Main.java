@@ -72,7 +72,9 @@ public class Main {
 					+ "useful SMALLINT, "
 					+ "funny SMALLINT, "
 					+ "cool SMALLINT, "
-					+ "PRIMARY KEY (businessId, userId))");
+					+ "PRIMARY KEY (businessId, userId))" 
+					+ "FOREIGN KEY (userId) REFERENCES yelpUser(id), "
+					+ "FOREIGN KEY (businessId) REFERENCES business(id))");
 			st.execute("CREATE TABLE yelpUser ("
 					+ "id VARCHAR(40), "
 					+ "reviewCount SMALLINT, "
@@ -84,12 +86,6 @@ public class Main {
 			st.execute("CREATE TABLE writes ("
 					+ "userId VARCHAR(40), "
 					+ "businessId VARCHAR(40), "
-					+ "PRIMARY KEY (userId, businessID), "
-					+ "FOREIGN KEY (userID) REFERENCES yelpUser(id), "
-					+ "FOREIGN KEY (businessId) REFERENCES business(id))");
-			st.execute("CREATE TABLE reviewOf ("
-					+ "userId VARCHAR(40), "
-					+ "businessID VARCHAR(40), "
 					+ "PRIMARY KEY (userId, businessID), "
 					+ "FOREIGN KEY (userID) REFERENCES yelpUser(id), "
 					+ "FOREIGN KEY (businessId) REFERENCES business(id))");
