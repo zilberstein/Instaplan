@@ -5,6 +5,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 
 public class Main {
 	
@@ -103,5 +104,46 @@ public class Main {
 			e.printStackTrace();
 		}
 	}
+	
+	
 
+	
+	public static void DMLs(ArrayList<Business> businesses, 
+			ArrayList<YelpUser> users, Statement st) {
+		for (Business b : businesses) {
+			try {
+				String t0 = "INSERT INTO business VALUES (" + b.id + ", '"
+						+ b.name + "', '" + b.address + "', '" + b.city +
+						"', '" + b.state + "', '" + b.lat + "', '" + b.lon
+						+ "', '" + b.stars + "', '" + b.photo + "')";
+				st.execute(t0);
+				
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		for (Business b : businesses) {
+			for (Category c : b.categories) {
+				try {
+					String t0 = "INSERT INTO belongs VALUES (" +c.name + ", '"
+							+ b.id +"')";
+					st.execute(t0);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		}
+	}
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 }
