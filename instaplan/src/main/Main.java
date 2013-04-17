@@ -1,9 +1,34 @@
 package main;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
 
 public class Main {
+	
+	
+	public static Statement makeConnectionWithDatabase(String[] args) 
+			throws Exception {
+		try {
+			Connection con = null;
+			if (args.length <2 ) {
+				con = DriverManager.getConnection(
+						"jdbc:mysql://SQL09.FREEMYSQL.NET/instaplan"
+						,"instaplan","password");  
+			} else {
+				con = DriverManager.getConnection(
+						"jdbc:mysql://SQL09.FREEMYSQL.NET/instaplan"
+						,args[0],args[1]);  
+			}
+			Statement st = con.createStatement();
+			return st;
+		} catch (Exception e) {
+			System.out.println(e);
+		}
+		return null;
+	}
 	
 	
 	private static String safeDropTable(String table) {
@@ -31,8 +56,8 @@ public class Main {
 					+ "address VARCHAR(40), "
 					+ "city VARCHAR(40), "
 					+ "state VARCHAR(40), "
-					+ "latitude SMALLINT, "
-					+ "longitude SMALLINT, "
+					+ "latitude DECIMAL, "
+					+ "longitude DECIMAL, "
 					+ "stars TINYINT, "
 					+ "photoUrl VARCHAR(40), "
 					+ "PRIMARY KEY (id))");
