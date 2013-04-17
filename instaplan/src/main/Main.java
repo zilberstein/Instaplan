@@ -71,7 +71,9 @@ public class Main {
 					+ "useful SMALLINT, "
 					+ "funny SMALLINT, "
 					+ "cool SMALLINT, "
-					+ "PRIMARY KEY (businessId, userId))");
+					+ "PRIMARY KEY (businessId, userId))" 
+					+ "FOREIGN KEY (userId) REFERENCES yelpUser(id), "
+					+ "FOREIGN KEY (businessId) REFERENCES business(id))");
 			st.execute("CREATE TABLE yelpUser ("
 					+ "id VARCHAR(40), "
 					+ "reviewCount SMALLINT, "
