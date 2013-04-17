@@ -88,12 +88,13 @@ public class Main {
 					+ "PRIMARY KEY (userId, businessID), "
 					+ "FOREIGN KEY (userID) REFERENCES yelpUser(id), "
 					+ "FOREIGN KEY (businessId) REFERENCES business(id))");
-			st.execute("CREATE TABLE reviewOf ("
+			/*st.execute("CREATE TABLE reviewOf ("
 					+ "userId VARCHAR(40), "
 					+ "businessID VARCHAR(40), "
 					+ "PRIMARY KEY (userId, businessID), "
 					+ "FOREIGN KEY (userID) REFERENCES yelpUser(id), "
 					+ "FOREIGN KEY (businessId) REFERENCES business(id))");
+			*/
 			st.execute("CREATE TABLE belongs ("
 					+ "businessId VARCHAR(40), "
 					+ "name VARCHAR(11), "
