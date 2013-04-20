@@ -31,8 +31,6 @@ public class Main {
 	 * Called once ever
 	 * @throws Exception
 	 */
-
-	
 	public static void main(String[] args) throws Exception {
 		importData();
 	}
@@ -158,6 +156,7 @@ public class Main {
 					+ "latitude DECIMAL, "
 					+ "longitude DECIMAL, "
 					+ "stars TINYINT, "
+					+ "metric SMALLINT, "
 					+ "photoUrl VARCHAR(40), "
 					+ "PRIMARY KEY (id))");
 			st.execute("CREATE TABLE category ("
@@ -228,7 +227,7 @@ public class Main {
 				String t0 = "INSERT INTO business VALUES (" + b.id + ", '"
 						+ b.name + "', '" + b.address + "', '" + b.city +
 						"', '" + b.state + "', '" + b.lat + "', '" + b.lon
-						+ "', '" + b.stars + "', '" + b.photo + "')";
+						+ "', '" + b.stars + "', '" + b.metric + "', '" + b.photo + "')";
 				st.execute(t0);
 				
 			} catch (Exception e) {
@@ -238,8 +237,8 @@ public class Main {
 		for (YelpUser y : users) {
 			try {
 				String t0 = "INSERT INTO yelpUser VALUES (" +  y.id + ", '" 
-						+ y.num_review + ", " + y.avg_stars + ", " + y.useful + ", "
-						+ y.funny + ", " + y.cool + "')";
+						+ y.num_review + "', '" + y.avg_stars + "', '" + 
+						y.useful + "', '" + y.funny + "', '" + y.cool + "')";
 				st.execute(t0);
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -248,8 +247,8 @@ public class Main {
 		for (Review r : reviews) {
 			try {
 				String t0 = "INSERT INTO review VALUES (" + r.b_id + 
-						", " + r.u_id + ", '" + r.stars + ", " + r.useful
-						+ ", " + r.funny + ", " + r.cool + "')";
+						", " + r.u_id + ", '" + r.stars + "', '" + r.useful
+						+ "', '" + r.funny + "', '" + r.cool + "')";
 				st.execute(t0); 
 			} catch (Exception e) {
 				e.printStackTrace();
