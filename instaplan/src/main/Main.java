@@ -16,21 +16,25 @@ import com.google.gson.Gson;
 
 public class Main {
 	
+	public static void main(String[] args) throws Exception {
+		importData();
+	}
+	
 	public static void categorySetUp() throws Exception{
 		ArrayList<String> ourCategories = new ArrayList<String>();
-		String[] categories = {"active", "breakfast", "cats", "college", "culture", 
-				"dessert", "dinner", "family", "footer", "kids", "lunch", "nightlife", "old_people",
-				"pamper"};
+		String[] categories = {"active", "breakfast", "cats", "college", 
+				"culture", "dessert", "dinner", "family", "footer", "kids", 
+				"lunch", "nightlife", "old_people","pamper"};
 		Arrays.sort(categories);
 		ourCategories.addAll(Arrays.asList(categories));
 		
 		for(String c: ourCategories){
 			File file = new File(c + ".txt");
 		}
-		
-	
 	}
-	public static void importData(String filename) throws Exception{
+	
+	
+	public static void importData() throws Exception{
 		Gson gson = new Gson();
 		
 		//convertJSON to objects
@@ -79,8 +83,7 @@ public class Main {
 			st.execute(safeDropTable("category"));
 			st.execute(safeDropTable("review"));
 			st.execute(safeDropTable("yelpUser"));
-			st.execute(safeDropTable("writes"));
-			st.execute(safeDropTable("reviewOf"));
+//			st.execute(safeDropTable("writes"));
 			st.execute(safeDropTable("belongs"));
 			st.execute(safeDropTable("user"));
 			
@@ -147,6 +150,17 @@ public class Main {
 	
 	public static void DMLs(ArrayList<Business> businesses, 
 			ArrayList<YelpUser> users, ArrayList<Review> reviews, Statement st) {
+		String[] categories = {"active", "breakfast", "cats", "college", 
+				"culture", "dessert", "dinner", "family", "footer", "kids", 
+				"lunch", "nightlife", "old_people","pamper"};
+		for (String c : categories) {
+			String t = "INSERT INTO category VALUES ('" + c + "')";
+			try {
+				st.execute(t);
+			} catch ( Exception e) {
+				e.printStackTrace();
+			}
+		}
 		for (Business b : businesses) {
 			try {
 				String t0 = "INSERT INTO business VALUES (" + b.id + ", '"
@@ -171,7 +185,7 @@ public class Main {
 		}
 		for (Review r : reviews) {
 			try {
-				String t0 = "INSERT INTO reviews VALUES (" + r.b_id + 
+				String t0 = "INSERT INTO review VALUES (" + r.b_id + 
 						", " + r.u_id + ", '" + r.stars + ", " + r.useful
 						+ ", " + r.funny + ", " + r.cool + "')";
 				st.execute(t0); 
@@ -179,6 +193,7 @@ public class Main {
 				e.printStackTrace();
 			}
 		}
+		
 		for (Business b : businesses) {
 			for (Category c : b.categories) {
 				try {
