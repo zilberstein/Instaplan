@@ -7,15 +7,25 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.io.BufferedInputStream;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.InputStreamReader;
 
 import com.google.gson.Gson;
 
 public class Main {
+	static HashMap<String, String> ycatOurCat = new HashMap<String, String>();
 	
+	/**
+	 * read through the .txt files, insert all the yelp categories in it
+	 * into HashMap ycatOurCat which will be used for json parsing
+	 * Called once ever
+	 * @throws Exception
+	 */
 	public static void categorySetUp() throws Exception{
 		ArrayList<String> ourCategories = new ArrayList<String>();
 		String[] categories = {"active", "breakfast", "cats", "college", "culture", 
@@ -24,9 +34,19 @@ public class Main {
 		Arrays.sort(categories);
 		ourCategories.addAll(Arrays.asList(categories));
 		
-		for(String c: ourCategories){
-			File file = new File(c + ".txt");
+		for(String oc: ourCategories){
+			File file = new File(oc + ".txt");
+			FileInputStream fis = new FileInputStream(file);
+			BufferedInputStream bis = new BufferedInputStream(fis);
+			BufferedReader d= new BufferedReader(new InputStreamReader(bis));		
+			String ycat = "";
+			while((ycat = d.readLine()) !=null){
+				if(!ycatOurCat.containsKey(ycat)){
+					ycatOurCat.put(ycat, oc);
+				}
+			}
 		}
+		
 		
 	
 	}
@@ -38,6 +58,7 @@ public class Main {
 		File file = new File("yelp_academic_dataset.json");
 		FileInputStream fis = new FileInputStream(file);
 		BufferedInputStream bis = new BufferedInputStream(fis);
+		
 		
 	}
 	
