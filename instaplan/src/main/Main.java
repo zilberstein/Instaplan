@@ -24,7 +24,15 @@ import com.google.gson.JsonObject;
 public class Main {
 
 	static HashMap<String, String> ycatOurCat = new HashMap<String, String>();
+	static ArrayList<Category> our_categories = new ArrayList<Category>();
 	
+	static ArrayList<JsonBusiness> jBusinesses = new ArrayList<JsonBusiness>();
+	static ArrayList<JsonReview> jReviews = new ArrayList<JsonReview>();
+	static ArrayList<JsonUser> jUsers = new ArrayList<JsonUser>();
+	static ArrayList<Business> businesses = new ArrayList<Business>();
+	static ArrayList<Review> reviews = new ArrayList<Review>();
+	static ArrayList<YelpUser> yusers = new ArrayList<YelpUser>();
+
 	/**
 	 * read through the .txt files, insert all the yelp categories in it
 	 * into HashMap ycatOurCat which will be used for json parsing
@@ -32,9 +40,11 @@ public class Main {
 	 * @throws Exception
 	 */
 	public static void main(String[] args) throws Exception {
+		
+		
+		
 		importData();
 	}
-	
 
 	public static void categorySetUp() throws Exception{
 		ArrayList<String> ourCategories = new ArrayList<String>();
@@ -43,6 +53,11 @@ public class Main {
 				"lunch", "nightlife", "old_people","pamper"};
 		Arrays.sort(categories);
 		ourCategories.addAll(Arrays.asList(categories));
+		
+		for(String c: categories){
+			Category category = new Category(c);
+			our_categories.add(category);
+		}
 		
 		for(String oc: ourCategories){
 			File file = new File(oc + ".txt");
@@ -62,8 +77,15 @@ public class Main {
 	}
 	
 
-	
+	/**
+	 * read yelp dataset json file into json objects
+	 * @throws Exception
+	 */
 	public static void importData() throws Exception{
+		jUsers.clear();
+		jBusinesses.clear();
+		jReviews.clear();
+		
 		Gson gson = new Gson();
 		
 		//convertJSON to objects
@@ -80,24 +102,43 @@ public class Main {
 				System.out.println(k + " : " + map.get(k));
 			}
 			Object type = map.get("type");
+			
 			if(type.equals("user")){
 				JsonUser juser;
 				juser = gson.fromJson(json, JsonUser.class);
 				juser.dump();
+				jUsers.add(juser);
+				
 			}
 			else if(type.equals("business")){
 				JsonBusiness jbiz;
 				jbiz = gson.fromJson(json, JsonBusiness.class);
-			//	jbiz.dump();
+				jBusinesses.add(jbiz);
 			}
 			else if(type.equals("review")){
 				JsonReview jreview;
 				jreview = gson.fromJson(json, JsonReview.class);
+				jReviews.add(jreview);
 			}
 			
 		}
 		
-		
+		for(JsonUser juser: jUsers){
+			Votes v = juser.votes;
+			YelpUser yuser = new YelpUser(juser.user_id, juser.review_count, juser.average_stars, v.useful, v.funny, v.cool );
+			
+			yusers.add(yuser);
+		}
+		for(JsonReview jr: jReviews){
+			Votes v = jr.votes;
+			Review r = new Review(jr.business_id, jr.user_id, jr.stars, v.useful, v.funny, v.cool );
+			reviews.add(r);
+		}
+		for(JsonBusiness jb: jBusinesses){
+			Business b = new Business(jb.business_id, jb.name, jb.full_address, jb.city, jb.state, jb.latitutde, jb.longitude, jb.stars, jb.review_count, 0, jb.photo_url);
+			//CATEGORIES? REVIEWS?
+			businesses.add(b);
+		}
 		
 		d.close();
 		fis.close();

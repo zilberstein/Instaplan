@@ -13,5 +13,12 @@ public class Category {
 	public Category(String n) {
 		name = n;
 	}
+	public boolean equals(Category c){
+		if(c.name.equals(this.name)){
+			return true;
+		}
+		else
+			return false;
+	}
 
 }
