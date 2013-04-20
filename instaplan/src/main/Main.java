@@ -8,6 +8,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Map;
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.File;
@@ -16,6 +17,9 @@ import java.io.FileNotFoundException;
 import java.io.InputStreamReader;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 
 public class Main {
 
@@ -53,9 +57,13 @@ public class Main {
 					ycatOurCat.put(ycat, oc);
 				}
 			}
+			fis.close();
+			bis.close();
+			d.close();
 		}
 	}
 	
+
 	
 	public static void importData() throws Exception{
 		Gson gson = new Gson();
@@ -65,7 +73,37 @@ public class Main {
 		File file = new File("yelp_academic_dataset.json");
 		FileInputStream fis = new FileInputStream(file);
 		BufferedInputStream bis = new BufferedInputStream(fis);
+		BufferedReader d= new BufferedReader(new InputStreamReader(bis));		
+		while((json = d.readLine())!=null){
+			//
+			Map<String,Object> map=new HashMap<String,Object>();
+			map=(Map<String,Object>) gson.fromJson(json, map.getClass());
+			for(String k : map.keySet()){
+				System.out.println(k + " : " + map.get(k));
+			}
+			Object type = map.get("type");
+			if(type.equals("user")){
+				JsonUser juser;
+				juser = gson.fromJson(json, JsonUser.class);
+				juser.dump();
+			}
+			else if(type.equals("business")){
+				JsonBusiness jbiz;
+				jbiz = gson.fromJson(json, JsonBusiness.class);
+			//	jbiz.dump();
+			}
+			else if(type.equals("review")){
+				JsonReview jreview;
+				jreview = gson.fromJson(json, JsonReview.class);
+			}
+			
+		}
 		
+		
+		
+		d.close();
+		fis.close();
+		bis.close();
 		
 	}
 	
