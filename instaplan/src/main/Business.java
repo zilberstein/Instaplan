@@ -11,7 +11,7 @@ public class Business {
 	public String state;
 	public float lat;
 	public float lon;
-	public int stars;
+	public float stars;
 	public int num_reviews;
 	public int metric;
 	public String photo;
@@ -19,7 +19,7 @@ public class Business {
 	public ArrayList<Review> reviews = new ArrayList<Review>();
 	
 	public Business (String i, String n, String a, String c, String s, 
-			float la, float lo, int st, int nr, int m, String p) {
+			float la, float lo, float st, int nr, int m, String p) {
 		id = i;
 		name = n;
 		address = a;
