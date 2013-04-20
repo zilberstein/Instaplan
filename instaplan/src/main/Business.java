@@ -12,11 +12,14 @@ public class Business {
 	public float lat;
 	public float lon;
 	public int stars;
+	public int num_reviews;
+	public int metric;
 	public String photo;
 	public ArrayList<Category> categories = new ArrayList<Category>();
 	public ArrayList<Review> reviews = new ArrayList<Review>();
 	
-	public Business (String i, String n, String a, String c, String s, float la, float lo, int st, String p) {
+	public Business (String i, String n, String a, String c, String s, 
+			float la, float lo, int st, int nr, int m, String p) {
 		id = i;
 		name = n;
 		address = a;
@@ -25,6 +28,8 @@ public class Business {
 		lat = la;
 		lon = lo;
 		stars = st;
+		num_reviews = nr;
+		metric = (int) ((int) (Math.pow((double)st, 2.0))*Math.sqrt(num_reviews));
 		photo = p;
 	}
 	
