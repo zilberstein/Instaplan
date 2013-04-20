@@ -1,5 +1,11 @@
 package main;
 
+/**
+ * this is just for OUR category, not from the yelp data.
+ * 
+ * @author Sung
+ *
+ */
 public class Category {
 	
 	public String name;

@@ -6,8 +6,40 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+
+import com.google.gson.Gson;
 
 public class Main {
+	
+	public static void categorySetUp() throws Exception{
+		ArrayList<String> ourCategories = new ArrayList<String>();
+		String[] categories = {"active", "breakfast", "cats", "college", "culture", 
+				"dessert", "dinner", "family", "footer", "kids", "lunch", "nightlife", "old_people",
+				"pamper"};
+		Arrays.sort(categories);
+		ourCategories.addAll(Arrays.asList(categories));
+		
+		for(String c: ourCategories){
+			File file = new File(c + ".txt");
+		}
+		
+	
+	}
+	public static void importData(String filename) throws Exception{
+		Gson gson = new Gson();
+		
+		//convertJSON to objects
+		String json = "";
+		File file = new File("yelp_academic_dataset.json");
+		FileInputStream fis = new FileInputStream(file);
+		BufferedInputStream bis = new BufferedInputStream(fis);
+		
+	}
 	
 	
 	public static Statement makeConnectionWithDatabase(String[] args) 
@@ -127,8 +159,10 @@ public class Main {
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
+				
 			}
 		}
+		
 	}
 
 	
