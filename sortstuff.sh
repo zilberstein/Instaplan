@@ -1,0 +1,51 @@
+#!/bin/sh
+catagorize () {
+    read abc
+    for i in $abc
+    do
+	case $i in
+	    1)
+		echo $1 >> kids.txt ;;
+	    2)
+		echo $1 >> active.txt ;;
+	    3)
+		echo $1 >> pamper.txt ;;
+	    4)
+		echo $1 >> breakfast.txt ;;
+	    5)
+		echo $1 >> lunch.txt ;;
+	    6)
+		echo $1 >> dinner.txt ;;
+	    7) 
+		echo $1 >> nightlife.txt ;;
+	    8)
+		echo $1 >> family.txt ;;
+	    9)
+		echo $1 >> college.txt ;;
+	    10)
+		echo $1 >> old_people.txt ;;
+	    11)
+		echo $1 >> desert.txt;;
+	    0)
+		echo $1 >> culture.txt ;;
+	esac
+    done
+}
+
+for c in $(cat $1 | egrep -o '\([a-z_]+\)' | sed 's/(//g' | sed 's/)//g' )
+do
+    echo "0) Culture"
+    echo "1) Kids"
+    echo "2) Active"
+    echo "3) Pamper"
+    echo "4) Breakfast"
+    echo "5) Lunch"
+    echo "6) Dinner"
+    echo "7) Nightlife"
+    echo "8) Family"
+    echo "9) College Students"
+    echo "10) Old People"
+    echo "11) Desert"
+    echo $c
+    catagorize $c
+done
