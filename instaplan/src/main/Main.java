@@ -50,6 +50,7 @@ public class Main {
 			st.execute(safeDropTable("writes"));
 			st.execute(safeDropTable("reviewOf"));
 			st.execute(safeDropTable("belongs"));
+			st.execute(safeDropTable("user"));
 			
 			st.execute("CREATE TABLE business ("
 					+ "id VARCHAR(40), "
@@ -83,18 +84,26 @@ public class Main {
 					+ "funny SMALLINT, "
 					+ "cool SMALLINT, "
 					+ "PRIMARY KEY (id))");
-			st.execute("CREATE TABLE writes ("
+/*			st.execute("CREATE TABLE writes ("
 					+ "userId VARCHAR(40), "
 					+ "businessId VARCHAR(40), "
 					+ "PRIMARY KEY (userId, businessID), "
 					+ "FOREIGN KEY (userID) REFERENCES yelpUser(id), "
 					+ "FOREIGN KEY (businessId) REFERENCES business(id))");
+*/
 			st.execute("CREATE TABLE belongs ("
 					+ "businessId VARCHAR(40), "
 					+ "name VARCHAR(11), "
 					+ "PRIMARY KEY (businessId, name), "
 					+ "FOREIGN KEY businessId REFERENCES business(id), "
 					+ "FOREIGN KEY name REFERENCES categories(name))");
+			st.execute("CREATE TABLE user ("
+					+ "username VARCHAR(16), "
+					+ "password VARCHAR(17), "
+					+ "firstName VARCHAR(15), "
+					+ "lastName VARCHAR(25), "
+					+ "email VARCHAR(50), "
+					+ "PRIMARY KEY (username))");
 	
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -105,7 +114,7 @@ public class Main {
 
 	
 	public static void DMLs(ArrayList<Business> businesses, 
-			ArrayList<YelpUser> users, Statement st) {
+			ArrayList<YelpUser> users, ArrayList<Review> reviews, Statement st) {
 		for (Business b : businesses) {
 			try {
 				String t0 = "INSERT INTO business VALUES (" + b.id + ", '"
@@ -118,12 +127,32 @@ public class Main {
 				e.printStackTrace();
 			}
 		}
+		for (YelpUser y : users) {
+			try {
+				String t0 = "INSERT INTO yelpUser VALUES (" +  y.id + ", '" 
+						+ y.num_review + ", " + y.avg_stars + ", " + y.useful + ", "
+						+ y.funny + ", " + y.cool + "')";
+				st.execute(t0);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		for (Review r : reviews) {
+			try {
+				String t0 = "INSERT INTO reviews VALUES (" + r.b_id + 
+						", " + r.u_id + ", '" + r.stars + ", " + r.useful
+						+ ", " + r.funny + ", " + r.cool + "')";
+				st.execute(t0); 
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
 		for (Business b : businesses) {
 			for (Category c : b.categories) {
 				try {
-					String t0 = "INSERT INTO belongs VALUES (" +c.name + ", '"
-							+ b.id +"')";
-					st.execute(t0);
+					String t = "INSERT INTO belongs VALUES (" + b.id +
+							", '" + c.name + "')";
+					st.execute(t);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
