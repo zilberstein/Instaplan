@@ -1,0 +1,11 @@
+food
+donuts
+farmersmarket
+foodtrucks
+pretzels
+gourmet
+ethnicmarkets
+streetvendors
+restaurants
+food_court
+foodstands
