@@ -15,6 +15,7 @@
         color: #77bcdf;
         font-size: .8em;
         padding-bottom: 25px;
+        text-shadow: 1px 1px 2px #000;
       }
       p a {
         color: #77bcdf;
