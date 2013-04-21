@@ -5,9 +5,10 @@ import sys
 event = sys.argv[1]
 keywords = sys.argv[2]
 days = sys.argv[3]
-options = argv[4]
-distance = argv[5]
-
+options = sys.argv[4]
+distance = sys.argv[5]
+lat = sys.argv[6]
+lon = sys.argv[7]
 
 l = days*options
 
