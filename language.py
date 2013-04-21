@@ -3,6 +3,7 @@ import string
 
 CATAGORIES = ['active', 'breakfast', 'college', 'culture', 'dessert', 'dinner', 'family', 'kids', 'lunch', 'nightlife', 'old_people']
 EVENTS   = ['Breakfast','Morning','Lunch','Afternoon','Dinner','Dessert','Evening','Overnight']
+EVENTMAP = {'morning':['Breakfast','Morning'], 'afternoon':['Lunch','Afternoon'],'evening':['Dinner','Nightlife'],'night':['Afternoon','Dinner','Evening','Overnight','Breakfast','Morning','Lunch'],'day':EVENTS}
 NEGATION = ['not ','no ','without ','in','un','non','high ', '0 ', 'hate ']
 PRIORITY = ['really ','very ','extremely ','lot ','lots ','many ','extraordinarily ','low ','highly ']
 plan = {}
@@ -13,9 +14,9 @@ TENS = {'twenty':2,'thirty':3,'fourty':4,'fifty':5,'sixty':6,'seventy':7,'eighty
 def get_keywords(query):
 	query = reformat(query)
 	words = query.split(' ')
-       	b_hi = regex_check(['expensive','fancy','extravagent'],query)
-	b_lo = regex_check(['cheap','budget'],query)
-	plan['budget'] = (b_hi - b_lo + 3) / 1.5
+       	b_hi = regex_check(['far'],query)
+	b_lo = regex_check(['near','close'],query)
+	plan['distance'] = (b_hi - b_lo + 3) / 1.5
 	
 	k = regex_check(['kid','child','son','daughter'],query)
 	if k == -1 or k == 0:
@@ -32,8 +33,11 @@ def get_keywords(query):
 		plan['days'] = int(days.group(1))
 		plan['events'] = make_events(int(days.group(1)))
 	else:
-		plan['events'] = [word.title() for word in query.split(' ') if word.title() in EVENTS]
-		plan['days'] = 0
+		plan['events'] = []
+		for word in query.split(' '):
+			if word in EVENTMAP:
+				plan['events'] += EVENTMAP[word]
+		plan['days'] = 1
 	
 	# Find keywords
 	catagories = make_cats()
@@ -92,7 +96,7 @@ def create_sidebar(keywords):
     print '<input type="text" name="location" value="'+keywords['location']+'" />',
     print '<h5>Distance</h5>',
     print '<input type="hidden" name="type" value="update" />',
-    print '$ <input class="slide" name="budget" type="range" min="0" max="4" step="0.2" value="'+str(keywords['budget'])+'" width="100px"> $$$$',
+    print '<input class="slide" name="budget" type="range" min="0" max="4" step="0.2" value="'+str(keywords['distance'])+'" width="100px">',
     print '<h5>Duration</h5>',
     print '<input name="days" type="number" min="0" max="20" value="'+str(keywords['days'])+'" /> Days',
     print '<h5>Options</h5>',
