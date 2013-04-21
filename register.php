@@ -10,6 +10,9 @@ if (mysqli_connect_errno()) {
 mysqli_select_db($db, "instaplan");
 $table= "usertest";
 $errors = array();
+$avatar=false;
+$imgurl="";
+$fpfile="";
 
 //if already submitted, check values
 if($_POST["dispatch"]=="register")
@@ -23,8 +26,17 @@ if($_POST["dispatch"]=="register")
 	$pass2=$_POST["pass2"];
 	$fpfile=$_POST["fpfile"];
 	
-	$json=json_decode($fpfile,true);
-	$imgurl=$json["url"];
+	if(fpfile===null || $fpfile=="" || $fpfile=="/" || $fpfile=="//" || $fpfile=="///")
+	{
+		$fpfile="";
+		$avatar=false;
+	}
+	else
+	{
+		$avatar=true;
+		$json=json_decode($fpfile,true);
+		$imgurl=$json["url"];
+	}
 	
 	//names can't be empty
 	if($fname=="")
@@ -60,39 +72,54 @@ if($_POST["dispatch"]=="register")
 		//if valid, then insert into database
 		if(mysqli_num_rows($result) == 0)
 		{
-			$sql= "insert into ".$table." (firstname, lastname, username, email, password) values ('";
-			$sql.=mysqli_real_escape_string($fname)."','";
-			$sql.=mysqli_real_escape_string($lname)."','";
-			$sql.=mysqli_real_escape_string($user)."','";
-			$sql.=mysqli_real_escape_string($email)."','";
-			$sql.=mysqli_real_escape_string(md5($pass))."')";
+			$sql= "insert into ".$table." (firstname, lastname, username, email, password, avatar) values ('";
+			$sql.=mysqli_real_escape_string($db,$fname)."','";
+			$sql.=mysqli_real_escape_string($db,$lname)."','";
+			$sql.=mysqli_real_escape_string($db,$user)."','";
+			$sql.=mysqli_real_escape_string($db,$email)."','";
+			$sql.=mysqli_real_escape_string($db,md5($pass))."',";
+			if($avatar)
+				$sql.="1)";
+			else
+				$sql.="0)";
+			echo "<script type='text/javascript'>alert('".$sql."');</script>";
 			mysqli_query($db,$sql);
 			
-			//store file locally, and delete it from filepicker
-			file_put_contents("https://fling.seas.upenn.edu/~smural/cgi-bin/Instaplan/images/".$user.".jpg", $imgurl); 
-			//delete
-			$ch = curl_init();
-			// set URL and other appropriate options
-			curl_setopt($ch, CURLOPT_URL, $imgurl);
-			curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "DELETE");
-
-			// grab URL and pass it to the browser
-			curl_exec($ch);
-
-			// close cURL resource, and free up system resources
-			curl_close($ch);
+			if($avatar)
+			{
+				//store file locally, and delete it from filepicker
+				copy($imgurl, "images/avatars/".$user.".jpg");
+				chmod("images/avatars/".$user.".jpg", 0705); 
+				//delete
+				$ch = curl_init();
+				// set URL and other appropriate options
+				curl_setopt($ch, CURLOPT_URL, $imgurl);
+				curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "DELETE");
+				// grab URL and pass it to the browser
+				curl_exec($ch);
+				// close cURL resource, and free up system resources
+				curl_close($ch);
+			}
 			
 			//log in, and redirect to home
 			$_SESSION['username']=$user;
 			$_SESSION['name']=$fname." ".$lname;
 			$_SESSION['email']=$email;
+			if($avatar)
+			{
+				$_SESSION['avatar']="images/avatars/".$user.".jpg";
+			}
+			else
+			{
+				$_SESSION['avatar']="images/avatars/avatar.png";
+			}
 			header( 'Location: index.php');
 		}
 		else
 			$errors[]= "Sorry, that username is taken";
 	}
 }
-function display_error(&$message) {
+function display_error($message) {
 	echo "<div class='error'>X<div>";
 	echo $message;
 	echo "</div></div>";
@@ -233,7 +260,7 @@ function display_error(&$message) {
 	<tr class="login_row last button">
 	  <td class="label">Avatar:</td>
 	  <td>
-	    <button class="login_field input" type="button" id="attach-photo" style="float:left;"		onclick="getPic()"><?if (!isset ($fpfile)){?>Upload <?}else{?>Change <?}?>Photo</button>
+	    <button class="login_field input" type="button" id="attach-photo" style="float:left;"		onclick="getPic()"><?if (!$avatar){?>Upload <?}else{?>Change <?}?>Photo</button>
 		<div id="photo"><img src="<?echo $imgurl?>"></img></div>
 		<input id="fpfile" name="fpfile" class="login_field input" type="hidden" value=<?echo $fpfile?>/>
 	  </td>

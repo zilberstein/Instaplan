@@ -12,7 +12,7 @@ public class JsonBusiness {
 	public String full_address;
 	public String city;
 	public String state;
-	public float latitutde;
+	public float latitude;
 	public float longitude;
 	public float stars;
 	public int review_count;
