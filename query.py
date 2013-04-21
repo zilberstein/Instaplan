@@ -37,5 +37,5 @@ def make_query(event,keywords,days,options,distance):
 			    'order_by metric '
 			    'limit 0, ' + l + ' ')
 			a.append(sql)
-		return "~".join(a)
+		print "~".join(a)
 
