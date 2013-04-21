@@ -26,6 +26,8 @@ if($_POST["dispatch"]=="query")
 	  }
 	  echo "</form><script type=\"text/javascript\">document.json_poster.submit();</script>";
 	  }
+} else {
+  $error = 0;
 }
 ?>
 <!DOCTYPE HTML>
@@ -66,7 +68,7 @@ if($_POST["dispatch"]=="query")
 	  <form action="index.php" method="post">
 	    <input type="hidden" name="type" value="language" />
 	    <td style="text-align:left" class="textfield">
-	      <input class="query" placeholder="What would you like to do?" type="text" name="plan" />
+	      <input class="query" placeholder="What would you like to do?" type="text" name="plan" value="<?php if ($error != 0){echo $_POST['plan'];}?>" />
 	    </td>
 	    <td style="text-align:right" class="submit_button">
 		  <input type="hidden" name="dispatch" value="query" />
@@ -75,11 +77,17 @@ if($_POST["dispatch"]=="query")
 	  </form>
 	</tr>
       </table>
-	  <? if (!isset($_SESSION['username'])){?>
+	  <? if ($error == 0) { 
+	  if (!isset($_SESSION['username'])){?>
       <p><a href="login.php">Log in</a> or <a href="register.php">register</a></p>
 	  <?} else {?>
 	  <p>Hello, <?echo $_SESSION['name']." "?> (<a href="logout.php">logout</a>)</p>
-	  <?}?>
+	  <?}
+	  } else if ($error == 1) {
+	    echo "<p class=\"error\">Oops! Your query does not have a location</p>";
+	  } else {
+	    echo "<p class=\"error\">Oops! You did not ask for any events</p>";
+	  }?>
     </div>
   </body>
 </html>
