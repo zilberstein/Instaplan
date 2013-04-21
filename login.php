@@ -45,7 +45,7 @@ if($_POST["dispatch"]=="login")
 		{
 			$_SESSION['avatar']="images/avatars/avatar.png";
 		}
-		header( 'Location:'. $_SESSION['avatar']);
+		header( 'Location: index.php');
 	}
 	else
 	{
