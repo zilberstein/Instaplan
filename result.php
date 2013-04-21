@@ -27,7 +27,7 @@
   </head>
   <body onload="initialize()">
     <div id="bar">
-    <a href="index.php"><img src='instaplan-mini.png' width=150px /></a>
+    <a href="index.php"><img src='images/instaplan-mini.png' width=150px /></a>
     </div>
     <div id="container2">
 	<?php
