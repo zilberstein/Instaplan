@@ -2,11 +2,13 @@ package main;
 
 import java.util.ArrayList;
 
+import com.google.gson.Gson;
+
 public class JsonBusiness {
 	public String type = "business";
 	public String business_id;
 	public String name;
-	public String neighborhoods;
+	public ArrayList<String> neighborhoods;
 	public String full_address;
 	public String city;
 	public String state;
@@ -19,9 +21,10 @@ public class JsonBusiness {
 	public boolean open;
 	public ArrayList<String> schools;
 	public String url;
-	
-	public JsonBusiness(){
 
+	public void dump(){
+		Gson gson = new Gson();
+		System.out.println(gson.toJson(this));
 	}
 	
 }

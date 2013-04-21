@@ -6,5 +6,6 @@
 	<classpathentry kind="lib" path="lib/gson-2.2.2-sources.jar"/>
 	<classpathentry kind="lib" path="lib/gson-2.2.2.jar"/>
 	<classpathentry kind="lib" path="lib/ojdbc6.jar"/>
+	<classpathentry kind="lib" path="/Users/Sung/Documents/cis330proj/Instaplan/mysql-connector-java-5.1.24/mysql-connector-java-5.1.24-bin.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
