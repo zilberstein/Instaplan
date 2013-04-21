@@ -41,7 +41,7 @@ if($_POST["dispatch"]=="login")
 		$_SESSION['username']=null;
 	}
 }
-if (isset($_SESSION['username']))
+if ($_SESSION['username']!=null)
 	echo "<script type='text/javascript'>alert('".$_SESSION['username']."');</script>";
 ?>
 <!DOCTYPE HTML>
