@@ -4,7 +4,28 @@ session_start();
 
 if($_POST["dispatch"]=="query")
 {
-	
+	$arg = "\"".$_POST["plan"]."\"";
+	$command = "python language.py $arg";
+	$json = exec($command);
+	$keywords = json_decode($json,true);
+	if ($keywords["location"] == "") {
+	   $error = 1;
+	} else if (sizeof($keywords["events"]) == 0) {
+	   $error = 2;
+	} else {
+	  echo "<form name=\"json_poster\" action=\"result.php\" method=\"post\">";
+	  $keys = array_keys($keywords);
+	  for ($i=0; $i<count($keys); $i++) {
+	      $name = $keys[$i];
+	      if ($keys[$i] == 'events' || $keys[$i] == 'catagories') {
+	      	 $value = implode(',',$keywords["$keys[$i]"]);
+	      } else {
+	        $value = $keywords["$keys[$i]"];
+	      }
+	      echo "<input type=\"hidden\" name=\"$name\" value=\"$value\" />";
+	  }
+	  echo "</form><script type=\"text/javascript\">document.json_poster.submit();</script>";
+	  }
 }
 ?>
 <!DOCTYPE HTML>
