@@ -45,9 +45,12 @@ public class Main {
 		importData();
 		Statement st = null;
 		st = makeConnectionWithDatabase(args);
+		//DDLBusiness(st);
 		DDLs(st);
 		System.out.println("businesses size = "+ businesses.size() + " yusers =" + yusers.size() + " reviews = " + reviews.size());
+		//DMLBusiness(businesses,st);
 		DMLs(businesses, yusers, reviews, st);
+		
 	}
 
 	/**
@@ -117,7 +120,8 @@ public class Main {
 		System.out.println("num_entries of ycatOurCat:"+ycatOurCat.entrySet().size());
 		
 		while((json = d.readLine())!=null){
-
+			
+			//read in generic hash obj
 			Map<String,Object> map=new HashMap<String,Object>();
 			map=(Map<String,Object>) gson.fromJson(json, map.getClass());
 			Object type = map.get("type");
@@ -138,15 +142,12 @@ public class Main {
 			}
 			else if(type.equals("business")){//add businessto collection
 				
-				if(bizStarted == false){
-					bizStarted=true;
-					System.out.println("bizStart");
-				}
+				if(bizStarted == false){ bizStarted=true; System.out.println("bizStart"); }
 				
 				JsonBusiness jb= gson.fromJson(json, JsonBusiness.class);
 				jb.name = URLEncoder.encode(jb.name, "UTF-8");
 				jb.full_address = URLEncoder.encode(jb.full_address, "UTF-8");
-				Business b = new Business(jb.business_id, jb.name, jb.full_address, jb.city, jb.state, jb.latitutde, jb.longitude, jb.stars, jb.review_count, 0, jb.photo_url);
+				Business b = new Business(jb.business_id, jb.name, jb.full_address, jb.city, jb.state, jb.latitude, jb.longitude, jb.stars, jb.review_count, 0, jb.photo_url);
 				
 				for(String yc : jb.categories){
 					//lowercase, replace whitespaces for yelp categories
@@ -216,15 +217,97 @@ public class Main {
 		return null;
 	}
 	
-	//NOT USING IT
-	private static String safeDropTable(String table) {
-		String query = "Begin Execute Immediate 'Drop Table "
-				+ table
-				+ "'; Exception when others then if SQLCODE != -942 then RAISE; end if; end;";
-		return query;
+
+	
+	public static void DDLBusiness(Statement st) throws Exception{
+		try{
+			st.execute("DROP TABLE IF EXISTS belongs");
+		
+			st.execute("DROP TABLE IF EXISTS business");
+			st.executeUpdate("CREATE TABLE business ("
+				+ "id VARCHAR(40), "
+				+ "name VARCHAR(255), "
+				+ "address VARCHAR(255), "
+				+ "city VARCHAR(50), "
+				+ "state VARCHAR(50), "
+				+ "latitude DECIMAL, "
+				+ "longitude DECIMAL, "
+				+ "stars TINYINT, "
+				+ "metric SMALLINT, "
+				+ "photoUrl VARCHAR(255), "
+				+ "PRIMARY KEY (id))");
+			st.execute("CREATE TABLE belongs ("
+				+ "businessId VARCHAR(40), "
+				+ "name VARCHAR(11), "
+				+ "PRIMARY KEY (businessId, name), "
+				+ "FOREIGN KEY (businessId) REFERENCES business(id) ON DELETE CASCADE, "
+				+ "FOREIGN KEY (name) REFERENCES category(name) ON DELETE CASCADE)");
+		}
+		catch( Exception e){
+			
+			e.printStackTrace();
+		}
+		
 	}
-	
-	
+	public static void DMLBusiness(ArrayList<Business> businesses, Statement st) throws Exception{
+		int i = 0;
+		System.out.println("LOAD Businesses");
+		for (Business b : businesses) {
+			i++;
+			if(i>=1000 && i%1000==0){
+				System.out.println(i+"th Business reached");
+				
+			}
+			if(i==10000)
+				System.out.println("10,000th Business reached");
+			
+			try {
+				String t0 = "INSERT INTO business VALUES ( '" + b.id + "', '"
+						+ b.name + "', '" + b.address + "', '" + b.city +
+						"', '" + b.state + "', '" + b.lat + "', '" + b.lon
+						+ "', '" + b.stars + "', '" + b.metric + "', '" + b.photo + "')";
+				st.executeUpdate(t0);
+				
+			} catch (Exception e) {
+				System.out.println(i);
+				Gson gson = new Gson();
+				System.out.println(gson.toJson(b));
+				//e.printStackTrace();
+			}
+		}
+		
+		System.out.println("LOAD business_belongsTo_categories");
+		int in=0;
+		
+		for (Business b : businesses) {
+			in++;
+
+			if(in==5000){
+				System.out.println(in+"th reached");
+			}
+			if(in == 10000){
+				System.out.println(in+"th reached");
+					
+			}
+			//System.out.println("hit1");
+			for (Category c : b.categories) {
+				try {
+					if(in == 1){System.out.print("first line");}
+					
+					String t = "INSERT INTO belongs VALUES ('" + b.id +
+							"', '" + c.name + "')";
+					st.executeUpdate(t);
+				} catch (Exception e) {
+					//e.printStackTrace();
+					//System.out.println("bid:"+ b.id  +" not found; " + "cname:" + c.name +" not found");
+					//do nothing and continue
+				}
+				
+			}
+			
+		}
+
+	}
 	//commented out yelpUser, review as well as writes. feel free to take it back.
 	public static void DDLs(Statement st) throws Exception {
 		try {
