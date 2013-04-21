@@ -28,14 +28,19 @@ i = -1
 for e in event.split(","):
 	e = e.lower()
 	e = e.strip('][')
+	if cat == "\'\'":
+		catSearch = ""
+	else:
+		catSearch = "AND be.name in (" + str(cat) + ") "
+	
 	if e=='breakfast' or e=='lunch' or  e=='dinner' or  e=='nightlife' or  e=='overnight':
 		if e=='breakfast':
 			i = i+1
 		sql = ('select b.name, address, city, state, latitude, longitude, stars, photoUrl '
 		       'from business as b, belongs as be '
-		       'where id = b_id AND be.name in ('+str(cat)+') '
+		       'where id = businessid ' + catSearch + 
 		       'AND  (select SQRT(POWER(latitude-'+str(lat)+',2) + POWER(longitude-'+str(lon)+',2)) '
-		       'from businesses b1 where b.id = b1.id) <= '+str(distance) + ' '
+		       'from business b1 where b.id = b1.id) <= '+str(distance) + ' '
 		       'AND (\''+ str(e) +'\')  in (select be1.name '
 		       'from belongs as be1 '
 		       'where b.id = be1.businessId) '
@@ -44,10 +49,10 @@ for e in event.split(","):
 		a.append(sql)
 	else: 
 		sql = ('select b.name, address, city, state, latitude, longitude, stars, photoUrl '
-		       'from business as b, belongs as be'
-		       'where id = businessId AND belongs.name in ('+str(cat)+') '
+		       'from business as b, belongs as be '
+		       'where id = businessId ' + catSearch + 
 		       'AND  (select SQRT(POWER(latitude-'+str(lat)+',2) + POWER(longitude-'+str(lon)+',2)) '
-		       'from businesses as b1 where b.id = b1.id) <= '+str(distance) + ' '
+		       'from business as b1 where b.id = b1.id) <= '+str(distance) + ' '
 		       'order by metric '
 		       'limit ' + str(i) + ',1 ')
 		a.append(sql)
