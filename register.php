@@ -63,6 +63,8 @@ if($_POST["dispatch"]=="register")
 			$sql.=mysql_real_escape_string($email)."','";
 			$sql.=mysql_real_escape_string(md5($pass))."')";
 			mysqli_query($db,$sql);
+			
+			//log in, and redirect to home
 			$_SESSION['username']=$user;
 			header( 'Location: index.php');
 		}
