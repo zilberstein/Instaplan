@@ -40,30 +40,30 @@ if($_POST["dispatch"]=="register")
 	
 	//names can't be empty
 	if($fname=="")
-		$errors[]= "First name is required";
-	if($lname=="")
-		$errors[]= "Last name is required";
+		$errors[0]= "First name is required";
 	//names must be alphabetic
-	if(!ctype_alpha($fname))
-		$errors[]= "You may only have letters in your first name";
-	if(!ctype_alpha($lname))
-		$errors[]= "You may only have letters in your last name";
+	else if(!ctype_alpha($fname))
+		$errors[0]= "You may only have letters in your first name";
+	if($lname=="")
+		$errors[1]= "Last name is required";
+	else if(!ctype_alpha($lname))
+		$errors[1]= "You may only have letters in your last name";
 	//userid,pass max size 16, min size 4
 	if(strlen($user)<4 || strlen($user)>16)
-		$errors[]= "Username must be between 4 and 16 characters";
-	if(strlen($pass)<4 || strlen($pass)>16)
-		$errors[]= "Password must be between 4 and 16 characters";
+		$errors[2]= "Username must be between 4 and 16 characters";
 	//userid, pass alphanumeric
-	if(!ctype_alnum($user))
-		$errors[]= "Username must be alphanumeric";
-	if(!ctype_alnum($pass))
-		$errors[]= "Password must be alphanumeric";
+	else if(!ctype_alnum($user))
+		$errors[2]= "Username must be alphanumeric";
+	if(strlen($pass)<4 || strlen($pass)>16)
+		$errors[4]= "Password must be between 4 and 16 characters";
+	else if(!ctype_alnum($pass))
+		$errors[4]= "Password must be alphanumeric";
 	//passwords have to match
-	if($pass!=$pass2)
-		$errors[]= "Passwords do not match";
+	else if($pass!=$pass2)
+		$errors[4]= "Passwords do not match";
 	//check email with regular expressions
 	if(!filter_var($email, FILTER_VALIDATE_EMAIL))
-		$errors[]= "Invalid email address";
+		$errors[3]= "Invalid email address";
 		
 	if(count($errors)==0)
 	{
@@ -116,11 +116,11 @@ if($_POST["dispatch"]=="register")
 			header( 'Location: index.php');
 		}
 		else
-			$errors[]= "Sorry, that username is taken";
+			$errors[2]= "Sorry, that username is taken";
 	}
 }
 function display_error($message) {
-	echo "<div class='error'>X<div>";
+	echo "<div class='error'>X<div class=\"arrow\"></div><div class=\"message\">";
 	echo $message;
 	echo "</div></div>";
 }
@@ -139,7 +139,7 @@ function display_error($message) {
 			document.getElementById("photo").innerHTML = "Converting...";
 			filepicker.convert(fpfiles[0], {width: 100, height: 100},
 				function(new_FPFile){
-				document.getElementById("photo").innerHTML = "<img src="+new_FPFile.url+"></img>";
+				document.getElementById("photo").innerHTML = "<img src="+new_FPFile.url+" height=\"30px\"></img>";
 				document.getElementById("fpfile").value = JSON.stringify(new_FPFile);
 				filepicker.remove(fpfiles[0]);
 			});
@@ -157,6 +157,7 @@ function display_error($message) {
         padding 0;
         color: #77bcdf;
         font-size: .8em;
+        text-shadow: 1px 1px 2px #000;
       }
       p a {
         color: #77bcdf;
@@ -166,6 +167,12 @@ function display_error($message) {
       p a:hover {
         text-decoration: underline;
       }
+        p.error {
+          color: #ffac0d;
+          text-align: left;
+          margin: 0;
+          }
+
       h2 {
         margin: 0;
         padding: 0;
@@ -175,78 +182,100 @@ function display_error($message) {
         float:right;
 	color: #eee;
 	background-color: #f00;
+	background-image: url('images/button_grad.png');
 	width: 20px;
 	height: 20px;
 	text-align: center;
 	border-radius: 10px;
 	text-shadow: none;
+	font-weight: normal;
 	}
-	div.error div {
+     div.error div.message {
 	position: relative;
 	visibility:none;
 	display: none;
-	background-color: #f00;
+	background-color: rgba(0,0,0,.5);
 	z-index: 10;
-	top: -20px;
-	left: 20px;
-	font-size: .8em;
-	padding: 15px;
-	width: 200px;
-	}
+	top: -60px;
+	left: 30px;
+	font-size: .75em;
+	padding: 5px;
+	border-radius: 5px;
+	font-weight: normal;
+	width: 150px;
+	height: 50px;
+	text-align: left;
+      }
 	div.error:hover div {
 	visibility:visible;
 	display: block;
-	background-color: #000;
-	}
-    </style>
+      }
+      div.arrow {
+      	visibility: hidden;
+	display: none;
+        opacity: .5;
+	position: relative;
+	top: -20px;
+	left: 20px;
+        width: 0; 
+        height: 0; 
+        border-top: 10px solid transparent;
+        border-bottom: 10px solid transparent; 
+        border-right:10px solid black; 
+}    
+     #attach-photo {
+       background-color: #f00;
+       background-image: url('images/button_grad.png');
+       border: 0;
+       border-radius: 7px;
+       margin: 2px;;
+       height: 30px;
+       color: #fff;
+}
+
+</style>
 
   </head>
   <body>
     <div id="container">
-      <img src='images/instaplan.png' width=600px />
-	  <p></p>
-	<? if(count($errors)!=0)
-	   {
-		foreach($errors as $error)
-		{
-		  echo $error."<br />";
-		}
-	   }
-	?>
-		
+      <img src='images/instaplan.png' width=600px />		
 	
 	<form name="input" action="register.php" method="post">
     <table id='login' border="0" cellspacing="0">
+    	<tr><td colspan="2" height="25px">
+	<?php if (count($errors) != 0){echo "<p class=\"error\">Please fix the following errors:</p>";}?></td></tr>
 	<tr class="login_row first">
 	  <td class="label">First Name:
-	  <?php
-	    $message = "You fucked up";
-	    display_error($message);?>
+	  <?php if ($errors[0] != null) {display_error($errors[0]);} ?>
 	  </td>
 	  <td>
 	    <input class="login_field input" type="text" name="fname" value="<?print $_POST["fname"];?>"/>
 	  </td>
 	</tr>
 	<tr class="login_row">
-	  <td class="label">Last Name:</td>
+	  <td class="label">Last Name:
+	  <?php if ($errors[1] != null) {display_error($errors[1]);} ?></td>
 	  <td>
 	    <input class="login_field input" type="text" name="lname" value="<?print $_POST["lname"];?>"/>
 	  </td>
 	</tr>
 	<tr class="login_row">
-	  <td class="label">Username:</td>
+	  <td class="label">Username:
+	  <?php if ($errors[2] != null) {display_error($errors[2]);} ?></td>
 	  <td>
 	    <input class="login_field input" maxlength="16" type="text" name="user" value="<?print $_POST["user"];?>"/>
 	  </td>
 	</tr>
 	<tr class="login_row">
-	  <td class="label">Email:</td>
+	  <td class="label">Email:
+	  <?php if ($errors[3] != null) {display_error($errors[3]);} ?></td>
 	  <td>
 	    <input class="login_field input" type="text" name="email" value="<?print $_POST["email"];?>"/>
 	  </td>
 	</tr>
 	<tr class="login_row">
-	  <td class="label">Password:</td>
+	  <td class="label">Password:
+	  <?php if ($errors[4] != null) {display_error($errors[4]);} ?></td>
 	  <td>
 	    <input class="login_field input" maxlength="16" type="password" name="pass" />
 	  </td>
@@ -260,8 +289,8 @@ function display_error($message) {
 	<tr class="login_row last button">
 	  <td class="label">Avatar:</td>
 	  <td>
-	    <button class="login_field input" type="button" id="attach-photo" style="float:left;"		onclick="getPic()"><?if (!$avatar){?>Upload <?}else{?>Change <?}?>Photo</button>
-		<div id="photo"><img src="<?echo $imgurl?>"></img></div>
+	    <button type="button" id="attach-photo" style="float:left;"		onclick="getPic()"><?if (!$avatar){?>Upload <?}else{?>Change <?}?>Photo</button>
+		<div id="photo"><img src="<?echo $imgurl?>" height="30px" /></div>
 		<input id="fpfile" name="fpfile" class="login_field input" type="hidden" value=<?echo $fpfile?>/>
 	  </td>
 	</tr>
