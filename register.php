@@ -66,6 +66,8 @@ if($_POST["dispatch"]=="register")
 			
 			//log in, and redirect to home
 			$_SESSION['username']=$user;
+			$_SESSION['name']=$fname." ".$lname;
+			$_SESSION['email']=$email;
 			header( 'Location: index.php');
 		}
 		else
