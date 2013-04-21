@@ -213,10 +213,8 @@ public class Main {
 	public static void DDLs(Statement st) throws Exception {
 		try {
 			st.execute("DROP TABLE IF EXISTS belongs");
-			st.execute("DROP TABLE IF EXISTS review");
 			st.execute("DROP TABLE IF EXISTS business");
 			st.execute("DROP TABLE IF EXISTS category");
-			st.execute("DROP TABLE IF EXISTS yelpUser");
 			st.execute("DROP TABLE IF EXISTS user");
 			System.out.println("Dropped all the tables; Now create tables.");
 			st.executeUpdate("CREATE TABLE business ("
@@ -234,32 +232,6 @@ public class Main {
 			st.execute("CREATE TABLE category ("
 					+ "name VARCHAR(11),"
 					+ "PRIMARY KEY (name))");
-			st.execute("CREATE TABLE yelpUser ("
-					+ "id VARCHAR(40), "
-					+ "reviewCount SMALLINT, "
-					+ "avgStars DECIMAL, "
-					+ "useful SMALLINT, "
-					+ "funny SMALLINT, "
-					+ "cool SMALLINT, "
-					+ "PRIMARY KEY (id))");
-			st.execute("CREATE TABLE review ("
-					+ "businessId VARCHAR(40), "
-					+ "userId VARCHAR(40), "
-					+ "stars TINYINT, "
-					+ "useful SMALLINT, "
-					+ "funny SMALLINT, "
-					+ "cool SMALLINT, "
-					+ "PRIMARY KEY (businessId, userId), " 
-					+ "FOREIGN KEY (userId) REFERENCES yelpUser(id) ON DELETE CASCADE, "
-					+ "FOREIGN KEY (businessId) REFERENCES business(id) ON DELETE CASCADE)");
-
-/*			st.execute("CREATE TABLE writes ("
-					+ "userId VARCHAR(40), "
-					+ "businessId VARCHAR(40), "
-					+ "PRIMARY KEY (userId, businessID), "
-					+ "FOREIGN KEY (userID) REFERENCES yelpUser(id), "
-					+ "FOREIGN KEY (businessId) REFERENCES business(id))");
-*/
 			st.execute("CREATE TABLE belongs ("
 					+ "businessId VARCHAR(40), "
 					+ "name VARCHAR(11), "
@@ -319,62 +291,11 @@ public class Main {
 				break;
 			}
 		}
-		i=0;
-		System.out.println("LOAD YelpUsers");
-		for (YelpUser y : users) {
-			i++;
-			if(i==10000)
-				System.out.println("10,000th reached");
-			if(i==100000)
-				System.out.println("100,000th reached");
-			
-			try {
-				String t0 = "INSERT INTO yelpUser VALUES ('" +  y.id + "', '" 
-						+ y.num_review + "', '" + y.avg_stars + "', '" + 
-						y.useful + "', '" + y.funny + "', '" + y.cool + "')";
-				st.execute(t0);
-			} catch (Exception e) {
-				System.out.println(i);
-				Gson gson = new Gson();
-				System.out.println(gson.toJson(y));
-				e.printStackTrace();
-				break;
-			}
-		}
 		
-		i=0;
-		System.out.println("LOAD Reviews");
-		for (Review r : reviews) {
-			i++;
-			if(i==10000)
-				System.out.println("10,000th reached");
-			if(i==100000)
-				System.out.println("100,000th reached");
-			if(i==300000)
-				System.out.println("300,000th reached");
-			
-			try {
-				String t0 = "INSERT INTO review VALUES ('" + r.b_id + 
-						"', '" + r.u_id + "', '" + r.stars + "', '" + r.useful
-						+ "', '" + r.funny + "', '" + r.cool + "')";
-				st.execute(t0); 
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
 		i=0;
 		System.out.println("LOAD business_belongsTo_categories");
 		
 		for (Business b : businesses) {
-			i++;
-			if(i==1000)
-				System.out.println("1,000th reached");
-			if(i==10000)
-				System.out.println("10,000th reached");
-			if(i==100000)
-				System.out.println("100,000th reached");
-			if(i==300000)
-				System.out.println("300,000th reached");
 			for (Category c : b.categories) {
 				try {
 					String t = "INSERT INTO belongs VALUES ('" + b.id +
