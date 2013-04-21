@@ -1,6 +1,5 @@
 body {
     background-image: url('images/skyline.jpg');
-    text-align: center;
     padding-top: 10px;
     margin-top: -10px;
     font-family: FreightSans Medium,Avenir Next;
@@ -68,10 +67,12 @@ td.submit_button {
 }
 
 table#login {
-    margin:  -50px auto 0;
+    margin:  0 auto;
     border-radius: 25px;
     padding: 15px;
     text-align: left;
+    position: relative;
+    top: -50px;
 }
 
 tr.login_row {
@@ -184,7 +185,7 @@ td.textfield:hover {
 }
 
 #container {
-	margin: -20px auto;
+	margin: 0 auto;
 	border-bottom-left-radius: 50px;
 	border-bottom-right-radius: 50px;
 	/*border-color: #ccc;
@@ -200,6 +201,7 @@ td.textfield:hover {
 	-webkit-animation:mymove 2s 1;
 	animation-timing-function:cubic-bezier(0,0,0.25,1);
 	-webkit-animation-timing-function:cubic-bezier(0.42,0,0.58,1);*/
+	text-align: center;
 }
 
 #container2 {
