@@ -37,6 +37,9 @@ public class Main {
 		businesses.clear();
 		yusers.clear();
 		reviews.clear();
+		
+		categorySetUp();
+		
 		importData();
 		Statement st = null;
 		st = makeConnectionWithDatabase(args);
@@ -54,7 +57,7 @@ public class Main {
 	public static void categorySetUp() throws Exception{
 		ArrayList<String> ourCategories = new ArrayList<String>();
 		String[] categories = {"active", "breakfast", "cats", "college", 
-				"culture", "dessert", "dinner", "family", "footer", "kids", 
+				"culture", "dessert", "dinner", "family", "kids", 
 				"lunch", "nightlife", "old_people","pamper"};
 		Arrays.sort(categories);
 		ourCategories.addAll(Arrays.asList(categories));
@@ -73,6 +76,7 @@ public class Main {
 			while((ycat = d.readLine()) !=null){
 				if(!ycatOurCat.containsKey(ycat)){
 					ycatOurCat.put(ycat, oc);
+					System.out.println(ycat + " " +oc + "populated into Map");
 				}
 			}
 			fis.close();
@@ -114,28 +118,21 @@ public class Main {
 				}
 				JsonUser juser;
 				juser = gson.fromJson(json, JsonUser.class);
-				
 				Votes v = juser.votes;
-				
-				//jUsers.add(juser);
 				juser.name =URLEncoder.encode(juser.name, "UTF-8");
-				//juser.user_id = URLEncoder.encode(juser.user_id, "UTF-8");
 				YelpUser yuser = new YelpUser(juser.user_id, juser.review_count, juser.average_stars, v.useful, v.funny, v.cool );
 				yusers.add(yuser);
 			}
 			else if(type.equals("business")){
+				
 				if(bizStarted == false){
 					bizStarted=true;
 					System.out.println("bizStart");
 					System.out.println(json);
-					
 				}
-				JsonBusiness jb;
-				jb = gson.fromJson(json, JsonBusiness.class);
-				
+				JsonBusiness jb= gson.fromJson(json, JsonBusiness.class);
 				jb.name = URLEncoder.encode(jb.name, "UTF-8");
 				jb.full_address = URLEncoder.encode(jb.full_address, "UTF-8");
-				//System.out.println(jb.name);
 				Business b = new Business(jb.business_id, jb.name, jb.full_address, jb.city, jb.state, jb.latitutde, jb.longitude, jb.stars, jb.review_count, 0, jb.photo_url);
 				
 				for(String yc : jb.categories){
@@ -144,7 +141,6 @@ public class Main {
 						b.addCategory(new Category(ourc));
 					}
 				}
-				//jBusinesses.add(jb);
 				businesses.add(b);
 			}
 			else if(type.equals("review")){
@@ -232,6 +228,32 @@ public class Main {
 			st.execute("CREATE TABLE category ("
 					+ "name VARCHAR(11),"
 					+ "PRIMARY KEY (name))");
+	/*st.execute("CREATE TABLE yelpUser ("
+					+ "id VARCHAR(40), "
+					+ "reviewCount SMALLINT, "
+					+ "avgStars DECIMAL, "
+					+ "useful SMALLINT, "
+					+ "funny SMALLINT, "
+					+ "cool SMALLINT, "
+					+ "PRIMARY KEY (id))");*/
+/*			st.execute("CREATE TABLE review ("
+					+ "businessId VARCHAR(40), "
+					+ "userId VARCHAR(40), "
+					+ "stars TINYINT, "
+					+ "useful SMALLINT, "
+					+ "funny SMALLINT, "
+					+ "cool SMALLINT, "
+					+ "PRIMARY KEY (businessId, userId), " 
+					+ "FOREIGN KEY (userId) REFERENCES yelpUser(id) ON DELETE CASCADE, "
+					+ "FOREIGN KEY (businessId) REFERENCES business(id) ON DELETE CASCADE)");
+
+/*			st.execute("CREATE TABLE writes ("
+					+ "userId VARCHAR(40), "
+					+ "businessId VARCHAR(40), "
+					+ "PRIMARY KEY (userId, businessID), "
+					+ "FOREIGN KEY (userID) REFERENCES yelpUser(id), "
+					+ "FOREIGN KEY (businessId) REFERENCES business(id))");
+*/
 			st.execute("CREATE TABLE belongs ("
 					+ "businessId VARCHAR(40), "
 					+ "name VARCHAR(11), "
@@ -259,7 +281,7 @@ public class Main {
 		String[] categories = {"active", "breakfast", "cats", "college", 
 				"culture", "dessert", "dinner", "family", "footer", "kids", 
 				"lunch", "nightlife", "old_people","pamper"};
-		for (String c : categories) {
+		/*for (String c : categories) {
 			String t = "INSERT INTO category VALUES ('" + c + "')";
 			try {
 				st.executeUpdate(t);
@@ -267,9 +289,9 @@ public class Main {
 				e.printStackTrace();
 				break;
 			}
-		}
+		}*/
 		int i = 0;
-		System.out.println("LOAD Businesses");
+		/*System.out.println("LOAD Businesses");
 		for (Business b : businesses) {
 			i++;
 			if(i==10000)
@@ -290,17 +312,72 @@ public class Main {
 				
 				break;
 			}
+
 		}
 		
 		i=0;
 		System.out.println("LOAD business_belongsTo_categories");
+=======
+		}*/
+		i=0;
+		/*System.out.println("LOAD YelpUsers");
+		for (YelpUser y : users) {
+			i++;
+			if(i==10000)
+				System.out.println("10,000th reached");
+			if(i==100000)
+				System.out.println("100,000th reached");
+			
+			try {
+				String t0 = "INSERT INTO yelpUser VALUES ('" +  y.id + "', '" 
+						+ y.num_review + "', '" + y.avg_stars + "', '" + 
+						y.useful + "', '" + y.funny + "', '" + y.cool + "')";
+				st.execute(t0);
+			} catch (Exception e) {
+				System.out.println(i);
+				Gson gson = new Gson();
+				System.out.println(gson.toJson(y));
+				e.printStackTrace();
+				break;
+			}
+		}
+		*/
+		/*i=0;
+		System.out.println("LOAD Reviews");
+		for (Review r : reviews) {
+			i++;
+			if(i==10000)
+				System.out.println("10,000th reached");
+			if(i==100000)
+				System.out.println("100,000th reached");
+			if(i==300000)
+				System.out.println("300,000th reached");
+			
+			try {
+				String t0 = "INSERT INTO review VALUES ('" + r.b_id + 
+						"', '" + r.u_id + "', '" + r.stars + "', '" + r.useful
+						+ "', '" + r.funny + "', '" + r.cool + "')";
+				st.execute(t0); 
+			} catch (Exception e) {
+				e.printStackTrace();
+				
+				break;
+			}
+		}*/
 		
+		System.out.println("LOAD business_belongsTo_categories");
+		int in=0;
 		for (Business b : businesses) {
+
+			
+			in++;
+			System.out.println("hit1");
 			for (Category c : b.categories) {
 				try {
+					if(in == 1){System.out.println("first line");}
 					String t = "INSERT INTO belongs VALUES ('" + b.id +
 							"', '" + c.name + "')";
-					st.execute(t);
+					st.executeUpdate(t);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
