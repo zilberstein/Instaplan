@@ -34,7 +34,7 @@ for e in event.split(","):
 		sql = ('select b.name, address, city, state, latitude, longitude, stars, photoUrl '
 		       'from business as b, belongs as be '
 		       'where id = b_id AND be.name in ('+str(cat)+') '
-		       'AND  (select SQRT(POWER(latitude-'+str(lat)+',2) + POWER(longitude-'+str(lon)+',2)) '
+		       'AND  (select SQRT(POWER(latitude-'+str(lat)+',2)*69 + POWER(longitude-'+str(lon)+',2)*53) '
 		       'from businesses b1 where b.id = b1.id) <= '+str(distance) + ' '
 		       'AND (\''+ str(e) +'\')  in (select be1.name '
 		       'from belongs as be1 '
@@ -46,7 +46,7 @@ for e in event.split(","):
 		sql = ('select b.name, address, city, state, latitude, longitude, stars, photoUrl '
 		       'from business as b, belongs as be'
 		       'where id = businessId AND belongs.name in ('+str(cat)+') '
-		       'AND  (select SQRT(POWER(latitude-'+str(lat)+',2) + POWER(longitude-'+str(lon)+',2)) '
+		       'AND  (select SQRT(POWER(latitude-'+str(lat)+',2)*69 + POWER(longitude-'+str(lon)+',2)*53) '
 		       'from businesses as b1 where b.id = b1.id) <= '+str(distance) + ' '
 		       'order by metric '
 		       'limit ' + str(i) + ',1 ')
