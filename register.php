@@ -1,4 +1,5 @@
 <?
+session_start();
 error_reporting(0);
 $db=mysqli_connect("SQL09.FREEMYSQL.NET", "instaplan", "cis330");
 /* check connection */
@@ -62,6 +63,7 @@ if($_POST["dispatch"]=="register")
 			$sql.=mysql_real_escape_string($email)."','";
 			$sql.=mysql_real_escape_string(md5($pass))."')";
 			mysqli_query($db,$sql);
+			$_SESSION['username']=$user;
 			header( 'Location: index.php');
 		}
 		else

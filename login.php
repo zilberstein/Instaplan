@@ -1,8 +1,48 @@
 <?
+// Inialize session
+session_start();
+
 error_reporting(0);
-$db=mysql_connect("SQL09.FREEMYSQL.NET", "instaplan", "cis330")
-  or die('I cannot connect to the database because: ' . mysql_error());
-mysql_select_db("instaplan", $db);
+$db=mysqli_connect("SQL09.FREEMYSQL.NET", "instaplan", "cis330");
+/* check connection */
+if (mysqli_connect_errno()) {
+    printf("Connect failed: %s\n", mysqli_connect_error());
+    exit();
+}
+mysqli_select_db($db, "instaplan");
+$table= "usertest";
+
+if($_POST["dispatch"]=="login")
+{
+	$login=true;
+	
+	$user=$_POST["user"];
+	$pass=$_POST["pass"];
+	
+	//userid,pass max size 16, min size 4
+	if(strlen($user)<4 || strlen($user)>16)
+		$login=false;
+	if(strlen($pass)<4 || strlen($pass)>16)
+		$login=false;
+	//userid, pass alphanumeric
+	if(!ctype_alnum($user))
+		$login=false;
+	if(!ctype_alnum($pass))
+		$login=false;
+		
+	$result = mysqli_query($db,"select * from ".$table." where username='".$user."' and password='".md5($pass)."'");
+	if(mysqli_num_rows($result) == 1)
+	{
+		$_SESSION['username']=$user;
+		header( 'Location: index.php');
+	}
+	else
+	{
+		$_SESSION['username']=null;
+	}
+}
+if (isset($_SESSION['username']))
+	echo "<script type='text/javascript'>alert('".$_SESSION['username']."');</script>";
 ?>
 <!DOCTYPE HTML>
 <html>
@@ -40,6 +80,10 @@ mysql_select_db("instaplan", $db);
   <body>
     <div id="container">
       <img src='images/instaplan.png' width=600px />
+	  <?if($_POST["dispatch"]=="login")
+			echo "<br>INVALID LOGIN!";
+	  ?>
+	  <form name="login" action="login.php" method="post">
       <table id='login' border="0" cellspacing="0">
 	<tr class="login_row first">
 	  <td class="label">Username:</td>
@@ -55,7 +99,7 @@ mysql_select_db("instaplan", $db);
 	</tr>
 	<tr>
 	  <td colspan="2">
-		<input type="hidden" name="submit" value="login"/>
+		<input type="hidden" name="dispatch" value="login"/>
 	    <input type="submit" class="submit" value="Log in" />
 	  </td>
 	</tr>
