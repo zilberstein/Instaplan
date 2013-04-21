@@ -230,10 +230,8 @@ public class Main {
 		try {
 			//safe drop
 			st.execute("DROP TABLE IF EXISTS belongs");
-			st.execute("DROP TABLE IF EXISTS review");
 			st.execute("DROP TABLE IF EXISTS business");
 			st.execute("DROP TABLE IF EXISTS category");
-			st.execute("DROP TABLE IF EXISTS yelpUser");
 			st.execute("DROP TABLE IF EXISTS user");
 			System.out.println("Dropped all the tables; Now create tables.");
 			st.executeUpdate("CREATE TABLE business ("
@@ -251,7 +249,7 @@ public class Main {
 			st.execute("CREATE TABLE category ("
 					+ "name VARCHAR(11),"
 					+ "PRIMARY KEY (name))");
-			/*st.execute("CREATE TABLE yelpUser ("
+	/*st.execute("CREATE TABLE yelpUser ("
 					+ "id VARCHAR(40), "
 					+ "reviewCount SMALLINT, "
 					+ "avgStars DECIMAL, "
@@ -295,7 +293,7 @@ public class Main {
 			e.printStackTrace();
 		}
 	}
-	
+
 	
 
 	
@@ -338,8 +336,13 @@ public class Main {
 				//e.printStackTrace();
 				
 			}
+
 		}
-		i=0;
+
+
+		
+		
+
 		/*System.out.println("LOAD YelpUsers");
 		for (YelpUser y : users) {
 			i++;
@@ -390,8 +393,8 @@ public class Main {
 		int in=0;
 		
 		for (Business b : businesses) {
-			
 			in++;
+
 			if(in==5000){
 				System.out.println(in+"th reached");
 			}
@@ -410,6 +413,7 @@ public class Main {
 				} catch (Exception e) {
 					//e.printStackTrace();
 					//System.out.println("bid:"+ b.id  +" not found; " + "cname:" + c.name +" not found");
+					//do nothing and continue
 				}
 				
 			}

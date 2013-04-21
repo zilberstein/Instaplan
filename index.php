@@ -51,7 +51,7 @@ session_start();
 	  <? if ($_SESSION['username']===null){?>
       <p><a href="login.php">Log in</a> or <a href="register.php">register</a></p>
 	  <?} else {?>
-	  <p>Hello, <?echo $_SESSION['username']?> (<a href="logout.php">logout</a>)</p>
+	  <p>Hello, <?echo $_SESSION['name']." "?> (<a href="logout.php">logout</a>)</p>
 	  <?}?>
     </div>
   </body>

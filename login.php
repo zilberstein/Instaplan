@@ -33,16 +33,19 @@ if($_POST["dispatch"]=="login")
 	$result = mysqli_query($db,"select * from ".$table." where username='".$user."' and password='".md5($pass)."'");
 	if(mysqli_num_rows($result) == 1)
 	{
+		$val = mysqli_fetch_row ($result);
 		$_SESSION['username']=$user;
+		$_SESSION['name']=$val[0]." ".$val[1];
+		$_SESSION['email']=$val[3];
 		header( 'Location: index.php');
 	}
 	else
 	{
 		$_SESSION['username']=null;
+		$_SESSION['name']=null;
+		$_SESSION['email']=null;
 	}
 }
-if ($_SESSION['username']!=null)
-	echo "<script type='text/javascript'>alert('".$_SESSION['username']."');</script>";
 ?>
 <!DOCTYPE HTML>
 <html>

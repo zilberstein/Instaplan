@@ -31,17 +31,18 @@
     </div>
     <div id="container2">
 	<?php
-	   if ($_GET['type'] == 'language') {
-	   $arg = $_GET['plan'];
+	   if ($_POST['type'] == 'language') {
+	   $arg = $_POST['plan'];
 	   $command = "python generate_page.py \"$arg\"";
 	   } else {
-        $budget = $_GET['budget'];
-        $days = $_GET['days'];
-        $loc = $_GET['location'];
-        $command = "python update_page.py $budget $days $loc";
+        $days = $_POST['days'];
+        $loc = $_POST['location'];
+	$distance = $_POST['distance'];
+	$catagories = $_POST['catagories'];
+        $command = "python update_page.py $loc $days $distance $catagories";
+	 echo "$command";
 	   }
         echo exec($command);
-        echo $_GET['option'];
 
 	   ?>
 
