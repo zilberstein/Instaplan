@@ -1,5 +1,7 @@
 package main;
 
+import com.google.gson.Gson;
+
 public class JsonReview {
 	public String type;
 	public String business_id;
@@ -16,5 +18,8 @@ public class JsonReview {
 		
 	}
 	
-	
+	public void dump(){
+		Gson gson = new Gson();
+		System.out.println(gson.toJson(this));
+	}
 }
