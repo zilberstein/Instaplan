@@ -1,3 +1,9 @@
+<?
+error_reporting(0);
+$db=mysql_connect("SQL09.FREEMYSQL.NET", "instaplan", "cis330")
+  or die('I cannot connect to the database because: ' . mysql_error());
+mysql_select_db("instaplan", $db);
+?>
 <!DOCTYPE HTML>
 <html>
   <head>
@@ -38,17 +44,18 @@
 	<tr class="login_row first">
 	  <td class="label">Username:</td>
 	  <td>
-	    <input class="login_field input" maxlength="16" type="text" name="username" />
+	    <input class="login_field input" maxlength="16" type="text" name="user" value="<?print $_POST["user"];?>"/>
 	  </td>
 	</tr>
 	<tr class="login_row last">
 	  <td class="label">Password:</td>
 	  <td>
-	    <input class="login_field input" maxlength="16" type="password" name="password" />
+	    <input class="login_field input" maxlength="16" type="password" name="pass" />
 	  </td>
 	</tr>
 	<tr>
 	  <td colspan="2">
+		<input type="hidden" name="submit" value="login"/>
 	    <input type="submit" class="submit" value="Log in" />
 	  </td>
 	</tr>
