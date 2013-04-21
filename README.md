@@ -32,7 +32,7 @@ Folders:
 Other Files:
   generate_page.py: 
   index.php: index page for the site
-  language.py: 
+  language.py:  
     our NLP, associates common words with given categories and events and looks for location and duration 
     of stay to figure out what the user is looking for
   login.php/logout.php:
