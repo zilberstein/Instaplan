@@ -16,6 +16,11 @@ body {
     position: relative;
 }
 
+p.error {
+    color: #ffac0d;
+    text-align: left;
+}
+
 #map-canvas {
     height: 350px;
     width: 100%;
@@ -121,11 +126,11 @@ input.login_field {
     width: 225px;
     border: 0;
     background-color: #eee;
-    box-shadow: 0 0 7px inset;
+    box-shadow: 0 0 5px inset;
 }
 
 input.login_field:focus {
-    box-shadow: 0 0 7px #12435c inset;
+    box-shadow: 0 0 5px #12435c inset;
 }
 
 tr.login_row td.label {
@@ -135,7 +140,7 @@ tr.login_row td.label {
     padding: 5px;
     width: 150px;
     font-size: 1.2em;
-    text-shadow: 1px 1px 4px #666;
+
 }
 
 tr.login_row .input {
