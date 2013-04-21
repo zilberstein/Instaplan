@@ -1,6 +1,6 @@
 <?
 // Inialize session
 session_start();
-$_SESSION['username']=null;
+session_destroy(); 
 header( 'Location: index.php');
 ?>
