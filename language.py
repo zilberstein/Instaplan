@@ -87,7 +87,7 @@ def reformat(s):
 
 def make_events(days):
     if days > 0:
-        events = ["Day "+str(i+1)+": "+e for i in range(days) for e in EVENTS]
+        events = [e for i in range(days) for e in EVENTS]
         events.pop(len(events) - 1)
         return events
     else:
