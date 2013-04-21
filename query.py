@@ -23,21 +23,23 @@ cat = cat[:-2]
 a = []
 
 
+
 for e in event.split(", "):
-#	e = e.lower()
-#	if e=='breakfast' or e=='lunch' or  e=='dinner' or  e=='nightlife' or  e=='overnight':
-#		sql = ('select b.name, address, city, state, lat, lon, avg_stars, photo '
-#		       'from business as b, belongs as be '
-#		       'where id = b_id AND be.name in ('+str(cat)+') '
-#		       'AND  (select SQRT(POWER(lat-'+str(lat)+',2) - POWER(lon-'+str(lon)+',2)) '
-#		       'from businesses b1 where b.id = b1.id) <= '+str(distance) + ' '
-#		       'AND '+ str(e) +'  in (select be1.name '
-#		       'from belongs as be1 '
-#		       'where be.b_id = be1.b_id) '
-#		       'order_by metric '
-#		       'limit 0, ' + str(l) + ' ')
-#		a.append(sql)
-#	else: 
+	e = e.lower()
+	e = e.strip('][')
+	if e=='breakfast' or e=='lunch' or  e=='dinner' or  e=='nightlife' or  e=='overnight':
+		sql = ('select b.name, address, city, state, latitude, longitude, stars, photoUrl '
+		       'from business as b, belongs as be '
+		       'where id = b_id AND be.name in ('+str(cat)+') '
+		       'AND  (select SQRT(POWER(latitude-'+str(lat)+',2) + POWER(longitude-'+str(lon)+',2)) '
+		       'from businesses b1 where b.id = b1.id) <= '+str(distance) + ' '
+		       'AND (\''+ str(e) +'\')  in (select be1.name '
+		       'from belongs as be1 '
+		       'where b.id = be1.businessId) '
+		       'order by metric '
+		       'limit ' + str(l) + ' ')
+		a.append(sql)
+	else: 
 		sql = ('select b.name, address, city, state, latitude, longitude, stars, photoUrl '
 		       'from business as b, belongs as be'
 		       'where id = businessId AND belongs.name in ('+str(cat)+') '
