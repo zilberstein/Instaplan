@@ -5,7 +5,7 @@ import string
 import json
 import sys
 
-CATAGORIES = ['active', 'breakfast', 'college', 'culture', 'dessert', 'dinner', 'family', 'kids', 'lunch', 'nightlife', 'old_people']
+CATEGORIES = ['active', 'breakfast', 'college', 'culture', 'dessert', 'dinner', 'family', 'kids', 'lunch', 'nightlife', 'old_people']
 EVENTS   = ['Breakfast','Morning','Lunch','Afternoon','Dinner','Dessert','Evening','Overnight']
 EVENTMAP = {'morning':['Breakfast','Morning'], 'afternoon':['Lunch','Afternoon'],'evening':['Dinner','Nightlife'],'night':['Afternoon','Dinner','Evening','Overnight','Breakfast','Morning','Lunch'],'day':EVENTS}
 NEGATION = ['not ','no ','without ','in','un','non','high ', '0 ', 'hate ']
@@ -45,8 +45,8 @@ def get_keywords(query):
 		plan['days'] = 1
 	
 	# Find keywords
-	catagories = make_cats()
-	plan['catagories'] = list(set([cat_name for cat_name in catagories if regex_check(catagories[cat_name],query) in [1,2]]))
+	categories = make_cats()
+	plan['categories'] = list(set([cat_name for cat_name in categories if regex_check(categories[cat_name],query) in [1,2]]))
 
 	return plan
 
@@ -98,7 +98,7 @@ def create_sidebar(keywords):
     print '<div id="adjust"><h3>Fine Tuner</h3>',
     print '<form action="result.php" method="post">',
     print '<input type="hidden" name="type" value="adjust">',
-    print '<input type="hidden" name="catagories" value='+str(keywords['catagories'])+' />',
+    print '<input type="hidden" name="categories" value='+str(keywords['categories'])+' />',
     print '<h5>Location</h5>',
     print '<input type="text" name="location" value="'+keywords['location']+'" />',
     print '<h5>Max Distance</h5>',
@@ -107,7 +107,7 @@ def create_sidebar(keywords):
     print '<h5>Duration</h5>',
     print '<input name="days" type="number" min="1" max="20" value="'+str(keywords['days'])+'" /> Days',
     print '<h5>Age Groups</h5>',
-    print '<input type="checkbox" name="option" value="kids" '+('checked' if 'kids' in keywords['catagories'] else '')+'/>Kids',
+    print '<input type="checkbox" name="option" value="kids" '+('checked' if 'kids' in keywords['categories'] else '')+'/>Kids',
     print '<input type="checkbox" name="option" value="family" /> Family<br /><br />',
     print '<h5>Options</h5>',
     print '<input type="number" name="options" value="'+str(keywords['options'])+'" />',
@@ -129,10 +129,10 @@ def create_sidebar(keywords):
 
 
 def make_cats():
-	catagories = {}
-	for c in CATAGORIES:
-		f = open('catagories/'+c+'.txt', 'r')
-		catagories[c] = [word.strip().replace('_',' ') for word in f]
-	return catagories
+	categories = {}
+	for c in CATEGORIES:
+		f = open('categories/'+c+'.txt', 'r')
+		categories[c] = [word.strip().replace('_',' ') for word in f]
+	return categories
 
 print json.dumps(get_keywords(sys.argv[1]))
