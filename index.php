@@ -2,7 +2,10 @@
 error_reporting(0);
 session_start();
 
-if $_POST['valid'] == 1
+if($_POST["dispatch"]=="query")
+{
+	
+}
 ?>
 <!DOCTYPE HTML>
 <html>
@@ -39,18 +42,19 @@ if $_POST['valid'] == 1
       <img src='images/instaplan.png' width=600px />
       <table id='tb' border="0" cellspacing="0">
 	<tr>
-	  <form action="result.php" method="post">
+	  <form action="index.php" method="post">
 	    <input type="hidden" name="type" value="language" />
 	    <td style="text-align:left" class="textfield">
 	      <input class="query" placeholder="What would you like to do?" type="text" name="plan" />
 	    </td>
 	    <td style="text-align:right" class="submit_button">
+		  <input type="hidden" name="dispatch" value="query" />
 	      <input class="submit" value="Plan It" type="submit" />
 	    </td>
 	  </form>
 	</tr>
       </table>
-	  <? if ($_SESSION['username']===null){?>
+	  <? if (!isset($_SESSION['username'])){?>
       <p><a href="login.php">Log in</a> or <a href="register.php">register</a></p>
 	  <?} else {?>
 	  <p>Hello, <?echo $_SESSION['name']." "?> (<a href="logout.php">logout</a>)</p>
