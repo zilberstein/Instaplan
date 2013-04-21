@@ -1,6 +1,8 @@
 <?
 error_reporting(0);
 session_start();
+
+if $_POST['valid'] == 1
 ?>
 <!DOCTYPE HTML>
 <html>
