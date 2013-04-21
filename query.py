@@ -11,20 +11,21 @@ distance = float(sys.argv[5])
 lat = float(sys.argv[6])
 lon = float(sys.argv[7])
 
-l = days*options
+
 
 keywords = keywords.rstrip(']')
 keywords = keywords.lstrip('[')
-print keywords
+
 cat = ""
-for k in keywords.split(", "):
+for k in keywords.split(","):
        	cat += '\'' + k + '\', '
 cat = cat[:-2]
 a = []
 
 
 
-for e in event.split(", "):
+
+for e in event.split(","):
 	e = e.lower()
 	e = e.strip('][')
 	if e=='breakfast' or e=='lunch' or  e=='dinner' or  e=='nightlife' or  e=='overnight':
@@ -37,7 +38,7 @@ for e in event.split(", "):
 		       'from belongs as be1 '
 		       'where b.id = be1.businessId) '
 		       'order by metric '
-		       'limit ' + str(l) + ' ')
+		       'limit ' + str(options) + ' ')
 		a.append(sql)
 	else: 
 		sql = ('select b.name, address, city, state, latitude, longitude, stars, photoUrl '
@@ -46,6 +47,6 @@ for e in event.split(", "):
 		       'AND  (select SQRT(POWER(latitude-'+str(lat)+',2) + POWER(longitude-'+str(lon)+',2)) '
 		       'from businesses as b1 where b.id = b1.id) <= '+str(distance) + ' '
 		       'order by metric '
-		       'limit ' + str(l) + ' ')
+		       'limit ' + str(options) + ' ')
 		a.append(sql)
 print "~".join(a)
