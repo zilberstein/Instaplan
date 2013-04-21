@@ -1,6 +1,7 @@
 <?
-session_start();
 error_reporting(0);
+session_start();
+
 $db=mysqli_connect("SQL09.FREEMYSQL.NET", "instaplan", "cis330");
 /* check connection */
 if (mysqli_connect_errno()) {
@@ -74,6 +75,12 @@ if($_POST["dispatch"]=="register")
 			$errors[]= "Sorry, that username is taken";
 	}
 }
+
+function display_error(&$message) {
+	echo "<div class='error'>X<div>";
+	echo $message;
+	echo "</div></div>";
+}
 ?>
 <!DOCTYPE HTML>
 <html>
@@ -105,6 +112,31 @@ if($_POST["dispatch"]=="register")
         padding: 0;
         color: #fff;
       }
+      div.error {
+        float:right;
+	color: #eee;
+	background-color: #f00;
+	width: 20px;
+	height: 20px;
+	text-align: center;
+	border-radius: 10px;
+	text-shadow: none;
+	}
+	div.error div {
+	position: relative;
+	visibility: hidden;
+	background-color: #f00;
+	z-index: 10;
+	top: -20px;
+	left: 20px;
+	font-size: .8em;
+	padding: 15px;
+	width: 200px;
+	}
+	div.error:hover div {
+	visibility: visible;
+	background-color: #000;
+	}
     </style>
 
   </head>
@@ -125,7 +157,11 @@ if($_POST["dispatch"]=="register")
 	<form name="input" action="register.php" method="post">
     <table id='login' border="0" cellspacing="0">
 	<tr class="login_row first">
-	  <td class="label">First Name:</td>
+	  <td class="label">First Name:
+	  <?php
+	    $message = "You fucked up";
+	    display_error($message);?>
+	  </td>
 	  <td>
 	    <input class="login_field input" type="text" name="fname" value="<?print $_POST["fname"];?>"/>
 	  </td>
