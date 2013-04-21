@@ -37,13 +37,22 @@ if($_POST["dispatch"]=="login")
 		$_SESSION['username']=$user;
 		$_SESSION['name']=$val[0]." ".$val[1];
 		$_SESSION['email']=$val[3];
-		header( 'Location: index.php');
+		if($val[5]=='1')
+		{
+			$_SESSION['avatar']="images/avatars/".$user.".jpg";
+		}
+		else
+		{
+			$_SESSION['avatar']="images/avatars/avatar.png";
+		}
+		header( 'Location:'. $_SESSION['avatar']);
 	}
 	else
 	{
 		$_SESSION['username']=null;
 		$_SESSION['name']=null;
 		$_SESSION['email']=null;
+		$_SESSION['avatar']=null;
 	}
 }
 ?>
