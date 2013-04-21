@@ -368,13 +368,9 @@ public class Main {
 		System.out.println("LOAD business_belongsTo_categories");
 		int in=0;
 		for (Business b : businesses) {
-
-			
 			in++;
-			System.out.println("hit1");
 			for (Category c : b.categories) {
 				try {
-					if(in == 1){System.out.println("first line");}
 					String t = "INSERT INTO belongs VALUES ('" + b.id +
 							"', '" + c.name + "')";
 					st.executeUpdate(t);
