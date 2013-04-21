@@ -1,5 +1,9 @@
+#!/usr/bin/python
+
 import re
 import string
+import json
+import sys
 
 CATAGORIES = ['active', 'breakfast', 'college', 'culture', 'dessert', 'dinner', 'family', 'kids', 'lunch', 'nightlife', 'old_people']
 EVENTS   = ['Breakfast','Morning','Lunch','Afternoon','Dinner','Dessert','Evening','Overnight']
@@ -18,6 +22,7 @@ def get_keywords(query):
 	b_lo = regex_check(['near','close'],query)
 	plan['distance'] = (b_hi - b_lo + 3) / 1.5
 	
+	plan['options'] = 1
 	k = regex_check(['kid','child','son','daughter'],query)
 	if k == -1 or k == 0:
 		plan['kids'] = False
@@ -59,6 +64,7 @@ def regex_check(word,query):
 		return 0
 
 def reformat(s):
+	s = "X "+s;
 	s = s.lower()
 	s = re.sub('[^\w ]+', '', s)
 	single_dig = '|'.join(SINGLE_DIGITS)
@@ -103,6 +109,8 @@ def create_sidebar(keywords):
     print '<h5>Age Groups</h5>',
     print '<input type="checkbox" name="option" value="kids" '+('checked' if 'kids' in keywords['catagories'] else '')+'/>Kids',
     print '<input type="checkbox" name="option" value="family" /> Family<br /><br />',
+    print '<h5>Options</h5>',
+    print '<input type="number" name="options" value="'+str(keywords['options'])+'" />',
     print '<input type="submit" />',
     print '</form>',
     print '<h3>Get Directions</h3><form>',
@@ -126,3 +134,5 @@ def make_cats():
 		f = open('catagories/'+c+'.txt', 'r')
 		catagories[c] = [word.strip().replace('_',' ') for word in f]
 	return catagories
+
+print json.dumps(get_keywords(sys.argv[1]))

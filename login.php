@@ -1,8 +1,8 @@
 <?
+error_reporting(0);
 // Inialize session
 session_start();
 
-error_reporting(0);
 $db=mysqli_connect("SQL09.FREEMYSQL.NET", "instaplan", "cis330");
 /* check connection */
 if (mysqli_connect_errno()) {
@@ -63,6 +63,7 @@ if($_POST["dispatch"]=="login")
         padding 0;
         color: #77bcdf;
         font-size: .8em;
+	text-shadow: 1px 1px 2px #000;
       }
       p a {
         color: #77bcdf;
@@ -77,17 +78,26 @@ if($_POST["dispatch"]=="login")
         padding: 0;
         color: #fff;
       }
+      p.error {
+        color: #ffac0d;
+	text-align: left;
+	margin: 0;
+	}
     </style>
 
   </head>
   <body>
     <div id="container">
       <img src='images/instaplan.png' width=600px />
-	  <?if($_POST["dispatch"]=="login")
-			echo "<br>INVALID LOGIN!";
-	  ?>
 	  <form name="login" action="login.php" method="post">
       <table id='login' border="0" cellspacing="0">
+	<tr>
+	<td colspan="2" height="25px" align="left">
+	<?if($_POST["dispatch"]=="login")
+			echo "<p class='error'>Invalid username and/or password</p>";
+	  ?>
+	</td>
+	</tr>	
 	<tr class="login_row first">
 	  <td class="label">Username:</td>
 	  <td>
