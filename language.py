@@ -1,8 +1,9 @@
 import re
 import string
 
-EVENTS   = ['Breakfast','Morning','Lunch','Afternoon','Dinner','Desert','Evening','Overnight']
-NEGATION = ['not ','no ','without ','in','un','non','high ', '0 ']
+CATAGORIES = ['active', 'breakfast', 'college', 'culture', 'dessert', 'dinner', 'family', 'kids', 'lunch', 'nightlife', 'old_people']
+EVENTS   = ['Breakfast','Morning','Lunch','Afternoon','Dinner','Dessert','Evening','Overnight']
+NEGATION = ['not ','no ','without ','in','un','non','high ', '0 ', 'hate ']
 PRIORITY = ['really ','very ','extremely ','lot ','lots ','many ','extraordinarily ','low ','highly ']
 plan = {}
 
@@ -33,7 +34,13 @@ def get_keywords(query):
 	else:
 		plan['events'] = [word.title() for word in query.split(' ') if word.title() in EVENTS]
 		plan['days'] = 0
+	
+	# Find keywords
+	catagories = make_cats()
+	plan['catagories'] = list(set([cat_name for cat_name in catagories if regex_check(catagories[cat_name],query) in [1,2]]))
+
 	return plan
+
 
 def regex_check(word,query):
 	checker = re.search('(\w+ ?)(%(word)s)' % {'word':'|'.join(word)},query)
@@ -83,7 +90,7 @@ def create_sidebar(keywords):
     print '<input type="hidden" name="type" value="adjust">',
     print '<h5>Location</h5>',
     print '<input type="text" name="location" value="'+keywords['location']+'" />',
-    print '<h5>Budget</h5>',
+    print '<h5>Distance</h5>',
     print '<input type="hidden" name="type" value="update" />',
     print '$ <input class="slide" name="budget" type="range" min="0" max="4" step="0.2" value="'+str(keywords['budget'])+'" width="100px"> $$$$',
     print '<h5>Duration</h5>',
@@ -106,3 +113,11 @@ def create_sidebar(keywords):
     print '<div id="content">',
     print '<div id="map-canvas"><</div>',
     print '<h1>My Plan</h1>',
+
+
+def make_cats():
+	catagories = {}
+	for c in CATAGORIES:
+		f = open('catagories/'+c+'.txt', 'r')
+		catagories[c] = [word.strip().replace('_',' ') for word in f]
+	return catagories
