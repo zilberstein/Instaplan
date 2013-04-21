@@ -3,6 +3,7 @@
 import sys
 
 event = sys.argv[1]
+# [first, second, third]
 keywords = sys.argv[2]
 days = int(sys.argv[3])
 options = int(sys.argv[4])
@@ -12,9 +13,12 @@ lon = float(sys.argv[7])
 
 l = days*options
 
+keywords = keywords.rstrip(']')
+keywords = keywords.lstrip('[')
+print keywords
 cat = ""
 for k in keywords.split(", "):
-       	cat += k + ', '
+       	cat += '\'' + k + '\', '
 cat = cat[:-2]
 a = []
 

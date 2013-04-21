@@ -18,9 +18,8 @@ for k in keywords.split(", "):
 cat = cat[:-2]
 a = []
 
-print srt(cat)
 
-for e in event:
+for e in event.split(", "):
 #	e = e.lower()
 #	if e=='breakfast' or e=='lunch' or  e=='dinner' or  e=='nightlife' or  e=='overnight':
 #		sql = ('select b.name, address, city, state, lat, lon, avg_stars, photo '
