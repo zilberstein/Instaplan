@@ -26,6 +26,9 @@ import com.google.gson.JsonObject;
 
 public class Main {
 	
+	//@Susan: DDLtemp, DMLtemp
+	
+	
 	//yelpCategory -> set[OurCategory] map
 	static HashMap<String, HashSet<String>> ycatOurCat = new HashMap<String, HashSet<String>>();
 	//collections for DB
@@ -34,8 +37,12 @@ public class Main {
 	static ArrayList<Review> reviews = new ArrayList<Review>();
 	static ArrayList<YelpUser> yusers = new ArrayList<YelpUser>();
 
+	static HashMap<String, Review> bestReviewMap = new HashMap<String, Review>();
 
 	public static void main(String[] args) throws Exception {
+		if(bestReviewMap!=null) bestReviewMap.clear();
+		else	bestReviewMap = new HashMap<String, Review>();
+		
 		businesses.clear();
 		yusers.clear();
 		reviews.clear();
@@ -43,14 +50,15 @@ public class Main {
 		categorySetUp();
 		
 		importData();
+		System.out.println("businesses size = "+ businesses.size() + " yusers =" + yusers.size() + " best reviews = " + bestReviewMap.size());
+		
 		Statement st = null;
 		st = makeConnectionWithDatabase(args);
-		//DDLBusiness(st);
+		//DDLtemp(st);
 		DDLs(st);
-		System.out.println("businesses size = "+ businesses.size() + " yusers =" + yusers.size() + " reviews = " + reviews.size());
-		//DMLBusiness(businesses,st);
+		//DMLtemp(businesses, reviews,st);
 		DMLs(businesses, yusers, reviews, st);
-		
+		 
 	}
 
 	/**
@@ -97,7 +105,6 @@ public class Main {
 		Gson gson = new Gson();
 		System.out.println(gson.toJson(ycatOurCat));
 	}
-	
 
 	/**
 	 * read yelp dataset json file into json objects
@@ -173,22 +180,37 @@ public class Main {
 				businesses.add(b);
 			}
 			else if(type.equals("review")){ //add review to collection
-				
+				JsonReview jr = gson.fromJson(json, JsonReview.class);
 				if(rvStarted == false){
 					rvStarted=true;
 					System.out.println("reviewStart");
+					System.out.println(gson.toJson(jr));
 				}
-				JsonReview jr = gson.fromJson(json, JsonReview.class);
-				jr.text = ""; //we don't neeed review texts. 
+				jr.text =URLEncoder.encode(jr.text, "UTF-8");
 				Votes v = jr.votes;
-				Review r = new Review(jr.business_id, jr.user_id, jr.stars, v.useful, v.funny, v.cool );
-				reviews.add(r);
+				float useful_score = 3*(float)(v.cool) * (float)(v.useful) * (float) (v.funny);
+				
+				Review r = new Review(jr.business_id, jr.user_id, jr.text, useful_score);
+				Review bestReview = bestReviewMap.get(jr.business_id);
+
+				if(bestReview==null){
+					bestReviewMap.put(jr.business_id, r);
+				}
+				else{
+					if(bestReview.useful_score < r.useful_score){
+						bestReviewMap.put(jr.business_id, r);
+					}
+				}
 			}
+
 		}
 
 		d.close();
 		fis.close();
 		bis.close();
+		//dump bestReviewMap
+		System.out.println("bestReviewMap size: " + bestReviewMap.size());
+		//System.out.println(gson.toJson(bestReviewMap));
 	}
 	
 
@@ -219,95 +241,41 @@ public class Main {
 	
 
 	
-	public static void DDLBusiness(Statement st) throws Exception{
+	public static void DDLtemp(Statement st) throws Exception{
 		try{
-			st.execute("DROP TABLE IF EXISTS belongs");
-		
-			st.execute("DROP TABLE IF EXISTS business");
-			st.executeUpdate("CREATE TABLE business ("
-				+ "id VARCHAR(40), "
-				+ "name VARCHAR(255), "
-				+ "address VARCHAR(255), "
-				+ "city VARCHAR(50), "
-				+ "state VARCHAR(50), "
-				+ "latitude DECIMAL, "
-				+ "longitude DECIMAL, "
-				+ "stars TINYINT, "
-				+ "metric SMALLINT, "
-				+ "photoUrl VARCHAR(255), "
-				+ "PRIMARY KEY (id))");
-			st.execute("CREATE TABLE belongs ("
-				+ "businessId VARCHAR(40), "
-				+ "name VARCHAR(11), "
-				+ "PRIMARY KEY (businessId, name), "
-				+ "FOREIGN KEY (businessId) REFERENCES business(id) ON DELETE CASCADE, "
-				+ "FOREIGN KEY (name) REFERENCES category(name) ON DELETE CASCADE)");
+			st.execute("DROP TABLE IF EXISTS review");
+			st.execute("CREATE TABLE review ("
+					+ "businessId VARCHAR(40), "
+					+ "userId VARCHAR(40), "
+					+ "text VARCHAR(3000), "
+					+ "PRIMARY KEY (businessId, userId), " 
+					+ "FOREIGN KEY (businessId) REFERENCES business(id) ON DELETE CASCADE)");
+			
 		}
 		catch( Exception e){
-			
 			e.printStackTrace();
 		}
 		
 	}
-	public static void DMLBusiness(ArrayList<Business> businesses, Statement st) throws Exception{
-		int i = 0;
-		System.out.println("LOAD Businesses");
-		for (Business b : businesses) {
-			i++;
-			if(i>=1000 && i%1000==0){
-				System.out.println(i+"th Business reached");
-				
-			}
-			if(i==10000)
-				System.out.println("10,000th Business reached");
-			
+	public static void DMLtemp(ArrayList<Business> businesses, ArrayList<Review> reviews, Statement st) throws Exception{
+		//for each key in bestReviewMap, insert the three values.. refer to Review.java for u_id and text.
+		
+		//3*(useful+funny+cool)
+		for (Review r : reviews) {
 			try {
-				String t0 = "INSERT INTO business VALUES ( '" + b.id + "', '"
-						+ b.name + "', '" + b.address + "', '" + b.city +
-						"', '" + b.state + "', '" + b.lat + "', '" + b.lon
-						+ "', '" + b.stars + "', '" + b.metric + "', '" + b.photo + "')";
-				st.executeUpdate(t0);
-				
+				String t0 = "INSERT INTO review VALUES ('" + r.b_id + 
+						"', '" + r.u_id + "', '" + r.text +  "')";
+				st.execute(t0); 
 			} catch (Exception e) {
-				System.out.println(i);
-				Gson gson = new Gson();
-				System.out.println(gson.toJson(b));
-				//e.printStackTrace();
+				e.printStackTrace();
+				break;
+				//or do nothing and continue
 			}
 		}
-		
-		System.out.println("LOAD business_belongsTo_categories");
-		int in=0;
-		
-		for (Business b : businesses) {
-			in++;
-
-			if(in==5000){
-				System.out.println(in+"th reached");
-			}
-			if(in == 10000){
-				System.out.println(in+"th reached");
-					
-			}
-			//System.out.println("hit1");
-			for (Category c : b.categories) {
-				try {
-					if(in == 1){System.out.print("first line");}
-					
-					String t = "INSERT INTO belongs VALUES ('" + b.id +
-							"', '" + c.name + "')";
-					st.executeUpdate(t);
-				} catch (Exception e) {
-					//e.printStackTrace();
-					//System.out.println("bid:"+ b.id  +" not found; " + "cname:" + c.name +" not found");
-					//do nothing and continue
-				}
-				
-			}
-			
-		}
-
 	}
+		
+
+	
 	//commented out yelpUser, review as well as writes. feel free to take it back.
 	public static void DDLs(Statement st) throws Exception {
 		try {
@@ -316,6 +284,7 @@ public class Main {
 			st.execute("DROP TABLE IF EXISTS business");
 			st.execute("DROP TABLE IF EXISTS category");
 			st.execute("DROP TABLE IF EXISTS user");
+			st.execute("DROP TABLE IF EXISTS review");
 			System.out.println("Dropped all the tables; Now create tables.");
 			st.executeUpdate("CREATE TABLE business ("
 					+ "id VARCHAR(40), "
@@ -323,8 +292,8 @@ public class Main {
 					+ "address VARCHAR(255), "
 					+ "city VARCHAR(50), "
 					+ "state VARCHAR(50), "
-					+ "latitude DECIMAL, "
-					+ "longitude DECIMAL, "
+					+ "latitude DECIMAL(10,10), "
+					+ "longitude DECIMAL(10,10), "
 					+ "stars TINYINT, "
 					+ "metric SMALLINT, "
 					+ "photoUrl VARCHAR(255), "
@@ -340,7 +309,7 @@ public class Main {
 					+ "funny SMALLINT, "
 					+ "cool SMALLINT, "
 					+ "PRIMARY KEY (id))");*/
-/*			st.execute("CREATE TABLE review ("
+			st.execute("CREATE TABLE review ("
 					+ "businessId VARCHAR(40), "
 					+ "userId VARCHAR(40), "
 					+ "stars TINYINT, "
@@ -348,7 +317,6 @@ public class Main {
 					+ "funny SMALLINT, "
 					+ "cool SMALLINT, "
 					+ "PRIMARY KEY (businessId, userId), " 
-					+ "FOREIGN KEY (userId) REFERENCES yelpUser(id) ON DELETE CASCADE, "
 					+ "FOREIGN KEY (businessId) REFERENCES business(id) ON DELETE CASCADE)");
 
 /*			st.execute("CREATE TABLE writes ("
@@ -365,12 +333,19 @@ public class Main {
 					+ "FOREIGN KEY (businessId) REFERENCES business(id) ON DELETE CASCADE, "
 					+ "FOREIGN KEY (name) REFERENCES category(name) ON DELETE CASCADE)");
 			st.execute("CREATE TABLE user ("
-					+ "username VARCHAR(16), "
-					+ "password VARCHAR(17), "
-					+ "firstName VARCHAR(15), "
-					+ "lastName VARCHAR(25), "
-					+ "email VARCHAR(50), "
+					+ "firstname VARCHAR(60) not null, "
+					+ "lastname VARCHAR(60) not null, "
+					+ "username VARCHAR(20), "
+					+ "email VARCHAR(60) not null, "
+					+ "password CHAR(32) not null, "
+					+ "avatar BIT not null, "
 					+ "PRIMARY KEY (username))");
+			st.execute("CREATE TABLE review ("
+					+ "businessId VARCHAR(40), "
+					+ "userId VARCHAR(40), "
+					+ "text VARCHAR(3000), "
+					+ "PRIMARY KEY (businessId, userId), " 
+					+ "FOREIGN KEY (businessId) REFERENCES business(id) ON DELETE CASCADE)");
 	
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -420,6 +395,18 @@ public class Main {
 				
 			}
 
+		}
+		
+		for (Review r : reviews) {
+			try {
+				String t0 = "INSERT INTO review VALUES ('" + r.b_id + 
+						"', '" + r.u_id + "', '" + r.text +  "')";
+				st.execute(t0); 
+			} catch (Exception e) {
+				e.printStackTrace();
+				break;
+				//or do nothing and continue
+			}
 		}
 
 
