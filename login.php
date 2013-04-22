@@ -6,7 +6,7 @@ session_start();
 if ($_SESSION['username']!=null)
 	header( 'Location: account.php');
 
-$db=mysqli_connect("db4free.net", "instaplan", "cis330");
+$db=mysqli_connect("SQL09.FREEMYSQL.NET", "instaplan", "cis330");
 /* check connection */
 if (mysqli_connect_errno()) {
     printf("Connect failed: %s\n", mysqli_connect_error());
