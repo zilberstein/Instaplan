@@ -1,8 +1,8 @@
-<?php
-session_start();
+<?
 error_reporting(0);
+session_start();
 /* check if logged in */
-if(!isset($_SESSION['userid'])){
+if(!isset($_SESSION['username'])){
 	header( 'Location: index.php');
 	exit;
 }
@@ -15,46 +15,87 @@ if (mysqli_connect_errno()) {
 }
 mysqli_select_db($db, "instaplan");
 $table= "user";
+$email = $_SESSION['email'];
+$user = $_SESSION['username'];
+$imgurl = $_SESSION['avatar'];
+if(strpos($imgurl,"avatar.png")!=false)
+	$avatar=false;
+else
+	$avatar=true;
+
 $errors = array();
-
-$username = $_SESSION['username'];
-//$old_password = $_POST['old_password']; 
-if($_POST["dispatch"] == "register"){
-	$password = $_POST['password'];
-	$password2 = $_POST['password2']; //confirm
-}
-
-//$password=mysql_real_escape_string($password);
-
-//	$old_password=mysql_real_escape_string($old_password);
-
-
-//checking if you know the old password --> implement later	
-/*if(!(mysql_num_rows(mysql_query($db, "select * FROM ".$table." WHERE username = '".$username."' 
-	and password='".md5($old_password)."'")))){
-$msg=$msg."Old Password is not matching<BR>";
-$errors[1] = "something";
-}*/
-
-/*check if password == password2, and if it conforms length constraint*/
-if ( strlen($password) < 4 || strlen($password) > 16 ){
-	$errors[0] = "Password must be between 4 and 16 characters";
-}
-else if(!ctype_alnum($password)){
-	$errors[0] = "Password must be alphanumeric";
-}
-else if( $password <> $password2){
-	$errors[0] = "Passwords do not match";
-}
-
-if(count($errors)==0){
-	$sql= "update ".$table." set password = '";
-	$sql.=mysqli_real_escape_string($db,md5($password))."' where username = '".$username."'";
+if($_POST["dispatch"]=="update")
+{
+	$passold= $_POST['passold'];
+	$pass = $_POST['pass'];
+	$pass2 = $_POST['pass2'];
+	$email = $_POST['email'];
+	$fpfile=$_POST["fpfile"];
+		
+	$query="select * from ".$table." where username='".$user."' and password='".md5($passold)."'";
+	$result = mysqli_query($db,$query);
 	
-	echo "<script type='text/javascript'>alert('".$sql."');</script>";
-	mysqli_query($db,$sql);
+	if(mysqli_num_rows($result) == 1)
+	{
+			if(fpfile===null || $fpfile=="" || $fpfile=="/" || $fpfile=="//" || $fpfile=="///")
+			{
+				$avatar=false;
+				$fpfile="";
+			}
+			else
+			{
+				$avatar=true;
+				$json=json_decode($fpfile,true);
+				$imgurl=$json["url"];
+			}
+		if($pass != "" || $pass2 != "")
+		{
+			if(strlen($pass)<4 || strlen($pass)>16)
+				$errors[1]= "Password must be between 4 and 16 characters";
+			else if(!ctype_alnum($pass))
+				$errors[1]= "Password must be alphanumeric";
+			//passwords have to match
+			else if($pass!=$pass2)
+				$errors[1]= "Passwords do not match";
+		}
+		if(!filter_var($email, FILTER_VALIDATE_EMAIL))
+			$errors[2]= "Invalid email address";
+			
+		if(count($errors)==0)
+		{	
+			$query="UPDATE $table SET password='$pass' WHERE username='$user'";
+			mysqli_query($db,$query);
+			
+			if($avatar)
+			{
+				//store file locally, and delete it from filepicker
+				copy($imgurl, "images/avatars/".$user.".jpg");
+				chmod("images/avatars/".$user.".jpg", 0705); 
+				//delete
+				$ch = curl_init();
+				// set URL and other appropriate options
+				curl_setopt($ch, CURLOPT_URL, $imgurl);
+				curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "DELETE");
+				// grab URL and pass it to the browser
+				curl_exec($ch);
+				// close cURL resource, and free up system resources
+				curl_close($ch);
+				$_SESSION['avatar']="images/avatars/".$user.".jpg";
+				
+				
+				header( 'Location: index.php');
+			}
+		}
+	}
+	else
+		$errors[0]= "Incorrect Password";
+	
 }
-
+function display_error($message) {
+	echo "<div class='error'>X<div class=\"arrow\"></div><div class=\"message\">";
+	echo $message;
+	echo "</div></div>";
+}
 ?>
 
 <!--HTML goes here-->
@@ -64,38 +105,170 @@ if(count($errors)==0){
   <head>
     <title>Instaplan</title>  
     <link rel="stylesheet" type="text/css" href="style.css" />
-	<style>
+	<script type="text/javascript" src="//api.filepicker.io/v1/filepicker.js"></script>
+	<script type="text/javascript">
+	filepicker.setKey("AzauR2MBSBeslVoQIcZ8gz");
+	function getPic()
+	{
+		filepicker.pickAndStore({mimetype: 'image/*'},{},function(fpfiles){
+			document.getElementById("photo").innerHTML = "Converting...";
+			filepicker.convert(fpfiles[0], {width: 100, height: 100},
+				function(new_FPFile){
+				document.getElementById("photo").innerHTML = "<img src="+new_FPFile.url+"></img>";
+				document.getElementById("fpfile").value = JSON.stringify(new_FPFile);
+				filepicker.remove(fpfiles[0]);
+			});
+			document.getElementById("attach-photo").innerHTML = "Change Photo";
+		});
+	}
+	</script>
+    <style>
+      *:focus {
+        outline: none;
+      }
+      p {
+        text-align: left;
+        margin: 0 80px;
+        padding 0;
+        color: #77bcdf;
+        font-size: .8em;
+        text-shadow: 1px 1px 2px #000;
+      }
+      p a {
+        color: #77bcdf;
+        text-decoration: none;
+        font-weight: 600;
+      }
+      p a:hover {
+        text-decoration: underline;
+      }
+        p.error {
+          color: #ffac0d;
+          text-align: left;
+          margin: 0;
+          }
 
-	</style>
+      h2 {
+        margin: 0;
+        padding: 0;
+        color: #fff;
+      }
+      div.error {
+        float:right;
+	color: #eee;
+	background-color: #f00;
+	background-image: url('images/button_grad.png');
+	width: 20px;
+	height: 20px;
+	text-align: center;
+	border-radius: 10px;
+	text-shadow: none;
+	font-weight: normal;
+	}
+     div.error div.message {
+	position: relative;
+	visibility:none;
+	display: none;
+	background-color: rgba(0,0,0,.5);
+	z-index: 10;
+	top: -60px;
+	left: 30px;
+	font-size: .75em;
+	padding: 5px;
+	border-radius: 5px;
+	font-weight: normal;
+	width: 150px;
+	height: 50px;
+	text-align: left;
+      }
+	div.error:hover div {
+	visibility:visible;
+	display: block;
+      }
+      div.arrow {
+      	visibility: hidden;
+	display: none;
+        opacity: .5;
+	position: relative;
+	top: -20px;
+	left: 20px;
+        width: 0; 
+        height: 0; 
+        border-top: 10px solid transparent;
+        border-bottom: 10px solid transparent; 
+        border-right:10px solid black; 
+}    
+     #attach-photo {
+       background-color: #f00;
+       background-image: url('images/button_grad.png');
+       border: 0;
+       border-radius: 7px;
+       margin: 2px;;
+       height: 30px;
+       color: #fff;
+}
+</style>
   </head>
   <body>
   
     <div id="container">
 	    <img src='images/instaplan.png' width=600px />		
-		
+		<div id="user" >
+			<p>My Account</p>
+			<p><?echo $user?></p>
+			<div id="photo"><img src="<?echo $imgurl?>"/></div>
+			<button type="button" id="attach-photo" style="float:left;"		onclick="getPic()"><?if (!$avatar){?>Upload <?}else{?>Change <?}?>Photo</button>
+			<input id="fpfile" name="fpfile" class="login_field input" type="hidden" value=<?echo $fpfile?>/>
+		</div>
 		<form name="input" action="account.php" method="post">
 	    <table id='account' border="0" cellspacing="0">
 	    	<tr><td colspan="2" height="25px">
-		<?php if (count($errors) != 0){echo "<p class=\"error\">Please fix the following errors:</p>";}?></td></tr>
+		<?if (count($errors) != 0){echo "<p class=\"error\">Please fix the following errors:</p>";}?></td></tr>
 		
-		<tr class="account_row">
+		<tr class="login_row first">
+		  <td class="label">Name:</td>
+		  <td>
+		    <?echo $_SESSION["name"]?>
+		  </td>
+		</tr>
+		<tr class="login_row">
+		  <td class="label">Username:
+		  </td>
+		  <td>
+		    <? echo $user?>
+		  </td>
+		</tr>
+		<tr class="login_row">
 		  <td class="label">Password:
-		  <?php if ($errors[0] != null) {display_error($errors[0]);} ?></td>
-		  <td>
-		    <input class="account_field input" maxlength="16" type="password" name="password" />
+		  <? if ($errors[0] != null) {display_error($errors[0]);} ?></td>
+		  <td>	
+		  <input class="login_field input" maxlength="16" type="password" name="passold" placeholder="Enter Current Password"/>
 		  </td>
 		</tr>
-		<tr class="account_row">
+		<tr class="login_row">
+		  <td class="label">New Password:
+		  <? if ($errors[1] != null) {display_error($errors[1]);} ?></td>
+		  <td>	
+		  <input class="login_field input" maxlength="16" type="password" name="pass" placeholder="Enter to Change"/>
+		  </td>
+		</tr>
+		<tr class="login_row">
 		  <td class="label">Confirm Password:</td>
-		  <td>
-		    <input class="account_field input" maxlength="16" type="password" name="password2" />
+		  <td>	
+			<input class="login_field input" maxlength="16" type="password" name="pass2" />
 		  </td>
 		</tr>
-
+		<tr class="login_row last">
+		  <td class="label">Email:
+		  <? if ($errors[2] != null) {display_error($errors[2]);} ?></td>
+		  <td>	
+			<input class="login_field input" maxlength="16" type="text" name="email" value="<?echo $email?>"/>
+		  </td>
+		</tr>
 		<tr>
 		  <td colspan="2">
-			<input type="hidden" name="dispatch" value="Update Account"/>
-		    <input type="submit" class="submit" value="Update Account" />
+			<input type="hidden" name="dispatch" value="update"/>
+		    <input type="submit" class="submit" value="Update" />
 		  </td>
 		</tr>
 	      </table>
