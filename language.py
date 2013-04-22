@@ -7,7 +7,7 @@ import sys
 
 CATEGORIES = ['active', 'breakfast', 'college', 'culture', 'dessert', 'dinner', 'family', 'kids', 'lunch', 'nightlife', 'old_people']
 EVENTS   = ['Breakfast','Morning','Lunch','Afternoon','Dinner','Dessert','Evening','Overnight']
-EVENTMAP = {'morning':['Breakfast','Morning'], 'afternoon':['Lunch','Afternoon'],'evening':['Dinner','Nightlife'],'night':['Afternoon','Dinner','Evening','Overnight','Breakfast','Morning','Lunch'],'day':EVENTS}
+EVENTMAP = {'morning':['Breakfast','Morning'], 'afternoon':['Lunch','Afternoon'],'evening':['Dinner','Nightlife'],'night':['Afternoon','Dinner','Evening','Overnight','Breakfast','Morning','Lunch'],'day':EVENTS,'breakfast':['Breakfast'], 'lunch':['Lunch'], 'dinner':['Dinner'], 'overnight':['Dinner','Evening','Overnight','Breakfast']}
 NEGATION = ['not ','no ','without ','in','un','non','high ', '0 ', 'hate ']
 PRIORITY = ['really ','very ','extremely ','lot ','lots ','many ','extraordinarily ','low ','highly ']
 plan = {}
@@ -23,24 +23,16 @@ def get_keywords(query):
 	plan['distance'] = (b_hi - b_lo + 3) / 1.5
 	
 	plan['options'] = 1
-	k = regex_check(['kid','child','son','daughter'],query)
-	if k == -1 or k == 0:
-		plan['kids'] = False
-	else:
-		plan['kids'] = True
 	
-	#f = open('cities.txt','r')
-	#cities = [city for city in f]
-	#f.close()
-	#l = regex_check(cities, query)
-	
-
-
-	location = re.search('(in|near|go to) (\w+)',query)
-	if location:
-		plan['location'] = location.group(2).title()
-	else:
-		plan['location'] = ''
+	f = open('categories/cities.txt','r')
+	cities = [city.strip() for city in f]
+	f.close()
+	plan['location'] = regex_get(cities, query).title()
+#	location = re.search('(in|near|go to) (\w+)',query)
+#	if location:
+#		plan['location'] = location.group(2).title()
+#	else:
+#		plan['location'] = ''
 	days = re.search('([0-9]+) day',query)
 	if days and days.group(1) != '0':
 		plan['days'] = int(days.group(1))
@@ -71,6 +63,17 @@ def regex_check(word,query):
 	else:
 		return 0
 
+def regex_get(word,query):
+	checker = re.search('(\w+ ?)(%(word)s)' % {'word':'|'.join(word)},query)
+	if checker is not None:
+		if checker.group(1) in NEGATION:
+			return None
+		else:
+			return checker.group(2)
+	else:
+		return None
+
+
 def reformat(s):
 	s = "X "+s;
 	s = s.lower()
@@ -100,41 +103,6 @@ def make_events(days):
         return events
     else:
         return []
-
-
-def create_sidebar(keywords):
-    print '<div id="adjust"><h3>Fine Tuner</h3>',
-    print '<form action="result.php" method="post">',
-    print '<input type="hidden" name="type" value="adjust">',
-    print '<input type="hidden" name="categories" value='+str(keywords['categories'])+' />',
-    print '<h5>Location</h5>',
-    print '<input type="text" name="location" value="'+keywords['location']+'" />',
-    print '<h5>Max Distance</h5>',
-    print '<input type="hidden" name="type" value="update" />',
-    print '<input class="slide" name="distance" type="range" min="0" max="4" step="0.2" value="'+str(keywords['distance'])+'" width="100px">',
-    print '<h5>Duration</h5>',
-    print '<input name="days" type="number" min="1" max="20" value="'+str(keywords['days'])+'" /> Days',
-    print '<h5>Age Groups</h5>',
-    print '<input type="checkbox" name="option" value="kids" '+('checked' if 'kids' in keywords['categories'] else '')+'/>Kids',
-    print '<input type="checkbox" name="option" value="family" /> Family<br /><br />',
-    print '<h5>Options</h5>',
-    print '<input type="number" name="options" value="'+str(keywords['options'])+'" />',
-    print '<input type="submit" />',
-    print '</form>',
-    print '<h3>Get Directions</h3><form>',
-    print '<select name="transport">',
-    print '<option>Public Transport</option>',
-    print '<option>Car</option>',
-    print '<option>Walking</option>',
-    print '<option>Fixie</option>',
-    print '</select><br />',
-    print '<input type="submit" />',
-    print '</form>',
-    print '</div>',
-    print '<div id="content">',
-    print '<div id="map-canvas"><</div>',
-    print '<h1>My Plan</h1>',
-
 
 def make_cats():
 	categories = {}

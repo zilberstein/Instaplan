@@ -1,0 +1,119 @@
+city 
+adelphi 
+albany 
+amherst 
+ann arbor 
+ann arbor charter township 
+annapolis 
+arlington 
+astoria 
+atlanta 
+austin 
+belchertown 
+beltsville 
+berkeley 
+berwyn heights 
+blacksburg 
+boston 
+cambridge 
+carrboro 
+carrboro saxapahaw chapel hill durham 
+champaign 
+chapel hill 
+christiansbrg 
+christiansburg 
+claremont 
+cohoes 
+college park 
+danvers 
+east palo alto 
+freeville 
+greenbelt 
+hadley 
+hampshire 
+harlem 
+hatfield 
+houston 
+hyattsville 
+ithaca 
+kingston 
+kitchener 
+la jolla 
+lafayette 
+langley park 
+lansing 
+lansingburgh 
+latham 
+lawrence 
+lawrence township 
+lawrenceville 
+liberty hill 
+los angeles 
+loudonville 
+manhattan 
+menands 
+menlo park 
+monmouth junction 
+monrovia 
+montclair 
+montgomery 
+mountain view 
+new york 
+new york city 
+newport 
+north amherst 
+north greenbush 
+northampton 
+oakland 
+palo alto 
+pasadena 
+philadelphia 
+philly 
+pittsburgh 
+plainsboro 
+plainsboro center 
+plainsboro township 
+princeton 
+princeton jct 
+princeton junction 
+princeton township 
+providence 
+rensselaer 
+riverdale 
+riverdale park 
+rocky hill 
+san diego 
+san luis obispo 
+seattle 
+shadyside 
+silver spring 
+skillman 
+solana beach 
+somerset 
+somerville 
+south brunswick 
+southern california 
+st jacobs 
+stanford 
+sunderland 
+takoma park 
+trenton 
+troy 
+university park 
+upland 
+urbana 
+victoria park 
+w lafayette 
+waterford 
+waterloo 
+watervliet 
+west hyattsville 
+west lafayette 
+west los angeles 
+west university place 
+west windsor 
+west windsor township 
+westwood 
+westwood village 
+woolwich 
+wynantskill 

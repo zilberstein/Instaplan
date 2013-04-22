@@ -5,8 +5,8 @@ error_reporting(0);
 session_start();
 
 //if not arrived through index, go back to index
-if($_POST['events']===null)
-	header( 'Location: index.php');
+//if($_POST['events']===null)
+//	header( 'Location: index.php');
 
 $db=mysqli_connect("SQL09.FREEMYSQL.NET", "instaplan", "cis330");
 /* check connection */
@@ -125,12 +125,19 @@ echo "
 	  <br />
 	  <input type="submit" />
 	</form>
-	<h3>Get Directions</h3><form>
-	  <select name="transport">
-	    <option>Public Transport</option>
-	    <option>Car</option>
-	    <option>Walking</option>
-	    <option>Fixie</option>
+	<h3>Get Directions</h3>
+	 <form action="https://maps.google.com/maps" method="get">
+	   <input type="hidden" name="saddr" value="<?echo urldecode($output[0][1]); ?>" />
+	   <input type="hidden" name="daddr" value='<?echo urldecode($output[1][1]);
+						    for ($j=2; $j<count($output); $j++) {
+						    echo " to:".urldecode($output[$j][1]);
+						}
+						?>' />
+	  <select name="dirflg">
+	    <option value="r">Public Transport</option>
+	    <option value="c">Car</option>
+	    <option value="w">Walking</option>
+	    <option value="b">Fixie</option>
 	  </select><br />
 	  <input type="submit" />
 	</form>

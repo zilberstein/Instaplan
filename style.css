@@ -2,7 +2,7 @@ body {
     background-image: url('images/skyline.jpg');
     padding-top: 10px;
     margin-top: -10px;
-    font-family: FreightSans Medium,Avenir Next;
+    font-family: FreightSans Medium,Avenir Next,arial;
     background-attachment: fixed;
     background-position: center center;
 }
@@ -332,9 +332,9 @@ td.textfield:hover {
     float: right;
     /*right: -100px;
     -webkit-transform:rotate(12deg);*/
-    border-radius: 15px;
+    border-radius: 7px;
     margin-left: 25px;
-    box-shadow: 0 0 25px #000;
+    box-shadow: 0 0 8px #000;
 }
 
 @keyframes mymove {
@@ -384,11 +384,13 @@ div#user {
 div#user h3 {
     padding: 0 10px;
     margin: 0;
+    text-shadow: 2px 2px 4px #000;
 }
 
 div#user h2 {
     padding: 0 10px;
     margin: 0;
+    text-shadow: 2px 2px 4px #000;
 }
 
 div#user #photo {
