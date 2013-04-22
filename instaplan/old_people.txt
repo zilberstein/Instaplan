@@ -17,10 +17,6 @@ cheese
 chocolate
 tea
 wineries
-hotelstravel
-bedbreakfast
-hotels
-resorts
 adultentertainment
 champagne_bars
 lounges

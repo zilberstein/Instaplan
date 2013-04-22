@@ -28,13 +28,6 @@ juicebars
 chocolate
 streetvendors
 wineries
-hotelstravel
-bedbreakfast
-campgrounds
-hostels
-hotels
-resorts
-skiresorts
 nightlife
 adultentertainment
 bars
