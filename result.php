@@ -65,11 +65,11 @@ for($i=0;$i<count($commands);$i++)
 	  $query= substr($query,0,$pos).substr($query,$end+1);
 	  
 	  $result = mysqli_query($db,$query);
-	  
-	  if(mysqli_num_rows($result) == 1 && $pos>0 && $end>$pos) 
-	  {
-	    echo "No results found, stripping category: ".$query."
+	  if ($pos>0 && $end>$pos)
+		echo "No results found, stripping category: ".$query."
 	    ";
+	  if(mysqli_num_rows($result) == 1) 
+	  {
         $row = mysqli_fetch_row($result);
 	    $seen.=",'$row[9]'";
         $row[count($row)] = $events[$i];
