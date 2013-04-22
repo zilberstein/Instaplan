@@ -234,6 +234,7 @@ function display_error($message) {
 			<div id="photo"><img src="<?echo $imgurl?>"/></div>
 			<h2>My Account</h2>
 			<h3><?echo $user?></h3>
+			<a href="logout.php" style="text-shadow:2px 2px 4px #000;text-decoration:none;font-weight: normal;">(logout)</a>
 			<button type="button" id="attach-photo" style="float:left;"	onclick="getPic()"><?if(strpos($imgurl,"avatar.png")!=false){?>Upload <?}else{?>Change <?}?>Photo</button>
 			<input id="fpfile" name="fpfile" class="login_field input" type="hidden" value="<?echo $fpfile?>">
 		</div>
