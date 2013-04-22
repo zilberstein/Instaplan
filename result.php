@@ -62,6 +62,7 @@ echo "
 ?>
 
     <title>Instaplan</title>
+	<link rel="icon" href="images/favicon.ico">
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
     <link rel="stylesheet" type="text/css" href="style.css" />
     <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCBK8GNOmG7wnFlSAzX9Udzrn1oFnUokLs&sensor=false">

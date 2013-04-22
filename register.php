@@ -26,15 +26,16 @@ if($_POST["dispatch"]=="register")
 	$pass2=$_POST["pass2"];
 	$fpfile=$_POST["fpfile"];
 	
-	if(fpfile===null || $fpfile=="" || $fpfile=="/" || $fpfile=="//" || $fpfile=="///")
+	if($fpfile===null || $fpfile=="" || $fpfile=="/" || $fpfile=="//" || $fpfile=="///")
 	{
 		$fpfile="";
 		$avatar=false;
 	}
 	else
 	{
+		$fp= str_replace("'","\"",$fpfile);
 		$avatar=true;
-		$json=json_decode($fpfile,true);
+		$json=json_decode($fp,true);
 		$imgurl=$json["url"];
 	}
 	
@@ -129,6 +130,7 @@ function display_error($message) {
 <html>
   <head>
     <title>Instaplan</title>  
+	<link rel="icon" href="images/favicon.ico">
     <link rel="stylesheet" type="text/css" href="style.css" />
 	<script type="text/javascript" src="//api.filepicker.io/v1/filepicker.js"></script>
 	<script type="text/javascript">
@@ -140,7 +142,11 @@ function display_error($message) {
 			filepicker.convert(fpfiles[0], {width: 100, height: 100},
 				function(new_FPFile){
 				document.getElementById("photo").innerHTML = "<img src="+new_FPFile.url+" height=\"30px\"></img>";
-				document.getElementById("fpfile").value = JSON.stringify(new_FPFile);
+				var string=JSON.stringify(new_FPFile);
+				while(string.indexOf("\"")!==-1){
+					string=string.replace("\"","'");
+				}
+				document.getElementById("fpfile").value = string;
 				filepicker.remove(fpfiles[0]);
 			});
 			document.getElementById("attach-photo").innerHTML = "Change Photo";
@@ -291,7 +297,7 @@ function display_error($message) {
 	  <td>
 	    <button type="button" id="attach-photo" style="float:left;"		onclick="getPic()"><?if (!$avatar){?>Upload <?}else{?>Change <?}?>Photo</button>
 		<div id="photo"><img src="<?echo $imgurl?>" height="30px" /></div>
-		<input id="fpfile" name="fpfile" class="login_field input" type="hidden" value=<?echo $fpfile?>/>
+		<input id="fpfile" name="fpfile" class="login_field input" type="hidden" value="<?echo $fpfile?>"/>
 	  </td>
 	</tr>
 	<tr>

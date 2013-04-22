@@ -91,7 +91,7 @@ if($_POST["dispatch"]=="query")
 	  if (!isset($_SESSION['username'])){?>
       <p><a href="login.php">Log in</a> or <a href="register.php">register</a></p>
 	  <?} else {?>
-	  <p>Hello, <a href="account.php"><?echo $_SESSION['name']." "?></a> (<a href="logout.php">logout</a>)</p>
+	  <p>Hello, <a href="account.php"><?echo $_SESSION['name']?></a> &nbsp;(<a href="logout.php">logout</a>)</p>
 	  <?}
 	  } else if ($error == 1) {
 	    echo "<p class=\"error\">Oops! Your query does not have a location</p>";

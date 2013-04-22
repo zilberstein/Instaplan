@@ -60,6 +60,7 @@ if($_POST["dispatch"]=="login")
 <html>
   <head>
     <title>Instaplan</title>  
+	<link rel="icon" href="images/favicon.ico">
     <link rel="stylesheet" type="text/css" href="style.css" /><!--
     <script src="planningfont7_400.font.js">-->
     <style>
