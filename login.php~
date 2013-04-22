@@ -97,7 +97,7 @@ if($_POST["dispatch"]=="login")
   </head>
   <body>
     <div id="container">
-     <a href="https://fling.seas.upenn.edu/~noamz/cgi-bin/instaplan/"><img src='images/instaplan.png' width=600px /></a>
+      <img src='images/instaplan.png' width=600px />
 	  <form name="login" action="login.php" method="post">
       <table id='login' border="0" cellspacing="0">
 	<tr>
@@ -123,12 +123,8 @@ if($_POST["dispatch"]=="login")
 	  <td colspan="2">
 		<input type="hidden" name="dispatch" value="login"/>
 	    <input type="submit" class="submit" value="Log in" />
-	    
 	  </td>
 	</tr>
-	<p>
-	  <a href="https://fling.seas.upenn.edu/~noamz/cgi-bin/instaplan/register.php>or click here to register></a>
-	</p>
       </table>
       </form>
     </div>

@@ -238,7 +238,7 @@ function display_error($message) {
   </head>
   <body>
     <div id="container">
-     <a href="https://fling.seas.upenn.edu/~noamz/cgi-bin/instaplan/"> <img src='images/instaplan.png' width=600px /></a>
+      <img src='images/instaplan.png' width=600px />		
 	
 	<form name="input" action="register.php" method="post">
     <table id='login' border="0" cellspacing="0">
@@ -300,8 +300,6 @@ function display_error($message) {
 	    <input type="submit" class="submit" value="Register" />
 	  </td>
 	</tr>
-	<p>
-	  <a href="https://fling.seas.upenn.edu/~noamz/cgi-bin/instaplan/login.php>or click here to login</a>
       </table>
       </form>
     </div>
