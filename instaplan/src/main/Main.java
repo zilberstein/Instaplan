@@ -58,9 +58,9 @@ public class Main {
 
 		Connection conn = makeConnectionWithDatabase(args);
 		//DDLtemp(conn);
-		//DMLtemp(conn);
-		DDLs(conn);
-		DMLs(businesses, conn);
+		DMLtemp(conn);
+		//DDLs(conn);
+		//DMLs(businesses, conn);
 	}
 
 	/**
@@ -251,11 +251,11 @@ public class Main {
 			Connection con = null;
 			if (args.length < 2) {
 				con = DriverManager.getConnection(
-						"jdbc:mysql://db4free.net/instaplan",
+						"jdbc:mysql://SQL09.FREEMYSQL.NET/instaplan",
 						"instaplan", "cis330");
 			} else {
 				con = DriverManager.getConnection(
-						"jdbc:mysql://sql2.freesqldatabase.com/sql27018",
+						"jdbc:mysql://SQL09.FREEMYSQL.NET/instaplan",
 						args[0], args[1]);
 			}
 
@@ -292,44 +292,22 @@ public class Main {
 
 	public static void DMLtemp( Connection conn)
 			throws Exception {
+		Statement st = conn.createStatement();
 		
-		System.out.println("LOAD business_belongsTo_categories");
-		int in = 0;
-
+		st.execute("DROP TABLE IF EXISTS review");
+		
 		PreparedStatement pstmt;
+		System.out.println("Dropped review; Now create review table.");
 
-		for (Business b : businesses) {
-			in++;
 
-			if (in >= 1000 && in % 1000 == 0) {
-				System.out.println(in + "th Belongs reached");
-			}
-
-			for (Category c : b.categories) {
-				//System.out.println("reached here");
-				try {
-					if (in < 4) {
-						System.out.println("belongs row " + in);
-					}
-
-					pstmt = conn
-							.prepareStatement("INSERT INTO belongs VALUES (?,?)");
-					pstmt.setString(1, b.id);
-					pstmt.setString(2, c.name);
-
-					pstmt.executeUpdate();
-
-				} catch (Exception e) {
-
-					// System.out.println("bid:"+ b.id +" not found; " +
-					// "cname:" + c.name +" not found");
-					// do nothing and continue; supposed to have duplicates in biz-category pairs
-				}
-
-			}
-
-		}
-
+		
+		
+		//DDL DONE
+		
+		
+		
+	    
+	    
 
 	}
 
@@ -413,72 +391,68 @@ public class Main {
 				pstmt.executeUpdate();
 			}
 
-			System.out.println("LOAD Businesses");
+			System.out.println("INSERT into Businesses");
 
-			int i = 0;
-			pstmt = conn.prepareStatement("INSERT INTO business VALUES (?,?,?,?,?,?,?,?,?,?)");
-
-			for (Business b : businesses) {
-				try {
-					pstmt.setString(1, b.id);
-					pstmt.setString(2, b.name);
-					pstmt.setString(3, b.address);
-					pstmt.setString(4, b.city);
-					pstmt.setString(5, b.state);
-					pstmt.setFloat(6, b.lat);
-					pstmt.setFloat(7, b.lon);
-					pstmt.setFloat(8, b.stars);
-					pstmt.setFloat(9, b.metric);
-					pstmt.setString(10, b.photo);
-
-					pstmt.addBatch();
-
-					if ((i + 1) % 1000 == 0) {
-						pstmt.executeBatch();
-						System.out.println(i + "th Business reached");
-						// Execute every 1000 items.
-					}
-					i++;
-				} catch (Exception e) {
-					System.out.println(i);
-					System.out.println(e.getMessage());
-
-				}
-			}
-			pstmt.executeBatch();
-
-			i = 0;
-			System.out.println("LOAD reviews");
-
-			for (Map.Entry<String, Review> entry : bestReviewMap.entrySet()) {
-				i++;
-				if (i >= 1000 && i % 1000 == 0) {
-					System.out.println(i + "th Review reached");
-				}
-
-				Review r = entry.getValue();
-
-				if (i == 1) {
-					Gson g = new Gson();
-					System.out.println(g.toJson(r));
-				}
-				try {
-					pstmt = conn
-							.prepareStatement("INSERT INTO review VALUES (?,?,?)");
-					pstmt.setString(1, r.b_id);
-					pstmt.setString(2, r.u_id);
-					pstmt.setString(3, r.text);
+			StringBuffer sql = new StringBuffer("INSERT INTO business VALUES (?,?,?,?,?,?,?,?,?,?)");
+			int ib = 1;
+			for(ib=1; ib< businesses.size() ; ib++) {
+		        sql.append(", (?,?,?,?,?,?,?,?,?,?)");
+		    }
+		    System.out.println(ib);
+		    try {
+		        pstmt= conn.prepareStatement(sql.toString());
+		        int j = 1;
+		        for(Business b: businesses) {
+		        	
+					pstmt.setString(j++, b.id); 
+					pstmt.setString(j++, b.name);
+					pstmt.setString(j++, b.address);
+					pstmt.setString(j++, b.city);
+					pstmt.setString(j++, b.state);
+					pstmt.setFloat(j++, b.lat);
+					pstmt.setFloat(j++, b.lon);
+					pstmt.setFloat(j++, b.stars);
+					pstmt.setFloat(j++, b.metric);
+					pstmt.setString(j++, b.photo);
+					
+					
+		        }
 
 					pstmt.executeUpdate();
+					pstmt.close();
 
-				} catch (Exception e) {
-					// e.printStackTrace();
-					System.out.println(e.getMessage());
-					// or do nothing and continue
-				}
+		    } catch (SQLException e) {
+		        e.printStackTrace();
+		        
+		    }
+		    
+		    System.out.println("LOAD reviews");
+			sql = new StringBuffer("INSERT INTO review VALUES (?,?,?)");
+			int ir = 1;
+			for(ir=1; ir< bestReviewMap.size(); ir++) {
+		        sql.append(", (?,?,?)");
+		    }
 
-			}
+		    try {
+		        pstmt= conn.prepareStatement(sql.toString());
+		        int j = 1;
+		        for(Map.Entry<String, Review> entry : bestReviewMap.entrySet()) {
+		        	Review r = entry.getValue();
+		        	pstmt.setString(j++, r.b_id);
+					pstmt.setString(j++, r.u_id);
+					pstmt.setString(j++, r.text);
+		        	
+		        }
 
+					pstmt.executeUpdate();
+					pstmt.close();
+
+		    } catch (SQLException e) {
+		        e.printStackTrace();
+		    }
+
+		    
+		    //TODO: OPTIMIZE
 			System.out.println("LOAD business_belongsTo_categories");
 			int in = 0;
 
