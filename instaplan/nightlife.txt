@@ -2,7 +2,6 @@ casinos
 movietheaters
 jazzandblues
 musicvenues
-food
 beer_and_wine
 breweries
 desserts

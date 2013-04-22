@@ -75,7 +75,8 @@ public class Main {
 		ArrayList<String> ourCategories = new ArrayList<String>();
 		String[] categories = {"active", "breakfast", "college", 
 				"culture", "dessert", "dinner", "family", "kids", 
-				"lunch", "nightlife", "old_people","pamper"};
+				"lunch", "nightlife", "old_people","pamper", 
+				"overnight", "restaurant"};
 		Arrays.sort(categories);
 		ourCategories.addAll(Arrays.asList(categories));
 		
