@@ -31,7 +31,7 @@ for e in event.split(","):
 	else:
 		catSearch = "AND be.name in (" + str(cat) + ") "
 	
-	if e=='breakfast' or e=='lunch' or  e=='dinner' or  e=='nightlife' or  e=='overnight':
+	if e=='breakfast' or e=='lunch' or  e=='dinner' or  e=='nightlife' or  e=='overnight' or e=='desert':
 		sql = ('select b.name, address, city, state, latitude, longitude, stars, photoUrl, text, id '
 		       'from business as b, belongs as be, review as r '
 		       'where id = be.businessId ' + catSearch + 
