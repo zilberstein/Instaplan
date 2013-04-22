@@ -44,7 +44,7 @@ for e in event.split(","):
 		       'from belongs as be2 '
 		       'where b.id = be2.businessId) '
 		       'AND r.businessId = b.id '
-		       + catsearch + 
+		       + catSearch + 
 		       'order by metric desc '
 		       'limit 0, 1 ')
 		a.append(sql)
@@ -55,7 +55,7 @@ for e in event.split(","):
 		       'AND  (select SQRT(POWER(latitude-'+str(lat)+',2)*69 + POWER(longitude-'+str(lon)+',2)*53) '
 		       'from business as b1 where b.id = b1.id) <= '+str(distance) + ' '
 		       'AND r.businessId = b.id '
-		       + catsearch + 
+		       + catSearch + 
 		       'order by metric desc '
 		       'limit 0,1 ')
 		a.append(sql)
