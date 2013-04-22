@@ -241,7 +241,7 @@ td.textfield:hover {
       border-style: solid;*/
     background-color: #ebebeb;
     height: 100%;
-    width: 75%;
+    margin: 0 12%;
     box-shadow: 0px 0px 25px #000;
     position:relative;
     text-align: left;
@@ -288,7 +288,7 @@ td.textfield:hover {
     border-radius: 10px;    
 }
 
-#main #account {
+#main .account {
     float: left;
     position: fixed;
     top: 0;
@@ -300,26 +300,54 @@ td.textfield:hover {
     text-align: center;
 }
 
-#main #account a{
+#main .logout {
+    position: fixed;
+    top: 0;
+    right: 12%;
+    z-index: 10;
+    width: 200px;
+    text-align: right;
+    height: 50px;
+    color: #fff;
+    font-weight: 600;
+    text-shadow: 1px 1px 4px #000;
+}
+
+#main .account a{
     color: #fff;
     text-decoration: none;
-    border: 1px solid red;
 }
 
-#main #account p {
+#main .account p {
     position: absolute;
     top: 50%;
-    margin: -12px 0 0 50px;;
+    margin: -12px 0 0 50px;
 }
 
-#main #account .profile_pic {
+
+#main .logout a{
+    color: #fff;
+    text-decoration: none;
+}
+
+#main .logout p {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    margin: -12px 0 0 0;
+}
+
+
+#main .account .profile_pic {
     border: 2px solid #ccc;
     border-radius: 7px;
     margin: 5px 10px 0 0;
-    background-color: #fff;
+
+    background-image: url('images/avatars/avatar.png');
     height: 35px;
     width: 40px;
     float: left;
+    background-color: #fff;
     background-size: cover;
     background-repeat: no-repeat;
     background-position:center center;

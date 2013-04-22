@@ -8,7 +8,7 @@ session_start();
 if($_POST['events']===null)
 	header( 'Location: index.php');
 
-$db=mysqli_connect("SQL09.FREEMYSQL.NET", "instaplan", "cis330");
+$db=mysqli_connect("db4free.net", "instaplan", "cis330");
 /* check connection */
 if (mysqli_connect_errno()) {
     printf("Connect failed: %s\n", mysqli_connect_error());
@@ -56,6 +56,26 @@ for($i=0;$i<count($commands);$i++)
       $row[count($row)] = $events[$i];
       $output[]=$row;
     }
+	else
+	{
+	  $cat="AND be.name in (";
+	  $pos= strpos($query,$cat);
+	  $end= strpos($query,")",$pos);
+	  
+	  $query= substr($query,0,$pos).substr($query,$end+1);
+	  
+	  $result = mysqli_query($db,$query);
+	  if ($pos>0 && $end>$pos)
+		echo "No results found, stripping category: ".$query."
+	    ";
+	  if(mysqli_num_rows($result) == 1) 
+	  {
+        $row = mysqli_fetch_row($result);
+	    $seen.=",'$row[9]'";
+        $row[count($row)] = $events[$i];
+        $output[]=$row;
+      }
+	}
 }
 echo "
 -->";
@@ -131,7 +151,6 @@ echo "
 						}
 						?>' />
 	  <select name="dirflg">
-	    <option value="r">Public Transport</option>
 	    <option value="c">Car</option>
 	    <option value="w">Walking</option>
 	    <option value="b">Fixie</option>
@@ -149,14 +168,24 @@ echo "
 	  <input type="submit" value="Email Me!" />
 	</form>
       </div>
-      <div id="account">
+      <div class="account">
 	<? if ($_SESSION['username'] != null) {?>
 	<a href="account.php">
-	  <div class="profile_pic" style="background-image: url('<?echo $_SESSION['avatar']; ?>');" height="35px"></div>
+	  <div class="profile_pic" style="background-image: url('<?echo $_SESSION['avatar']; ?>');"></div>
 	  <p><?echo $_SESSION['username'];?></p>
+	</a>
+	<? } else { ?>
+	<a href="login.php">
+	  <div class="profile_pic"></div>
+	  <p>login</p>
 	</a>
 	<? } ?>
       </div>
+	<? if ($_SESSION['username'] != null) {?>
+      <div class="logout">
+	<div class="profile_pic"></div>
+	<a href="logout.php"><p>logout</p></a>
+      </div> <?}?>
 
       <div id="content">
 	<div id="map-canvas"></div>
