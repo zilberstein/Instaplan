@@ -25,13 +25,13 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 public class Main {
-	
-	//@Susan: DDLtemp, DMLtemp
-	
-	
-	//yelpCategory -> set[OurCategory] map
+
+	// yelpCategory -> set[OurCategory] map
+	static String[] categories = { "active", "breakfast", "college", "culture",
+			"dessert", "dinner", "family", "kids", "lunch", "nightlife",
+			"old_people", "pamper", "overnight", "restaurant" };
 	static HashMap<String, HashSet<String>> ycatOurCat = new HashMap<String, HashSet<String>>();
-	//collections for DB
+	// collections for DB
 	static ArrayList<Category> our_categories = new ArrayList<Category>();
 	static ArrayList<Business> businesses = new ArrayList<Business>();
 	static ArrayList<Review> reviews = new ArrayList<Review>();
@@ -40,182 +40,187 @@ public class Main {
 	static HashMap<String, Review> bestReviewMap = new HashMap<String, Review>();
 
 	public static void main(String[] args) throws Exception {
-		if(bestReviewMap!=null) bestReviewMap.clear();
-		else	bestReviewMap = new HashMap<String, Review>();
-		
+		if (bestReviewMap != null)
+			bestReviewMap.clear();
+		else
+			bestReviewMap = new HashMap<String, Review>();
+		our_categories.clear();
 		businesses.clear();
 		yusers.clear();
 		reviews.clear();
-		String r = "Bill who? Oh, Bobby. Hmmm, right. I confess, I am a terrible excuse for a foodie. I don't play chef trivia, I can't remember the names of half the international foods I consume, and when a restaurant opens with a crazy long wait just cuz it's some guy from the Food Network... well, that don't impress me much. Bobby's turkey burger, however, did make me sit back and say wow. I got it in the LA style: avocado-relish, watercress, cheddar, & tomato. It was the perfect size, on a fresh bun, and mouth-wateringly-good. My group shared an order of sweet potato fries with horseradish honey mustard. The fries were ok, but not the most amazing things ever. The dipping sauce was kinda watery so you had to do a serious scoop to taste any on the fries. I considered getting a milkshake (you can have yours boozed up for an extra $2.50!), but luckily waiting in line so long meant I had a chance to see how tiny they were before ordering. Pass. While I certainly can't knock the place for its food, I'll say I was a little disappointed to wait 30+ minutes in line for an $8 burger in what I'd call a posh cafeteria. (Long, communal tables = hovering for seats. Ew.) I love the decor, the burgers are great, but the overall business model really turned me off.";
-		System.out.println(r.length());
-		r=r.replaceAll("'", "");
-		System.out.println(r);
-		/*categorySetUp();
-		
+
+		categorySetUp();
+
 		importData();
-		System.out.println("businesses size = "+ businesses.size() + " yusers =" + yusers.size() + " best reviews = " + bestReviewMap.size());
-		
-		Statement st = null;
-		st = makeConnectionWithDatabase(args);
-		DDLtemp(st);
-		
-		//DDLs(st);
-		DMLtemp(businesses,st);
-		//DMLs(businesses, st);
-		*/ 
+		System.out.println("businesses size = " + businesses.size()
+				+ " yusers =" + yusers.size() + " best reviews = "
+				+ bestReviewMap.size());
+
+		Connection conn = makeConnectionWithDatabase(args);
+		//DDLtemp(conn);
+		//DMLtemp(conn);
+		DDLs(conn);
+		DMLs(businesses, conn);
 	}
 
 	/**
-	 * read through the .txt files, insert all the yelp categories in it
-	 * into HashMap ycatOurCat which will be used for json parsing
-	 * Called once ever
+	 * read through the .txt files, insert all the yelp categories in it into
+	 * HashMap ycatOurCat which will be used for json parsing Called once ever
+	 * 
 	 * @throws Exception
 	 */
-	public static void categorySetUp() throws Exception{
-		ArrayList<String> ourCategories = new ArrayList<String>();
-		String[] categories = {"active", "breakfast", "college", 
-				"culture", "dessert", "dinner", "family", "kids", 
-				"lunch", "nightlife", "old_people","pamper", 
-				"overnight", "restaurant"};
+	public static void categorySetUp() throws Exception {
+		ArrayList<String> ourCategoriesArray = new ArrayList<String>();
 		Arrays.sort(categories);
-		ourCategories.addAll(Arrays.asList(categories));
-		
-		//populate Category ArrayList
-		for(String c: categories){
+		ourCategoriesArray.addAll(Arrays.asList(categories));
+
+		// populate Static our_categories ArrayList for DML use
+		for (String c : categories) {
 			Category category = new Category(c);
 			our_categories.add(category);
 		}
-		try{
-			for(String oc: ourCategories){
+
+		// fill up ycatOurCat
+		try {
+			for (String oc : ourCategoriesArray) {
 				File file = new File(oc + ".txt");
 				FileInputStream fis = new FileInputStream(file);
 				BufferedInputStream bis = new BufferedInputStream(fis);
-				BufferedReader d= new BufferedReader(new InputStreamReader(bis));		
+				BufferedReader d = new BufferedReader(
+						new InputStreamReader(bis));
 				String ycat = "";
-				
-				while((ycat = d.readLine()) !=null){
-					if(!ycatOurCat.containsKey(ycat)){
+
+				while ((ycat = d.readLine()) != null) {
+					if (!ycatOurCat.containsKey(ycat)) {
 						ycatOurCat.put(ycat, new HashSet<String>());
 					}
 					HashSet<String> catVals = ycatOurCat.get(ycat);
 					catVals.add(oc);
 					ycatOurCat.put(ycat, catVals);
 				}
-				
+
 				fis.close();
 				bis.close();
 				d.close();
 			}
-		}
-		catch(Exception e){
+		} catch (Exception e) {
 			System.out.println(e.getMessage());
 		}
-		//dump ycatOurCat to check
+		// dump ycatOurCat to check
 		Gson gson = new Gson();
 		System.out.println(gson.toJson(ycatOurCat));
 	}
 
 	/**
 	 * read yelp dataset json file into json objects
+	 * 
 	 * @throws Exception
 	 */
-	public static void importData() throws Exception{
+	public static void importData() throws Exception {
 		Gson gson = new Gson();
-		//convertJSON to objects
+		// convertJSON to objects
 		String json = "";
 		File file = new File("yelp_academic_dataset.json");
 		FileInputStream fis = new FileInputStream(file);
 		BufferedInputStream bis = new BufferedInputStream(fis);
-		BufferedReader d= new BufferedReader(new InputStreamReader(bis));		
-		
-		//for test sake:
-		boolean userstarted= false;
+		BufferedReader d = new BufferedReader(new InputStreamReader(bis));
+
+		// for testing:
+		boolean userstarted = false;
 		boolean bizStarted = false;
 		boolean rvStarted = false;
-		System.out.println("num_entries of ycatOurCat:"+ycatOurCat.entrySet().size());
-		
-		while((json = d.readLine())!=null){
-			
-			//read in generic hash obj
-			Map<String,Object> map=new HashMap<String,Object>();
-			map=(Map<String,Object>) gson.fromJson(json, map.getClass());
+		System.out.println("num_entries of ycatOurCat:"
+				+ ycatOurCat.entrySet().size());
+
+		while ((json = d.readLine()) != null) {
+
+			// read in generic hash obj
+			Map<String, Object> map = new HashMap<String, Object>();
+			map = (Map<String, Object>) gson.fromJson(json, map.getClass());
 			Object type = map.get("type");
-			
-			if(type.equals("user")){
-				
-				if(userstarted == false){ //test
-					userstarted=true;
+
+			if (type.equals("user")) {
+
+				if (userstarted == false) { // test
+					userstarted = true;
 					System.out.println("userStart");
 				}
-				
+
 				JsonUser juser = gson.fromJson(json, JsonUser.class);
 				Votes v = juser.votes;
 				juser.name.replaceAll("'", "");
-				juser.name =URLEncoder.encode(juser.name, "UTF-8");
-				//convert to YelpUser and add to yusers array
-				YelpUser yuser = new YelpUser(juser.user_id, juser.review_count, juser.average_stars, v.useful, v.funny, v.cool );
+				juser.name = URLEncoder.encode(juser.name, "UTF-8");
+				// convert to YelpUser and add to yusers array
+				YelpUser yuser = new YelpUser(juser.user_id,
+						juser.review_count, juser.average_stars, v.useful,
+						v.funny, v.cool);
 				yusers.add(yuser);
-			}
-			else if(type.equals("business")){//add businessto collection
-				
-				if(bizStarted == false){ bizStarted=true; System.out.println("bizStart"); }
-				
-				JsonBusiness jb= gson.fromJson(json, JsonBusiness.class);
-				
+			} else if (type.equals("business")) {// add businessto collection
+
+				if (bizStarted == false) {
+					bizStarted = true;
+					System.out.println("bizStart");
+				}
+
+				JsonBusiness jb = gson.fromJson(json, JsonBusiness.class);
+
 				jb.name = jb.name.replaceAll("'", "");
-				jb.name = URLEncoder.encode(jb.name, "UTF-8");				
-				
+				jb.name = URLEncoder.encode(jb.name, "UTF-8");
+
 				jb.full_address = jb.full_address.replaceAll("'", "");
 				jb.full_address = URLEncoder.encode(jb.full_address, "UTF-8");
-				Business b = new Business(jb.business_id, jb.name, jb.full_address, jb.city, jb.state, jb.latitude, jb.longitude, jb.stars, jb.review_count, 0, jb.photo_url);
-				
-				for(String yc : jb.categories){
-					//lowercase, replace whitespaces for yelp categories
+
+				Business b = new Business(jb.business_id, jb.name,
+						jb.full_address, jb.city, jb.state, jb.latitude,
+						jb.longitude, jb.stars, jb.review_count, 0,
+						jb.photo_url);
+
+				for (String yc : jb.categories) {
+					// lowercase, replace whitespaces for yelp categories
 					yc = yc.toLowerCase();
 					String yc1 = yc.replaceAll(" ", "_");
 					String yc2 = yc.replaceAll(" ", "");
-					
-					if(ycatOurCat.containsKey(yc1)){
-						
+
+					if (ycatOurCat.containsKey(yc1)) {
+
 						HashSet<String> catSet = ycatOurCat.get(yc1);
-						for(String c: catSet){
+						for (String c : catSet) {
 							b.addCategory(new Category(c));
 						}
-					}
-					else if(ycatOurCat.containsKey(yc2)){
-						
+					} else if (ycatOurCat.containsKey(yc2)) {
+
 						HashSet<String> catSet = ycatOurCat.get(yc2);
-						for(String c: catSet){
+						for (String c : catSet) {
 							b.addCategory(new Category(c));
 						}
 					}
 				}
 				businesses.add(b);
-			}
-			else if(type.equals("review")){ //add review to collection
+			} else if (type.equals("review")) { // add review to collection
 				JsonReview jr = gson.fromJson(json, JsonReview.class);
 				jr.text = jr.text.replaceAll("'", "");
-				jr.text =URLEncoder.encode(jr.text, "UTF-8");
+				jr.text = URLEncoder.encode(jr.text, "UTF-8");
 				Votes v = jr.votes;
-				float useful_score = 3*((float)(v.cool) + (float)(v.useful) + (float)(v.funny));
-				Review r = new Review(jr.business_id, jr.user_id, jr.text, useful_score);
-				
-				if(rvStarted == false){
-					rvStarted=true;
+				float useful_score = 3 * ((float) (v.cool) + (float) (v.useful) + (float) (v.funny));
+				Review r = new Review(jr.business_id, jr.user_id, jr.text,
+						useful_score);
+
+				if (rvStarted == false) {
+					rvStarted = true;
 					System.out.println("reviewStart");
 					System.out.println(gson.toJson(jr));
 					System.out.println(gson.toJson(r));
 				}
-				
+
 				Review bestReview = bestReviewMap.get(jr.business_id);
 
-				if(bestReview==null){
-					if(r.text.length() < 1500)
+				if (bestReview == null) {
+					if (r.text.length() < 1500)
 						bestReviewMap.put(jr.business_id, r);
-				}
-				else{
-					
-					if(bestReview.useful_score < r.useful_score && r.text.length()<1500){
+				} else {
+
+					if (bestReview.useful_score < r.useful_score
+							&& r.text.length() < 1500) {
 						bestReviewMap.put(jr.business_id, r);
 					}
 				}
@@ -226,339 +231,320 @@ public class Main {
 		d.close();
 		fis.close();
 		bis.close();
-		
-		//System.out.println("bestReviewMap size: " + bestReviewMap.size());
-	}
-	
 
-	public static Statement makeConnectionWithDatabase(String[] args) 
+		// System.out.println("bestReviewMap size: " + bestReviewMap.size());
+	}
+
+	/**
+	 * Connect to database and return Connection obj
+	 * 
+	 * @param args
+	 * @return
+	 * @throws Exception
+	 */
+	public static Connection makeConnectionWithDatabase(String[] args)
 			throws Exception {
-		PreparedStatement preparedStatement = null;
-		
+
 		try {
 			// This will load the MySQL driver, each DB has its own driver
 			Class.forName("com.mysql.jdbc.Driver");
 			Connection con = null;
-			if (args.length <2 ) {
-				con = DriverManager.getConnection("jdbc:mysql://SQL09.FREEMYSQL.NET/instaplan?"+
-								"user=instaplan&password=cis330");
+			if (args.length < 2) {
+				con = DriverManager.getConnection(
+						"jdbc:mysql://db4free.net/instaplan",
+						"instaplan", "cis330");
 			} else {
 				con = DriverManager.getConnection(
-						"jdbc:mysql://SQL09.FREEMYSQL.NET/instaplan"
-						,args[0],args[1]);  
+						"jdbc:mysql://sql2.freesqldatabase.com/sql27018",
+						args[0], args[1]);
 			}
-			
-			// Statements allow to issue SQL queries to the database
-			Statement st = con.createStatement();
-			return st;
+
+			return con;
+
 		} catch (Exception e) {
 			System.out.println(e);
 		}
 		return null;
 	}
-	
 
-	
-	public static void DDLtemp(Statement st) throws Exception{
-		try{
-			st.execute("DROP TABLE IF EXISTS review");
-
-			st.execute("CREATE TABLE review ("
-					+ "businessId VARCHAR(40), "
-					+ "userId VARCHAR(40), "
-					+ "text VARCHAR(65000), "
-					+ "PRIMARY KEY (businessId, userId), " 
-					+ "FOREIGN KEY (businessId) REFERENCES business(id) ON DELETE CASCADE)");
-			
-		}
-		catch( Exception e){
-			e.printStackTrace();
-		}
-		
-	}
-	public static void DMLtemp(ArrayList<Business> businesses, Statement st) throws Exception{
-
-		int i=0;
-		System.out.println("LOAD reviews");
-		
-		for(Map.Entry<String, Review> entry :bestReviewMap.entrySet()){
-			i++;
-			if(i>=1000 && i%1000==0){ System.out.println(i+"th Review reached");}
-			Review r = entry.getValue();
-			if(i==1){
-				Gson g = new Gson();
-				System.out.println(g.toJson(r));
-			}
-			try {
-				String t0 = "INSERT INTO review VALUES ('" + r.b_id + 
-						"', '" + r.u_id + "', '" + r.text +  "')";
-				st.execute(t0); 
-			} catch (Exception e) {
-				//e.printStackTrace();
-				System.out.println(e.getMessage());
-				//or do nothing and continue
-			}
-			
-		}
-		
-
-
-		System.out.println("LOAD business_belongsTo_categories");
-		int in=0;
-		
-		for (Business b : businesses) {
-			in++;
-
-			if(in==5000){
-				System.out.println(in+"th reached");
-			}
-			if(in == 10000){
-				System.out.println(in+"th reached");
-			}
-			
-			for (Category c : b.categories) {
-				try {
-					if(in == 1){System.out.print("first line");}
-					
-					String t = "INSERT INTO belongs VALUES ('" + b.id +
-							"', '" + c.name + "')";
-					st.executeUpdate(t);
-				} catch (Exception e) {
-					//e.printStackTrace();
-					//System.out.println("bid:"+ b.id  +" not found; " + "cname:" + c.name +" not found");
-					//do nothing and continue
-				}
-				
-			}
-			
-		}
-
-	}
-		
-
-	
-	//commented out yelpUser, review as well as writes. feel free to take it back.
-	public static void DDLs(Statement st) throws Exception {
+	public static void DDLtemp(Connection conn) throws Exception {
 		try {
-			//safe drop
-			st.execute("DROP TABLE IF EXISTS belongs");
-			st.execute("DROP TABLE IF EXISTS review");
-			st.execute("DROP TABLE IF EXISTS business");
-			//st.execute("DROP TABLE IF EXISTS user");
-			st.execute("DROP TABLE IF EXISTS category");
-			
-			System.out.println("Dropped all the tables; Now create tables.");
-			
-			st.executeUpdate("CREATE TABLE business ("
-					+ "id VARCHAR(40), "
-					+ "name VARCHAR(255), "
-					+ "address VARCHAR(255), "
-					+ "city VARCHAR(50), "
-					+ "state VARCHAR(50), "
-					+ "latitude DECIMAL(20,10), "
-					+ "longitude DECIMAL(20,10), "
-					+ "stars TINYINT, "
-					+ "metric SMALLINT, "
-					+ "photoUrl VARCHAR(255), "
-					+ "PRIMARY KEY (id))");
-			
-			st.execute("CREATE TABLE category ("
-					+ "name VARCHAR(11),"
-					+ "PRIMARY KEY (name))");
-	
 
-			st.execute("CREATE TABLE belongs ("
+			Statement st = conn.createStatement();
+			st.execute("DROP TABLE IF EXISTS belongs");
+			
+			
+			String ddlBelongs = "CREATE TABLE belongs ("
 					+ "businessId VARCHAR(40), "
 					+ "name VARCHAR(11), "
 					+ "PRIMARY KEY (businessId, name), "
 					+ "FOREIGN KEY (businessId) REFERENCES business(id) ON DELETE CASCADE, "
-					+ "FOREIGN KEY (name) REFERENCES category(name) ON DELETE CASCADE)");
-			/*st.execute("CREATE TABLE user ("
-					+ "firstname VARCHAR(60) not null, "
-					+ "lastname VARCHAR(60) not null, "
-					+ "username VARCHAR(20), "
-					+ "email VARCHAR(60) not null, "
-					+ "password CHAR(32) not null, "
-					+ "avatar BIT not null, "
-					+ "PRIMARY KEY (username))");*/
-			st.execute("CREATE TABLE review ("
+					+ "FOREIGN KEY (name) REFERENCES category(name) ON DELETE CASCADE)";
+			PreparedStatement pstmt = conn.prepareStatement(ddlBelongs);
+			pstmt.executeUpdate();
+
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+	}
+
+	public static void DMLtemp( Connection conn)
+			throws Exception {
+		
+		System.out.println("LOAD business_belongsTo_categories");
+		int in = 0;
+
+		PreparedStatement pstmt;
+
+		for (Business b : businesses) {
+			in++;
+
+			if (in >= 1000 && in % 1000 == 0) {
+				System.out.println(in + "th Belongs reached");
+			}
+
+			for (Category c : b.categories) {
+				//System.out.println("reached here");
+				try {
+					if (in < 4) {
+						System.out.println("belongs row " + in);
+					}
+
+					pstmt = conn
+							.prepareStatement("INSERT INTO belongs VALUES (?,?)");
+					pstmt.setString(1, b.id);
+					pstmt.setString(2, c.name);
+
+					pstmt.executeUpdate();
+
+				} catch (Exception e) {
+
+					// System.out.println("bid:"+ b.id +" not found; " +
+					// "cname:" + c.name +" not found");
+					// do nothing and continue; supposed to have duplicates in biz-category pairs
+				}
+
+			}
+
+		}
+
+
+	}
+
+
+	// commented out yelpUser, review as well as writes. feel free to take it
+	// back.
+	public static void DDLs(Connection conn) throws Exception {
+		try {
+			// safe drop
+			Statement st = conn.createStatement();
+			st.execute("DROP TABLE IF EXISTS belongs");
+			st.execute("DROP TABLE IF EXISTS review");
+			st.execute("DROP TABLE IF EXISTS business");
+			st.execute("DROP TABLE IF EXISTS category");
+			// st.execute("DROP TABLE IF EXISTS user");
+			PreparedStatement pstmt;
+			System.out.println("Dropped all the tables; Now create tables.");
+
+			String ddlBusiness = "CREATE TABLE business(" + "id VARCHAR(40), "
+					+ "name VARCHAR(255), " + "address VARCHAR(255), "
+					+ "city VARCHAR(50), " + "state VARCHAR(50), "
+					+ "latitude DECIMAL(20,10), "
+					+ "longitude DECIMAL(20,10), " + "stars TINYINT, "
+					+ "metric SMALLINT, " + "photoUrl VARCHAR(255), "
+					+ "PRIMARY KEY (id))";
+			pstmt = conn.prepareStatement(ddlBusiness);
+			pstmt.executeUpdate();
+
+			String ddlCategory = "CREATE TABLE category ("
+					+ "name VARCHAR(11)," + "PRIMARY KEY (name))";
+			pstmt = conn.prepareStatement(ddlCategory);
+			pstmt.executeUpdate();
+
+			String ddlBelongs = "CREATE TABLE belongs ("
+					+ "businessId VARCHAR(40), "
+					+ "name VARCHAR(11), "
+					+ "PRIMARY KEY (businessId, name), "
+					+ "FOREIGN KEY (businessId) REFERENCES business(id) ON DELETE CASCADE, "
+					+ "FOREIGN KEY (name) REFERENCES category(name) ON DELETE CASCADE)";
+			pstmt = conn.prepareStatement(ddlBelongs);
+			pstmt.executeUpdate();
+
+			String ddlReview = "CREATE TABLE review ("
 					+ "businessId VARCHAR(40), "
 					+ "userId VARCHAR(40), "
-					+ "text VARCHAR(65000), "
-					+ "PRIMARY KEY (businessId, userId), " 
-					+ "FOREIGN KEY (businessId) REFERENCES business(id) ON DELETE CASCADE)");
-			
-			/*st.execute("CREATE TABLE yelpUser ("
-			+ "id VARCHAR(40), "
-			+ "reviewCount SMALLINT, "
-			+ "avgStars DECIMAL, "
-			+ "useful SMALLINT, "
-			+ "funny SMALLINT, "
-			+ "cool SMALLINT, "
-			+ "PRIMARY KEY (id))");*/
-		
+					+ "text VARCHAR(3000), "
+					+ "PRIMARY KEY (businessId, userId), "
+					+ "FOREIGN KEY (businessId) REFERENCES business(id) ON DELETE CASCADE)";
+			pstmt = conn.prepareStatement(ddlReview);
+			pstmt.executeUpdate();
+
+			/*
+			 * st.execute("CREATE TABLE user (" +
+			 * "firstname VARCHAR(60) not null, " +
+			 * "lastname VARCHAR(60) not null, " + "username VARCHAR(20), " +
+			 * "email VARCHAR(60) not null, " + "password CHAR(32) not null, " +
+			 * "avatar BIT not null, " + "PRIMARY KEY (username))");
+			 */
+			/*
+			 * st.execute("CREATE TABLE yelpUser (" + "id VARCHAR(40), " +
+			 * "reviewCount SMALLINT, " + "avgStars DECIMAL, " +
+			 * "useful SMALLINT, " + "funny SMALLINT, " + "cool SMALLINT, " +
+			 * "PRIMARY KEY (id))");
+			 */
+
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 	}
 
-	
+	public static void DMLs(ArrayList<Business> businesses, Connection conn) {
 
-	
-	public static void DMLs(ArrayList<Business> businesses,  Statement st) {
-		
-		String[] categories = {"active", "breakfast", "cats", "college", 
-				"culture", "dessert", "dinner", "family", "footer", "kids", 
-				"lunch", "nightlife", "old_people","pamper"};
-		for (String c : categories) {
-			String t = "INSERT INTO category VALUES ('" + c + "')";
-			try {
-				st.executeUpdate(t);
-			} catch ( Exception e) {
-				e.printStackTrace();
-				break;
-			}
-		}
-		
-		int i = 0;
-		System.out.println("LOAD Businesses");
-		for (Business b : businesses) {
-			i++;
-			if(i>=1000 && i%1000==0){
-				System.out.println(i+"th Business reached");
-				
-			}
-			
-			try {
-				String t0 = "INSERT INTO business VALUES ( '" + b.id + "', '"
-						+ b.name + "', '" + b.address + "', '" + b.city +
-						"', '" + b.state + "', '" + b.lat + "', '" + b.lon
-						+ "', '" + b.stars + "', '" + b.metric + "', '" + b.photo + "')";
-				st.executeUpdate(t0);
-				
-			} catch (Exception e) {
-				System.out.println(i);
-//				Gson gson = new Gson();
-				System.out.println(e.getMessage());
-				//e.printStackTrace();
-				
+		PreparedStatement pstmt;
+		try {
+
+			System.out.println("LOAD Categories");
+			for (String c : categories) {
+				pstmt = conn
+						.prepareStatement("INSERT INTO category VALUES (?)");
+				pstmt.setString(1, c);
+				pstmt.executeUpdate();
 			}
 
-		}
-		
-		i=0;
-		System.out.println("LOAD reviews");
-		
-		for(Map.Entry<String, Review> entry :bestReviewMap.entrySet()){
-			i++;
-			if(i>=1000 && i%1000==0){ System.out.println(i+"th Business reached");}
-			Review r = entry.getValue();
-			if(i==1){
-				Gson g = new Gson();
-				System.out.println(g.toJson(r));
-			}
-			try {
-				String t0 = "INSERT INTO review VALUES ('" + r.b_id + 
-						"', '" + r.u_id + "', '" + r.text +  "')";
-				st.execute(t0); 
-			} catch (Exception e) {
-				//e.printStackTrace();
-				System.out.println(e.getMessage());
-				//or do nothing and continue
-			}
-			
-		}
-		
+			System.out.println("LOAD Businesses");
 
+			int i = 0;
+			pstmt = conn.prepareStatement("INSERT INTO business VALUES (?,?,?,?,?,?,?,?,?,?)");
 
-		System.out.println("LOAD business_belongsTo_categories");
-		int in=0;
-		
-		for (Business b : businesses) {
-			in++;
-
-			if(in==5000){
-				System.out.println(in+"th reached");
-			}
-			if(in == 10000){
-				System.out.println(in+"th reached");
-			}
-			
-			for (Category c : b.categories) {
+			for (Business b : businesses) {
 				try {
-					if(in == 1){System.out.print("first line");}
-					
-					String t = "INSERT INTO belongs VALUES ('" + b.id +
-							"', '" + c.name + "')";
-					st.executeUpdate(t);
+					pstmt.setString(1, b.id);
+					pstmt.setString(2, b.name);
+					pstmt.setString(3, b.address);
+					pstmt.setString(4, b.city);
+					pstmt.setString(5, b.state);
+					pstmt.setFloat(6, b.lat);
+					pstmt.setFloat(7, b.lon);
+					pstmt.setFloat(8, b.stars);
+					pstmt.setFloat(9, b.metric);
+					pstmt.setString(10, b.photo);
+
+					pstmt.addBatch();
+
+					if ((i + 1) % 1000 == 0) {
+						pstmt.executeBatch();
+						System.out.println(i + "th Business reached");
+						// Execute every 1000 items.
+					}
+					i++;
 				} catch (Exception e) {
-					//e.printStackTrace();
-					//System.out.println("bid:"+ b.id  +" not found; " + "cname:" + c.name +" not found");
-					//do nothing and continue
+					System.out.println(i);
+					System.out.println(e.getMessage());
+
 				}
-				
 			}
-			
+			pstmt.executeBatch();
+
+			i = 0;
+			System.out.println("LOAD reviews");
+
+			for (Map.Entry<String, Review> entry : bestReviewMap.entrySet()) {
+				i++;
+				if (i >= 1000 && i % 1000 == 0) {
+					System.out.println(i + "th Review reached");
+				}
+
+				Review r = entry.getValue();
+
+				if (i == 1) {
+					Gson g = new Gson();
+					System.out.println(g.toJson(r));
+				}
+				try {
+					pstmt = conn
+							.prepareStatement("INSERT INTO review VALUES (?,?,?)");
+					pstmt.setString(1, r.b_id);
+					pstmt.setString(2, r.u_id);
+					pstmt.setString(3, r.text);
+
+					pstmt.executeUpdate();
+
+				} catch (Exception e) {
+					// e.printStackTrace();
+					System.out.println(e.getMessage());
+					// or do nothing and continue
+				}
+
+			}
+
+			System.out.println("LOAD business_belongsTo_categories");
+			int in = 0;
+
+			for (Business b : businesses) {
+				in++;
+
+				if (in >= 1000 && in % 1000 == 0) {
+					System.out.println(in + "th Belongs reached");
+				}
+
+				for (Category c : b.categories) {
+					//System.out.println("reached here");
+					try {
+						if (in < 5) {
+							System.out.println("belongs row " + in);
+						}
+
+						pstmt = conn
+								.prepareStatement("INSERT INTO belongs VALUES (?,?)");
+						pstmt.setString(1, b.id);
+						pstmt.setString(2, c.name);
+
+						pstmt.executeUpdate();
+
+					} catch (Exception e) {
+
+						// System.out.println("bid:"+ b.id +" not found; " +
+						// "cname:" + c.name +" not found");
+						// do nothing and continue; supposed to have duplicates in biz-category pairs
+					}
+
+				}
+
+			}
+
+			/*
+			 * System.out.println("LOAD YelpUsers"); for (YelpUser y : users) {
+			 * i++; if(i==10000) System.out.println("10,000th reached");
+			 * if(i==100000) System.out.println("100,000th reached");
+			 * 
+			 * try { String t0 = "INSERT INTO yelpUser VALUES ('" + y.id +
+			 * "', '" + y.num_review + "', '" + y.avg_stars + "', '" + y.useful
+			 * + "', '" + y.funny + "', '" + y.cool + "')"; st.execute(t0); }
+			 * catch (Exception e) { System.out.println(i); Gson gson = new
+			 * Gson(); System.out.println(gson.toJson(y)); e.printStackTrace();
+			 * 
+			 * break; //or do nothing and continue } }
+			 */
+			/*
+			 * i=0; System.out.println("LOAD Reviews"); for (Review r : reviews)
+			 * { i++; if(i==10000) System.out.println("10,000th reached");
+			 * if(i==300000) System.out.println("300,000th reached");
+			 * 
+			 * try { String t0 = "INSERT INTO review VALUES ('" + r.b_id +
+			 * "', '" + r.u_id + "', '" + r.stars + "', '" + r.useful + "', '" +
+			 * r.funny + "', '" + r.cool + "')"; st.execute(t0); } catch
+			 * (Exception e) { e.printStackTrace();
+			 * 
+			 * break; //or do nothing and continue } }
+			 */
+		} catch (Exception e1) {
+			// TODO Auto-generated catch block
+			System.out.println(e1.getMessage());
+			e1.printStackTrace();
 		}
-		
-		/*System.out.println("LOAD YelpUsers");
-		for (YelpUser y : users) {
-			i++;
-			if(i==10000)
-				System.out.println("10,000th reached");
-			if(i==100000)
-				System.out.println("100,000th reached");
-			
-			try {
-				String t0 = "INSERT INTO yelpUser VALUES ('" +  y.id + "', '" 
-						+ y.num_review + "', '" + y.avg_stars + "', '" + 
-						y.useful + "', '" + y.funny + "', '" + y.cool + "')";
-				st.execute(t0);
-			} catch (Exception e) {
-				System.out.println(i);
-				Gson gson = new Gson();
-				System.out.println(gson.toJson(y));
-				e.printStackTrace();
-				
-				break;
-				//or do nothing and continue
-			}
-		}
-		*/
-		/*i=0;
-		System.out.println("LOAD Reviews");
-		for (Review r : reviews) {
-			i++;
-			if(i==10000)
-				System.out.println("10,000th reached");
-			if(i==300000)
-				System.out.println("300,000th reached");
-			
-			try {
-				String t0 = "INSERT INTO review VALUES ('" + r.b_id + 
-						"', '" + r.u_id + "', '" + r.stars + "', '" + r.useful
-						+ "', '" + r.funny + "', '" + r.cool + "')";
-				st.execute(t0); 
-			} catch (Exception e) {
-				e.printStackTrace();
-				
-				break;
-				//or do nothing and continue
-			}
-		}*/
-		
-		
+
 	}
 
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
 }
