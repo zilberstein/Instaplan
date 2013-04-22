@@ -131,7 +131,6 @@ echo "
 						}
 						?>' />
 	  <select name="dirflg">
-	    <option value="r">Public Transport</option>
 	    <option value="c">Car</option>
 	    <option value="w">Walking</option>
 	    <option value="b">Fixie</option>
@@ -149,14 +148,24 @@ echo "
 	  <input type="submit" value="Email Me!" />
 	</form>
       </div>
-      <div id="account">
+      <div class="account">
 	<? if ($_SESSION['username'] != null) {?>
 	<a href="account.php">
-	  <div class="profile_pic" style="background-image: url('<?echo $_SESSION['avatar']; ?>');" height="35px"></div>
+	  <div class="profile_pic" style="background-image: url('<?echo $_SESSION['avatar']; ?>');"></div>
 	  <p><?echo $_SESSION['username'];?></p>
+	</a>
+	<? } else { ?>
+	<a href="login.php">
+	  <div class="profile_pic"></div>
+	  <p>login</p>
 	</a>
 	<? } ?>
       </div>
+	<? if ($_SESSION['username'] != null) {?>
+      <div class="logout">
+	<div class="profile_pic"></div>
+	<a href="logout.php"><p>logout</p></a>
+      </div> <?}?>
 
       <div id="content">
 	<div id="map-canvas"></div>
