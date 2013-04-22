@@ -1,6 +1,8 @@
 package main;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 public class Business {
 	
@@ -15,7 +17,7 @@ public class Business {
 	public int num_reviews;
 	public int metric;
 	public String photo;
-	public ArrayList<Category> categories = new ArrayList<Category>();
+	public Set<String> categories = new HashSet<String>();
 	public ArrayList<Review> reviews = new ArrayList<Review>();
 	
 	public Business (String i, String n, String a, String c, String s, 
@@ -33,7 +35,7 @@ public class Business {
 		photo = p;
 	}
 	
-	public void addCategory(Category c) {
+	public void addCategory(String c) {
 		if (!categories.contains(c)) {
 			categories.add(c);
 		}
