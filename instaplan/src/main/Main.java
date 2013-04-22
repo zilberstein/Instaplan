@@ -40,6 +40,9 @@ public class Main {
 	static HashMap<String, Review> bestReviewMap = new HashMap<String, Review>();
 
 	public static void main(String[] args) throws Exception {
+		if(bestReviewMap!=null) bestReviewMap.clear();
+		else	bestReviewMap = new HashMap<String, Review>();
+		
 		businesses.clear();
 		yusers.clear();
 		reviews.clear();
@@ -47,14 +50,16 @@ public class Main {
 		categorySetUp();
 		
 		importData();
-		Statement st = null;
+		System.out.println("businesses size = "+ businesses.size() + " yusers =" + yusers.size() + " best reviews = " + bestReviewMap.size());
+		
+		/*Statement st = null;
 		st = makeConnectionWithDatabase(args);
 		DDLtemp(st);
-		DDLs(st);
-		System.out.println("businesses size = "+ businesses.size() + " yusers =" + yusers.size() + " reviews = " + reviews.size());
-		//DMLBusiness(businesses,st);
-		DMLs(businesses, yusers, reviews, st);
-		
+		//DDLs(st);
+		DMLtemp(businesses, reviews,st);
+		//DMLs(businesses, yusers, reviews, st);
+		 * 
+		 */
 	}
 
 	/**
@@ -101,7 +106,6 @@ public class Main {
 		Gson gson = new Gson();
 		System.out.println(gson.toJson(ycatOurCat));
 	}
-	
 
 	/**
 	 * read yelp dataset json file into json objects
@@ -183,21 +187,31 @@ public class Main {
 					System.out.println("reviewStart");
 					System.out.println(gson.toJson(jr));
 				}
-				
-				//TODO
 				jr.text =URLEncoder.encode(jr.text, "UTF-8");
-				
-				
 				Votes v = jr.votes;
-				Review r = new Review(jr.business_id, jr.user_id, jr.text);
-				//THIS IS NOT COMPLETE
-				reviews.add(r);
+				float useful_score = 3*(float)(v.cool) * (float)(v.useful) * (float) (v.funny);
+				
+				Review r = new Review(jr.business_id, jr.user_id, jr.text, useful_score);
+				Review bestReview = bestReviewMap.get(jr.business_id);
+
+				if(bestReview==null){
+					bestReviewMap.put(jr.business_id, r);
+				}
+				else{
+					if(bestReview.useful_score < r.useful_score){
+						bestReviewMap.put(jr.business_id, r);
+					}
+				}
 			}
+
 		}
 
 		d.close();
 		fis.close();
 		bis.close();
+		//dump bestReviewMap
+		System.out.println("bestReviewMap size: " + bestReviewMap.size());
+		//System.out.println(gson.toJson(bestReviewMap));
 	}
 	
 
