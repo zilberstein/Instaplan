@@ -63,12 +63,13 @@ for($i=0;$i<count($commands);$i++)
 	  $end= strpos($query,")",$pos);
 	  
 	  $query= substr($query,0,$pos).substr($query,$end+1);
-	  echo "No results found, stripping category: ".$query."
-	  ";
+	  
 	  $result = mysqli_query($db,$query);
 	  
 	  if(mysqli_num_rows($result) == 1 && $pos>0 && $end>$pos) 
 	  {
+	    echo "No results found, stripping category: ".$query."
+	    ";
         $row = mysqli_fetch_row($result);
 	    $seen.=",'$row[9]'";
         $row[count($row)] = $events[$i];
