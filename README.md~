@@ -30,12 +30,32 @@ Folders:
     we were unable to do. Depricated
 
 Other Files:
-  generate_page.py: 
-  index.php: index page for the site
+  generate_page.py:
+    Creates all of the content for the results page 
+  index.php: 
+    index page for the site
   language.py:  
     our NLP, associates common words with given categories and events and looks for location and duration 
     of stay to figure out what the user is looking for
   login.php/logout.php:
-    Connects to the database to check if the username and password are valid. 
+    Connects to the database to check if the username and password are valid, does not allow login if either
+    username or password is invalid. Sets session username to null, logging the user out
+  page.html:
+    Page that is shown after a user has typed in a query. Sidebar with options to fine tune parameters like number of options.
+    Displays suggestions for each timeslop a user has asked for
+  query.py:
+    Python script that creates a query for every given time slot based on what the user has requested. Some of the timeslots,
+    such as breakfast and dinner are more restrictive based on the nature of the activity, hence the need for two different
+    queries. Outputs a single string to the console containing all of the queries delimited by a "~"
+  register.php:
+    Allows a user to create account. It restricts user input and will not let a user sign up if their input is not
+    valid. It also makes sure that the username they are trying to use has already been taken. It then puts all of 
+    the user's info into the database and automatically logs them in and has a greeting using their first and last
+    name below the query box.
+  result.php:
+    Displays a map showing where all of the businesses are using the GoogleMapsAPI. It uses generate_page.py to create
+    all of the content for the page
+  update_page.py:
+    If a user changes any of the options on the side bar it reloads the page with the neww results.
   
   
