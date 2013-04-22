@@ -3,6 +3,10 @@
 error_reporting(0);
 session_start();
 
+//if not arrived through index, go back to index
+if($_POST['events']===null)
+	header( 'Location: index.php');
+
 $db=mysqli_connect("SQL09.FREEMYSQL.NET", "instaplan", "cis330");
 /* check connection */
 if (mysqli_connect_errno()) {
@@ -25,25 +29,24 @@ $source = file_get_contents($url);
 $obj = json_decode($source);
 $lat = "\"".$obj->results[0]->geometry->location->lat."\"";
 $long = "\"".$obj->results[0]->geometry->location->lng."\"";
-?>
 
-<?
-   $command = "python query.py ".$events." ".$keywords." ".$days." ".$options." ".$distance." ".$lat." ".$long;
-   $sql= exec($command);
-   $commands= explode("~",$sql);
-   $events= explode(",",$_POST['events']);
-	 
-   $output= array();
-   for($i=0;$i<count($commands);$i++) {
-				      $result = mysqli_query($db,$commands[$i]);
-				      if(mysqli_num_rows($result) == 1) {
-				      $row = mysqli_fetch_row($result);
-				      $row[count($row)] = $events[$i];
-				      $output[]=$row;
-				      }
-				      }
-				      
-				      ?>
+$command = "python query.py ".$events." ".$keywords." ".$days." ".$options." ".$distance." ".$lat." ".$long;
+$sql= exec($command);
+$commands= explode("~",$sql);
+$events= explode(",",$_POST['events']);
+ 
+$output= array();
+for($i=0;$i<count($commands);$i++) 
+{
+    $result = mysqli_query($db,$commands[$i]);
+    if(mysqli_num_rows($result) == 1) 
+	{
+      $row = mysqli_fetch_row($result);
+      $row[count($row)] = $events[$i];
+      $output[]=$row;
+    }
+}		      
+?>
 
 
 
@@ -136,9 +139,9 @@ $long = "\"".$obj->results[0]->geometry->location->lng."\"";
 	<?php for ($i=0; $i<count($output); $i++) {
 	   $info = $output[$i];?>
 	      <div class="activity">
-		<h2><?php echo $info[8].": ".$info[0];?></h2>
-		<h3><?php echo $info[1];?></h3>
-		<p><img src="<?php echo $info[7];?>" />Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris dapibus tortor cursus erat eleifend at porttitor lectus dapibus. Aenean nec sagittis justo. In nunc magna, fringilla vel iaculis vel, fermentum sed leo. Pellentesque ultricies odio nec dolor aliquam vulputate egestas nisi ullamcorper. Suspendisse semper luctus augue, lacinia ullamcorper nisl venenatis at. Integer blandit, tortor at semper varius, enim libero ullamcorper magna, sed laoreet libero diam quis magna. Aliquam condimentum rhoncus condimentum. Vivamus erat odio, ornare ut semper non, porttitor non nibh. Cras consequat placerat tempor.</p>
+		<h2><?php echo urldecode($info[10]).": ".urldecode($info[0]);?></h2>
+		<h3><?php echo urldecode($info[1]);?></h3>
+		<p><img src="<?php echo urldecode($info[7]);?>" /><?php echo urldecode($info[8]);?></p>
 	<?php }?>
 	
       </div>
