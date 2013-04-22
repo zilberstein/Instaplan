@@ -52,14 +52,13 @@ public class Main {
 		importData();
 		System.out.println("businesses size = "+ businesses.size() + " yusers =" + yusers.size() + " best reviews = " + bestReviewMap.size());
 		
-		/*Statement st = null;
+		Statement st = null;
 		st = makeConnectionWithDatabase(args);
-		DDLtemp(st);
-		//DDLs(st);
-		DMLtemp(businesses, reviews,st);
-		//DMLs(businesses, yusers, reviews, st);
-		 * 
-		 */
+		//DDLtemp(st);
+		DDLs(st);
+		//DMLtemp(businesses, reviews,st);
+		DMLs(businesses, yusers, reviews, st);
+		 
 	}
 
 	/**
@@ -285,6 +284,7 @@ public class Main {
 			st.execute("DROP TABLE IF EXISTS business");
 			st.execute("DROP TABLE IF EXISTS category");
 			st.execute("DROP TABLE IF EXISTS user");
+			st.execute("DROP TABLE IF EXISTS review");
 			System.out.println("Dropped all the tables; Now create tables.");
 			st.executeUpdate("CREATE TABLE business ("
 					+ "id VARCHAR(40), "
@@ -340,6 +340,12 @@ public class Main {
 					+ "password CHAR(32) not null, "
 					+ "avatar BIT not null, "
 					+ "PRIMARY KEY (username))");
+			st.execute("CREATE TABLE review ("
+					+ "businessId VARCHAR(40), "
+					+ "userId VARCHAR(40), "
+					+ "text VARCHAR(3000), "
+					+ "PRIMARY KEY (businessId, userId), " 
+					+ "FOREIGN KEY (businessId) REFERENCES business(id) ON DELETE CASCADE)");
 	
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -389,6 +395,18 @@ public class Main {
 				
 			}
 
+		}
+		
+		for (Review r : reviews) {
+			try {
+				String t0 = "INSERT INTO review VALUES ('" + r.b_id + 
+						"', '" + r.u_id + "', '" + r.text +  "')";
+				st.execute(t0); 
+			} catch (Exception e) {
+				e.printStackTrace();
+				break;
+				//or do nothing and continue
+			}
 		}
 
 
