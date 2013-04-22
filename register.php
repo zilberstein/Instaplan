@@ -298,10 +298,10 @@ function display_error($message) {
 	  <td colspan="2">
 		<input type="hidden" name="dispatch" value="register"/>
 	    <input type="submit" class="submit" value="Register" />
+	  or <a href="login.php">log in</a>
+</p>
 	  </td>
 	</tr>
-	<p>
-	  <a href="https://fling.seas.upenn.edu/~noamz/cgi-bin/instaplan/login.php>or click here to login</a>
       </table>
       </form>
     </div>

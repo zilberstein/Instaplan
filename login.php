@@ -123,12 +123,9 @@ if($_POST["dispatch"]=="login")
 	  <td colspan="2">
 		<input type="hidden" name="dispatch" value="login"/>
 	    <input type="submit" class="submit" value="Log in" />
-	    
+	    	  or <a href="register.php">register</a>
 	  </td>
 	</tr>
-	<p>
-	  <a href="https://fling.seas.upenn.edu/~noamz/cgi-bin/instaplan/register.php>or click here to register></a>
-	</p>
       </table>
       </form>
     </div>

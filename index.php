@@ -34,6 +34,7 @@ if($_POST["dispatch"]=="query")
 <html>
   <head>
     <title>Instaplan</title>  
+    <link rel="icon" href="images/favicon.ico">
     <link rel="stylesheet" type="text/css" href="style.css" /><!--
     <script src="planningfont7_400.font.js">-->
     <style>
@@ -57,6 +58,15 @@ if($_POST["dispatch"]=="query")
       p a:hover {
         text-decoration: underline;
       }
+   <?php if ($_POST['dispatch'] == null) {?>
+       #container {
+           animation:mymove 5s 1s infinite;
+           -webkit-animation:mymove 2s 1;
+           animation-timing-function:cubic-bezier(0,0,0.25,1);
+           -webkit-animation-timing-function:cubic-bezier(0.42,0,0.58,1);
+ }<?php }?>
+
+
     </style>
 
   </head>
