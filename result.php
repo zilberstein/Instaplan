@@ -8,13 +8,13 @@ session_start();
 if($_POST['events']===null)
 	header( 'Location: index.php');
 
-$db=mysqli_connect("SQL09.FREEMYSQL.NET", "instaplan", "cis330");
+$db=mysqli_connect("sql2.freesqldatabase.com", "sql27018", "tE7!hK3%");
 /* check connection */
 if (mysqli_connect_errno()) {
     printf("Connect failed: %s\n", mysqli_connect_error());
     exit();
 }
-mysqli_select_db($db, "instaplan");
+mysqli_select_db($db, "sql27018");
 
 $events = "\"[".$_POST['events']."]\"";
 $keywords = "\"[".$_POST['categories']."]\"";
@@ -56,6 +56,25 @@ for($i=0;$i<count($commands);$i++)
       $row[count($row)] = $events[$i];
       $output[]=$row;
     }
+	else
+	{
+	  $cat="AND be.name in (";
+	  $pos= strpos($query,$cat);
+	  $end= strpos($query,")",$pos);
+	  
+	  $query= substr($query,0,$pos).substr($query,$end+1);
+	  echo "No results found, stripping category: ".$query."
+	  ";
+	  $result = mysqli_query($db,$query);
+	  
+	  if(mysqli_num_rows($result) == 1) 
+	  {
+        $row = mysqli_fetch_row($result);
+	    $seen.=",'$row[9]'";
+        $row[count($row)] = $events[$i];
+        $output[]=$row;
+      }
+	}
 }
 echo "
 -->";
