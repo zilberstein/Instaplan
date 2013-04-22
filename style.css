@@ -78,6 +78,7 @@ table#login {
     text-align: left;
     position: relative;
     top: -50px;
+    clear: both;
 }
 
 tr.login_row {
@@ -120,6 +121,18 @@ tr.last .label {
     border-bottom-left-radius: 5px;
 }
 
+
+table#login td {
+    color: #fff;
+    font-weight: 600;
+    vertical-align: bottom;
+}
+
+table#login td a {
+    vertical-align: bottom;
+    color: #fff;
+}
+
 input.login_field {
     margin: 0;
     padding: 0;
@@ -130,11 +143,16 @@ input.login_field {
     float: left;
 }
 
+table#login td.static_data {
+    width: 235px;
+    color: #333;
+}
+
 input.login_field:focus {
     box-shadow: 0 0 3px #12435c inset;
 }
 
-tr.login_row td.label {
+table#login tr.login_row td.label {
     background-color: #eee;
     font-weight: 600;
     color: #000;
@@ -355,4 +373,33 @@ to {top:0px;}
     margin: 0;
     color: #666;
     font-weight: normal;
+}
+
+div#user {
+    text-align: left;
+    padding: 25px;
+    color: #fff;
+}
+
+div#user h3 {
+    padding: 0 10px;
+    margin: 0;
+}
+
+div#user h2 {
+    padding: 0 10px;
+    margin: 0;
+}
+
+div#user #photo {
+    float: left;
+    position: relative;
+    padding: 0 25px;
+}
+
+div#user button {
+    position: relative;
+    float: left;
+    clear: both;
+    padding: 0 25px;
 }
