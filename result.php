@@ -67,7 +67,7 @@ for($i=0;$i<count($commands);$i++)
 	  ";
 	  $result = mysqli_query($db,$query);
 	  
-	  if(mysqli_num_rows($result) == 1) 
+	  if(mysqli_num_rows($result) == 1 && $pos>0 && $end>$pos) 
 	  {
         $row = mysqli_fetch_row($result);
 	    $seen.=",'$row[9]'";
