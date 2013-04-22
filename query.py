@@ -36,23 +36,25 @@ for e in event.split(","):
 	if e=='breakfast' or e=='lunch' or  e=='dinner' or  e=='nightlife' or  e=='overnight':
 		if e=='breakfast':
 			i = i+1
-		sql = ('select b.name, address, city, state, latitude, longitude, stars, photoUrl '
-		       'from business as b, belongs as be '
+		sql = ('select b.name, address, city, state, latitude, longitude, stars, photoUrl, text '
+		       'from business as b, belongs as be, review as r '
 		       'where id = businessid ' + catSearch + 
 		       'AND  (select SQRT(POWER(latitude-'+str(lat)+',2)*69 + POWER(longitude-'+str(lon)+',2)*53) '
 		       'from business b1 where b.id = b1.id) <= '+str(distance) + ' '
 		       'AND (\''+ str(e) +'\')  in (select be1.name '
 		       'from belongs as be1 '
 		       'where b.id = be1.businessId) '
+		       'AND r.businessId = b.id '
 		       'order by metric desc'
 		       'limit ' + str(i) + ',1 ')
 		a.append(sql)
 	else: 
 		sql = ('select b.name, address, city, state, latitude, longitude, stars, photoUrl '
-		       'from business as b, belongs as be '
+		       'from business as b, belongs as be, review as r '
 		       'where id = businessId ' + catSearch + 
 		       'AND  (select SQRT(POWER(latitude-'+str(lat)+',2)*69 + POWER(longitude-'+str(lon)+',2)*53) '
 		       'from business as b1 where b.id = b1.id) <= '+str(distance) + ' '
+		       'AND r.businessId = b.id "
 		       'order by metric desc'
 		       'limit ' + str(i) + ',1 ')
 		a.append(sql)
