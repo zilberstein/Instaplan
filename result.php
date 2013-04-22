@@ -1,3 +1,4 @@
+<!DOCTYPE HTML>
 <?
 //error_reporting(0);
 session_start();
@@ -26,7 +27,26 @@ $lat = "\"".$obj->results[0]->geometry->location->lat."\"";
 $long = "\"".$obj->results[0]->geometry->location->lng."\"";
 ?>
 
-<!DOCTYPE HTML>
+<?
+   $command = "python query.py ".$events." ".$keywords." ".$days." ".$options." ".$distance." ".$lat." ".$long;
+   $sql= exec($command);
+   $commands= explode("~",$sql);
+   $events= explode(",",$_POST['events']);
+	 
+   $output= array();
+   for($i=0;$i<count($commands);$i++) {
+				      $result = mysqli_query($db,$commands[$i]);
+				      if(mysqli_num_rows($result) == 1) {
+				      $row = mysqli_fetch_row($result);
+				      $row[count($row)] = $events[$i];
+				      $output[]=$row;
+				      }
+				      }
+				      
+				      ?>
+
+
+
 <html>
   <head>
     
@@ -34,66 +54,89 @@ $long = "\"".$obj->results[0]->geometry->location->lng."\"";
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
     <link rel="stylesheet" type="text/css" href="style.css" />
     <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCBK8GNOmG7wnFlSAzX9Udzrn1oFnUokLs&sensor=false">
-    </script>
-    <script type="text/javascript">
-     function initialize() {
-        var myLatlng = new google.maps.LatLng(39.9522,-75.1642);
-        var mapOptions = {
-          zoom: 15,
-          center: myLatlng,
-          mapTypeId: google.maps.MapTypeId.ROADMAP
-        }
-        var map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
-
-        var marker = new google.maps.Marker({
-            position: myLatlng,
-            map: map,
-            title: 'Hello World!'
-        });
+    </script> 
+       <script type="text/javascript">
+	 function initialize() {
+	 var center_ll = new google.maps.LatLng(<?php 
+			   $c_lat = 0;
+			   $c_lng = 0;
+			   for ($i=0; $i<count($output); $i++) {
+				$c_lat = $c_lat + $output[$i][4];
+				$c_lng = $c_lng + $output[$i][5];
+			   }
+			   $c_lat = $c_lat/count($output);
+			   $c_lng = $c_lng/count($output);
+			   echo "$c_lat,$c_lng";?>);
+	 
+         var mapOptions = {
+         zoom: 15,
+         center: center_ll,
+         mapTypeId: google.maps.MapTypeId.ROADMAP
+         }
+         var map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
+	 var coordinates = new Array();
+	 var markers = new Array();
+	 <?php
+	    for ($i=0; $i<count($output); $i++) {
+	      $lat = $output[$i][4];
+	      $long = $output[$i][5];
+	      echo "coordinates[$i] = new google.maps.LatLng($lat,$long);";
+	      echo "markers[$i] = new google.maps.Marker({";
+	      echo "position: coordinates[$i],";
+              echo "map: map,";
+              echo "title: '".$output[$i][0]."'";
+              echo "});";
+	}
+	?>
       }
     </script>
   </head>
   <body onload="initialize()">
     <div id="bar">
-    <a href="index.php"><img src='images/instaplan-mini.png' width=150px /></a>
+      <a href="index.php"><img src='images/instaplan-mini.png' width=150px /></a>
     </div>
-    <div id="container2">
-	<?
-	$command = "python query.py ".$events." ".$keywords." ".$days." ".$options." ".$distance." ".$lat." ".$long;
-	$sql= exec($command);
-	$commands= explode("~",$sql);
-	$events= explode(",",$events);
-	
-	$output= array();
-	for($i=0;$i<count($commands);$i++)
-	{
-		$result = mysqli_query($db,$commands[$i]);
-		if(mysqli_num_rows($result) == 1)
-		{
-			$row = mysqli_fetch_row($result);
-			$row[8] = $events[$i];
-			$output[]=$row;
-		}
-	}
-	
-	print_r ($output);
-	
-	/*
-	   if ($_POST['type'] == 'language') {
-	   $arg = $_POST['plan'];
-	   $command = "python generate_page.py \"$arg\"";
-	   } else {
-        $days = $_POST['days'];
-        $loc = $_POST['location'];
-	$distance = $_POST['distance'];
-	$catagories = $_POST['catagories'];
-        $command = "python update_page.py $loc $days $distance $catagories";
-	 echo "$command";
-	   }
-        echo exec($command);
-*/
-	   ?>
+    <div id="main">
+      <div id="account">
+	<? if ($_SESSION['username'] != null) {?>
+	<img src="<?echo $_SESSION['avatar']; ?>" />
+	<? } ?>
+      </div>
+      <div id="adjust"><h3>Fine Tuner</h3>
+	<form action="result.php" method="post">
+	  <input type="hidden" name="type" value="adjust">
+	  <input type="hidden" name="categories" value="<?php echo $_POST['categories'];?>"/>
+	  <h5>Location</h5>
+	  <input type="text" name="location" value="<?php echo $_POST['location'];?>" />
+	  <h5>Max Distance</h5>
+	  <input type="hidden" name="type" value="update" />
+	  <input class="slide" name="distance" type="range" min="0" max="4" step="0.2" value="<?php echo $_POST['distance'];?>" width="100px">
+	  <h5>Duration</h5>
+	  <input name="days" type="number" min="1" max="20" value="<?php echo $_POST['days'];?>" /> Days
+	  <br />
+	  <input type="submit" />
+	</form>
+	<h3>Get Directions</h3><form>
+	  <select name="transport">
+	    <option>Public Transport</option>
+	    <option>Car</option>
+	    <option>Walking</option>
+	    <option>Fixie</option>
+	  </select><br />
+	  <input type="submit" />
+	</form>
+      </div>
+      <div id="content">
+	<div id="map-canvas"></div>
+	<h1>My Plan</h1>
 
+	<?php for ($i=0; $i<count($output); $i++) {
+	   $info = $output[$i];?>
+	      <div class="activity">
+		<h2><?php echo $info[8].": ".$info[0];?></h2>
+		<h3><?php echo $info[1];?></h3>
+		<p><img src="<?php echo $info[7];?>"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris dapibus tortor cursus erat eleifend at porttitor lectus dapibus. Aenean nec sagittis justo. In nunc magna, fringilla vel iaculis vel, fermentum sed leo. Pellentesque ultricies odio nec dolor aliquam vulputate egestas nisi ullamcorper. Suspendisse semper luctus augue, lacinia ullamcorper nisl venenatis at. Integer blandit, tortor at semper varius, enim libero ullamcorper magna, sed laoreet libero diam quis magna. Aliquam condimentum rhoncus condimentum. Vivamus erat odio, ornare ut semper non, porttitor non nibh. Cras consequat placerat tempor.</p>
+	<?php }?>
+	
       </div>
     </div>
   </body>
