@@ -185,13 +185,13 @@ public class Main {
 
 						HashSet<String> catSet = ycatOurCat.get(yc1);
 						for (String c : catSet) {
-							b.addCategory(new Category(c));
+							b.addCategory(c);
 						}
 					} else if (ycatOurCat.containsKey(yc2)) {
 
 						HashSet<String> catSet = ycatOurCat.get(yc2);
 						for (String c : catSet) {
-							b.addCategory(new Category(c));
+							b.addCategory(c);
 						}
 					}
 				}
@@ -294,17 +294,55 @@ public class Main {
 			throws Exception {
 		Statement st = conn.createStatement();
 		
-		st.execute("DROP TABLE IF EXISTS review");
-		
+		st.execute("DROP TABLE IF EXISTS belongs");
 		PreparedStatement pstmt;
-		System.out.println("Dropped review; Now create review table.");
-
+		System.out.println("Dropped belongs; Now create belongs table.");
+		String ddlBelongs = "CREATE TABLE belongs ("
+				+ "businessId VARCHAR(40), "
+				+ "name VARCHAR(11), "
+				+ "PRIMARY KEY (businessId, name), "
+				+ "FOREIGN KEY (businessId) REFERENCES business(id) ON DELETE CASCADE, "
+				+ "FOREIGN KEY (name) REFERENCES category(name) ON DELETE CASCADE)";
+		pstmt = conn.prepareStatement(ddlBelongs);
+		pstmt.executeUpdate();
 
 		
 		
 		//DDL DONE
 		
-		
+		System.out.println("LOAD business_belongsTo_categories");
+		int in = 0;
+		int count_cb_pair = 0;
+		for(Business b: businesses){
+			for(String cat: b.categories){
+				count_cb_pair++;
+			}
+		}
+		StringBuffer sql = new StringBuffer("INSERT INTO belongs VALUES (?,?)");
+		for(in = 1; in < count_cb_pair; in++){
+			sql.append(", (?,?)");
+		}
+		try{
+			pstmt= conn.prepareStatement(sql.toString());
+			in = 1;
+			for (Business b : businesses) {
+				for (String c : b.categories) {
+					try {
+						pstmt.setString(in++, b.id);
+						pstmt.setString(in++, c);
+
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+
+				}
+				
+			}
+			pstmt.executeUpdate();
+		}
+		catch(SQLException e){
+			e.printStackTrace();
+		}
 		
 	    
 	    
@@ -452,40 +490,39 @@ public class Main {
 		    }
 
 		    
-		    //TODO: OPTIMIZE
 			System.out.println("LOAD business_belongsTo_categories");
 			int in = 0;
-
-			for (Business b : businesses) {
-				in++;
-
-				if (in >= 1000 && in % 1000 == 0) {
-					System.out.println(in + "th Belongs reached");
+			int count_cb_pair = 0;
+			for(Business b: businesses){
+				for(String cat: b.categories){
+					count_cb_pair++;
 				}
+			}
+			sql = new StringBuffer("INSERT INTO belongs VALUES (?,?)");
+			for(in = 1; in < count_cb_pair; in++){
+				sql.append(", (?,?)");
+			}
+			try{
+				pstmt= conn.prepareStatement(sql.toString());
+				in = 1;
+				for (Business b : businesses) {
+					for (String c : b.categories) {
+						try {
+							pstmt.setString(in++, b.id);
+							pstmt.setString(in++, c);
 
-				for (Category c : b.categories) {
-					//System.out.println("reached here");
-					try {
-						if (in < 5) {
-							System.out.println("belongs row " + in);
+						} catch (Exception e) {
+							e.printStackTrace();
+							break;
 						}
 
-						pstmt = conn
-								.prepareStatement("INSERT INTO belongs VALUES (?,?)");
-						pstmt.setString(1, b.id);
-						pstmt.setString(2, c.name);
-
-						pstmt.executeUpdate();
-
-					} catch (Exception e) {
-
-						// System.out.println("bid:"+ b.id +" not found; " +
-						// "cname:" + c.name +" not found");
-						// do nothing and continue; supposed to have duplicates in biz-category pairs
 					}
-
+					
 				}
-
+				pstmt.executeUpdate();
+			}
+			catch(SQLException e){
+				e.printStackTrace();
 			}
 
 			/*
