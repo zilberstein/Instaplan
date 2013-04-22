@@ -6,13 +6,13 @@ session_start();
 if ($_SESSION['username']!=null)
 	header( 'Location: account.php');
 
-$db=mysqli_connect("sql2.freesqldatabase.com", "sql27018", "tE7!hK3%");
+$db=mysqli_connect("db4free.net", "instaplan", "cis330");
 /* check connection */
 if (mysqli_connect_errno()) {
     printf("Connect failed: %s\n", mysqli_connect_error());
     exit();
 }
-mysqli_select_db($db, "sql27018");
+mysqli_select_db($db, "instaplan");
 $table= "user";
 
 if($_POST["dispatch"]=="login")
