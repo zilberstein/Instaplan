@@ -1,6 +1,10 @@
 <?
 error_reporting(0);
 session_start();
+
+if ($_SESSION['username']!=null)
+	header( 'Location: account.php');
+
 $db=mysqli_connect("sql2.freesqldatabase.com", "sql27018", "tE7!hK3%");
 /* check connection */
 if (mysqli_connect_errno()) {
