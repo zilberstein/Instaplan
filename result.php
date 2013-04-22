@@ -36,16 +36,22 @@ $commands= explode("~",$sql);
 $events= explode(",",$_POST['events']);
  
 $output= array();
+$seen="''";
 for($i=0;$i<count($commands);$i++) 
 {
-    $result = mysqli_query($db,$commands[$i]);
+	$query= $commands[$i];
+	$pos= strpos($query,"order by");
+	$query= substr($query,0,$pos)." AND be.businessId NOT IN ($seen) ".substr($query,$pos);
+	
+    $result = mysqli_query($db,$query);
     if(mysqli_num_rows($result) == 1) 
 	{
       $row = mysqli_fetch_row($result);
+	  $seen.=",'$row[9]'";
       $row[count($row)] = $events[$i];
       $output[]=$row;
     }
-}		      
+}
 ?>
 
 
