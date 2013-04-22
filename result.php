@@ -5,8 +5,8 @@ error_reporting(0);
 session_start();
 
 //if not arrived through index, go back to index
-//if($_POST['events']===null)
-//	header( 'Location: index.php');
+if($_POST['events']===null)
+	header( 'Location: index.php');
 
 $db=mysqli_connect("SQL09.FREEMYSQL.NET", "instaplan", "cis330");
 /* check connection */
@@ -61,10 +61,6 @@ echo "
 -->";
 ?>
 
-
-
-
-    
     <title>Instaplan</title>
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
     <link rel="stylesheet" type="text/css" href="style.css" />
@@ -140,6 +136,16 @@ echo "
 	    <option value="b">Fixie</option>
 	  </select><br />
 	  <input type="submit" />
+	</form>
+	<h3>Email Page</h3>
+	 <form action="email.php" method="post" target="_blank">
+	   <input type="hidden" name="events" value="<?echo $_POST['events'] ?>" />
+	   <input type="hidden" name="categories" value="<?echo $_POST['categories'] ?>" />
+	   <input type="hidden" name="days" value="<?echo $_POST['days'] ?>" />
+	   <input type="hidden" name="options" value="<?echo $_POST['options'] ?>" />
+	   <input type="hidden" name="distance" value="<?echo $_POST['distance'] ?>" />
+	   <input type="hidden" name="location" value="<?echo $_POST['location'] ?>" />
+	  <input type="submit" value="Email Me!" />
 	</form>
       </div>
       <div id="account">
