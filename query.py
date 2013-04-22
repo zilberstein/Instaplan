@@ -23,8 +23,6 @@ cat = cat[:-2]
 a = []
 
 
-i = -1
-
 for e in event.split(","):
 	e = e.lower()
 	e = e.strip('][')
@@ -34,8 +32,6 @@ for e in event.split(","):
 		catSearch = "AND be.name in (" + str(cat) + ") "
 	
 	if e=='breakfast' or e=='lunch' or  e=='dinner' or  e=='nightlife' or  e=='overnight':
-		if e=='breakfast':
-			i = i+1
 		sql = ('select b.name, address, city, state, latitude, longitude, stars, photoUrl, text, id '
 		       'from business as b, belongs as be, review as r '
 		       'where id = be.businessId ' + catSearch + 
@@ -46,7 +42,7 @@ for e in event.split(","):
 		       'where b.id = be1.businessId) '
 		       'AND r.businessId = b.id '
 		       'order by metric desc '
-		       'limit ' + str(i) + ',1 ')
+		       'limit 0, 1 ')
 		a.append(sql)
 	else: 
 		sql = ('select b.name, address, city, state, latitude, longitude, stars, photoUrl, text, id '
@@ -56,6 +52,6 @@ for e in event.split(","):
 		       'from business as b1 where b.id = b1.id) <= '+str(distance) + ' '
 		       'AND r.businessId = b.id '
 		       'order by metric desc '
-		       'limit ' + str(i) + ',1 ')
+		       'limit 0,1 ')
 		a.append(sql)
 print "~".join(a)

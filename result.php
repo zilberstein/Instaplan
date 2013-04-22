@@ -32,6 +32,7 @@ $long = "\"".$obj->results[0]->geometry->location->lng."\"";
 
 $command = "python query.py ".$events." ".$keywords." ".$days." ".$options." ".$distance." ".$lat." ".$long;
 $sql= exec($command);
+
 $commands= explode("~",$sql);
 $events= explode(",",$_POST['events']);
  
