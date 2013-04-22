@@ -1,9 +1,10 @@
+<!DOCTYPE HTML>
 <?
 error_reporting(0);
 session_start();
 /* check if logged in */
 if(!isset($_SESSION['username'])){
-	header( 'Location: index.php');
+	header( 'Location: login.php');
 	exit;
 }
 
@@ -100,7 +101,6 @@ function display_error($message) {
 
 <!--HTML goes here-->
 
-<!DOCTYPE HTML>
 <html>
   <head>
     <title>Instaplan</title>  
@@ -212,29 +212,37 @@ function display_error($message) {
   <body>
   
     <div id="container">
+      <a href="index.php">
 	    <img src='images/instaplan.png' width=600px />		
+	</a>	
+
+	    <form name="input" action="account.php" method="post">
+	    <table id='login' border="0" cellspacing="0">
+	      <tr>
+		<td colspan="2">
 		<div id="user" >
-			<p>My Account</p>
-			<p><?echo $user?></p>
 			<div id="photo"><img src="<?echo $imgurl?>"/></div>
+			<h2>My Account</h2>
+			<h3><?echo $user?></h3>
 			<button type="button" id="attach-photo" style="float:left;"		onclick="getPic()"><?if (!$avatar){?>Upload <?}else{?>Change <?}?>Photo</button>
 			<input id="fpfile" name="fpfile" class="login_field input" type="hidden" value=<?echo $fpfile?>/>
 		</div>
-		<form name="input" action="account.php" method="post">
-	    <table id='account' border="0" cellspacing="0">
+
+		</td>
+	      </tr>
 	    	<tr><td colspan="2" height="25px">
 		<?if (count($errors) != 0){echo "<p class=\"error\">Please fix the following errors:</p>";}?></td></tr>
 		
 		<tr class="login_row first">
 		  <td class="label">Name:</td>
-		  <td>
+		  <td class="static_data">
 		    <?echo $_SESSION["name"]?>
 		  </td>
 		</tr>
 		<tr class="login_row">
 		  <td class="label">Username:
 		  </td>
-		  <td>
+		  <td class="static_data">
 		    <? echo $user?>
 		  </td>
 		</tr>
