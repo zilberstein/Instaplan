@@ -17,7 +17,7 @@ if($_POST["dispatch"]=="query")
 	  $keys = array_keys($keywords);
 	  for ($i=0; $i<count($keys); $i++) {
 	      $name = $keys[$i];
-	      if ($keys[$i] == 'events' || $keys[$i] == 'catagories') {
+	      if ($keys[$i] == 'events' || $keys[$i] == 'categories') {
 	      	 $value = implode(',',$keywords["$keys[$i]"]);
 	      } else {
 	        $value = $keywords["$keys[$i]"];

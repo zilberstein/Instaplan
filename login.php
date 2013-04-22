@@ -10,7 +10,7 @@ if (mysqli_connect_errno()) {
     exit();
 }
 mysqli_select_db($db, "instaplan");
-$table= "usertest";
+$table= "user";
 
 if($_POST["dispatch"]=="login")
 {
