@@ -229,18 +229,15 @@ public class Main {
 
 	
 	public static void DDLtemp(Statement st) throws Exception{
-		//TODO: review (businessId, userId, text), primary key(businessId, userId)
 		try{
 			st.execute("DROP TABLE IF EXISTS review");
 			st.execute("CREATE TABLE review ("
 					+ "businessId VARCHAR(40), "
 					+ "userId VARCHAR(40), "
-					+ "stars TINYINT, "
-					+ "useful SMALLINT, "
-					+ "funny SMALLINT, "
-					+ "cool SMALLINT, "
+					+ "text VARCHAR(3000), "
 					+ "PRIMARY KEY (businessId, userId), " 
 					+ "FOREIGN KEY (businessId) REFERENCES business(id) ON DELETE CASCADE)");
+			
 		}
 		catch( Exception e){
 			e.printStackTrace();
@@ -249,35 +246,23 @@ public class Main {
 	}
 	public static void DMLtemp(ArrayList<Business> businesses, ArrayList<Review> reviews, Statement st) throws Exception{
 		//for each key in bestReviewMap, insert the three values.. refer to Review.java for u_id and text.
-		int i=0;
-		System.out.println("LOAD Reviews");
+		
 		//3*(useful+funny+cool)
-		/*for (Review r : reviews) {
-			i++;
-			if(i>=10000 && i%10000==0)
-				System.out.println(i+"th reached");
-			if(i==300000)
-				System.out.println("300,000th reached");
-			
+		for (Review r : reviews) {
 			try {
 				String t0 = "INSERT INTO review VALUES ('" + r.b_id + 
-						"', '" + r.u_id + "', '" + r.stars + "', '" + r.useful
-						+ "', '" + r.funny + "', '" + r.cool + "')";
+						"', '" + r.u_id + "', '" + r.text +  "')";
 				st.execute(t0); 
 			} catch (Exception e) {
 				e.printStackTrace();
-				
 				break;
 				//or do nothing and continue
 			}
-		}*/
-		
-	
-		
-		System.out.println("LOAD reviews");
+		}
+	}
 		
 
-	}
+	
 	//commented out yelpUser, review as well as writes. feel free to take it back.
 	public static void DDLs(Statement st) throws Exception {
 		try {
@@ -293,8 +278,8 @@ public class Main {
 					+ "address VARCHAR(255), "
 					+ "city VARCHAR(50), "
 					+ "state VARCHAR(50), "
-					+ "latitude DECIMAL, "
-					+ "longitude DECIMAL, "
+					+ "latitude DECIMAL(10,10), "
+					+ "longitude DECIMAL(10,10), "
 					+ "stars TINYINT, "
 					+ "metric SMALLINT, "
 					+ "photoUrl VARCHAR(255), "
@@ -334,11 +319,12 @@ public class Main {
 					+ "FOREIGN KEY (businessId) REFERENCES business(id) ON DELETE CASCADE, "
 					+ "FOREIGN KEY (name) REFERENCES category(name) ON DELETE CASCADE)");
 			st.execute("CREATE TABLE user ("
-					+ "username VARCHAR(16), "
-					+ "password VARCHAR(17), "
-					+ "firstName VARCHAR(15), "
-					+ "lastName VARCHAR(25), "
-					+ "email VARCHAR(50), "
+					+ "firstname VARCHAR(60) not null, "
+					+ "lastname VARCHAR(60) not null, "
+					+ "username VARCHAR(20), "
+					+ "email VARCHAR(60) not null, "
+					+ "password CHAR(32) not null, "
+					+ "avatar BIT not null, "
 					+ "PRIMARY KEY (username))");
 	
 		} catch (SQLException e) {
