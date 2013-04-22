@@ -1,4 +1,5 @@
 <!DOCTYPE HTML>
+<html>
 <?
 error_reporting(0);
 session_start();
@@ -38,12 +39,15 @@ $events= explode(",",$_POST['events']);
  
 $output= array();
 $seen="''";
+echo "<!--"."
+";
 for($i=0;$i<count($commands);$i++) 
 {
 	$query= $commands[$i];
 	$pos= strpos($query,"order by");
 	$query= substr($query,0,$pos)." AND be.businessId NOT IN ($seen) ".substr($query,$pos);
-	
+	echo $query."
+	";
     $result = mysqli_query($db,$query);
     if(mysqli_num_rows($result) == 1) 
 	{
@@ -53,12 +57,13 @@ for($i=0;$i<count($commands);$i++)
       $output[]=$row;
     }
 }
+echo "
+-->";
 ?>
 
 
 
-<html>
-  <head>
+
     
     <title>Instaplan</title>
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
