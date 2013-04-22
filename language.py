@@ -28,6 +28,14 @@ def get_keywords(query):
 		plan['kids'] = False
 	else:
 		plan['kids'] = True
+	
+	#f = open('cities.txt','r')
+	#cities = [city for city in f]
+	#f.close()
+	#l = regex_check(cities, query)
+	
+
+
 	location = re.search('(in|near|go to) (\w+)',query)
 	if location:
 		plan['location'] = location.group(2).title()

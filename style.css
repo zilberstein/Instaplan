@@ -85,7 +85,7 @@ tr.login_row {
     padding: 0;
     border: 5px solid #ccc;
     border-bottom: none;
-    background-color: #ccc;
+    background-color: #eee;
     text-align: left;
     font-size: .8em;
 }
@@ -126,27 +126,29 @@ input.login_field {
     width: 225px;
     border: 0;
     background-color: #eee;
-    box-shadow: 0 0 5px inset;
+    box-shadow: 0 0 3px inset;
+    float: left;
 }
 
 input.login_field:focus {
-    box-shadow: 0 0 5px #12435c inset;
+    box-shadow: 0 0 3px #12435c inset;
 }
 
 tr.login_row td.label {
     background-color: #eee;
-    font-weight: bold;
+    font-weight: 600;
     color: #000;
     padding: 5px;
     width: 150px;
     font-size: 1.2em;
-
 }
 
-tr.login_row .input {
+tr.login_row input.input {
     padding: 5px;
     font-family: FreightSans Medium,Avenir Next;
     font-size: 12pt;
+    margin: 0;
+    float: left;
 }
 
 #container #login .submit {
@@ -212,7 +214,7 @@ td.textfield:hover {
 	text-align: center;
 }
 
-#container2 {
+#main {
     margin: -20px auto;
     border-bottom-left-radius: 50px;
     border-bottom-right-radius: 50px;
@@ -260,6 +262,7 @@ td.textfield:hover {
     background-image: url('images/gradient-mini.jpg');
     box-shadow: 0px 0px 25px #000;
     font-size: 10pt;
+    text-align: center;
 }
 
 #bar img:hover {
