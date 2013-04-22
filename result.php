@@ -1,6 +1,6 @@
 <!DOCTYPE HTML>
 <?
-//error_reporting(0);
+error_reporting(0);
 session_start();
 
 $db=mysqli_connect("SQL09.FREEMYSQL.NET", "instaplan", "cis330");
@@ -96,11 +96,6 @@ $long = "\"".$obj->results[0]->geometry->location->lng."\"";
       <a href="index.php"><img src='images/instaplan-mini.png' width=150px /></a>
     </div>
     <div id="main">
-      <div id="account">
-	<? if ($_SESSION['username'] != null) {?>
-	<img src="<?echo $_SESSION['avatar']; ?>" />
-	<? } ?>
-      </div>
       <div id="adjust"><h3>Fine Tuner</h3>
 	<form action="result.php" method="post">
 	  <input type="hidden" name="type" value="adjust">
@@ -125,6 +120,15 @@ $long = "\"".$obj->results[0]->geometry->location->lng."\"";
 	  <input type="submit" />
 	</form>
       </div>
+      <div id="account">
+	<? if ($_SESSION['username'] != null) {?>
+	<a href="account.php">
+	  <div class="profile_pic" style="background-image: url('<?echo $_SESSION['avatar']; ?>');" height="35px"></div>
+	  <p><?echo $_SESSION['username'];?></p>
+	</a>
+	<? } ?>
+      </div>
+
       <div id="content">
 	<div id="map-canvas"></div>
 	<h1>My Plan</h1>
@@ -134,7 +138,7 @@ $long = "\"".$obj->results[0]->geometry->location->lng."\"";
 	      <div class="activity">
 		<h2><?php echo $info[8].": ".$info[0];?></h2>
 		<h3><?php echo $info[1];?></h3>
-		<p><img src="<?php echo $info[7];?>"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris dapibus tortor cursus erat eleifend at porttitor lectus dapibus. Aenean nec sagittis justo. In nunc magna, fringilla vel iaculis vel, fermentum sed leo. Pellentesque ultricies odio nec dolor aliquam vulputate egestas nisi ullamcorper. Suspendisse semper luctus augue, lacinia ullamcorper nisl venenatis at. Integer blandit, tortor at semper varius, enim libero ullamcorper magna, sed laoreet libero diam quis magna. Aliquam condimentum rhoncus condimentum. Vivamus erat odio, ornare ut semper non, porttitor non nibh. Cras consequat placerat tempor.</p>
+		<p><img src="<?php echo $info[7];?>" />Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris dapibus tortor cursus erat eleifend at porttitor lectus dapibus. Aenean nec sagittis justo. In nunc magna, fringilla vel iaculis vel, fermentum sed leo. Pellentesque ultricies odio nec dolor aliquam vulputate egestas nisi ullamcorper. Suspendisse semper luctus augue, lacinia ullamcorper nisl venenatis at. Integer blandit, tortor at semper varius, enim libero ullamcorper magna, sed laoreet libero diam quis magna. Aliquam condimentum rhoncus condimentum. Vivamus erat odio, ornare ut semper non, porttitor non nibh. Cras consequat placerat tempor.</p>
 	<?php }?>
 	
       </div>

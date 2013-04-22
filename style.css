@@ -267,8 +267,46 @@ td.textfield:hover {
 
 #bar img:hover {
     background-color: rgba(0,0,0,.1);
-    border-radius: 10px;
-    
+    border-radius: 10px;    
+}
+
+#main #account {
+    float: left;
+    position: fixed;
+    top: 0;
+    z-index: 10;
+    height: 50px;
+    color: #fff;
+    font-weight: 600;
+    text-shadow: 1px 1px 4px #000;
+    text-align: center;
+}
+
+#main #account a{
+    color: #fff;
+    text-decoration: none;
+    border: 1px solid red;
+}
+
+#main #account p {
+    position: absolute;
+    top: 50%;
+    margin: -12px 0 0 50px;;
+}
+
+#main #account .profile_pic {
+    border: 2px solid #ccc;
+    border-radius: 7px;
+    margin: 5px 10px 0 0;
+    background-color: #fff;
+    height: 35px;
+    width: 40px;
+    float: left;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position:center center;
+    vertical-align: middle;
+    box-shadow: 1px 1px 2px #000 inset;
 }
 
 .activity img {
