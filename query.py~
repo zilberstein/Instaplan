@@ -34,13 +34,14 @@ for e in event.split(","):
 	if e=='breakfast' or e=='lunch' or  e=='dinner' or  e=='nightlife' or  e=='overnight' or e=='desert':
 		sql = ('select b.name, address, city, state, latitude, longitude, stars, photoUrl, text, id '
 		       'from business as b, belongs as be, review as r '
-		       'where id = be.businessId ' + catSearch + 
+		       'where id = be.businessId '  
 		       'AND  (select SQRT(POWER(latitude-'+str(lat)+',2)*69 + POWER(longitude-'+str(lon)+',2)*53) '
 		       'from business b1 where b.id = b1.id) <= '+str(distance) + ' '
-		       'AND (\''+ str(e) +'\')  in (select be1.name '
+		       'AND (\''+ str(e) +'\',\'restaurant\')  in (select be1.name '
 		       'from belongs as be1 '
 		       'where b.id = be1.businessId) '
 		       'AND r.businessId = b.id '
+		       + catsearch + 
 		       'order by metric desc '
 		       'limit 0, 1 ')
 		a.append(sql)
@@ -51,6 +52,7 @@ for e in event.split(","):
 		       'AND  (select SQRT(POWER(latitude-'+str(lat)+',2)*69 + POWER(longitude-'+str(lon)+',2)*53) '
 		       'from business as b1 where b.id = b1.id) <= '+str(distance) + ' '
 		       'AND r.businessId = b.id '
+		       + catsearch + 
 		       'order by metric desc '
 		       'limit 0,1 ')
 		a.append(sql)
