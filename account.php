@@ -73,6 +73,9 @@ if($_POST["dispatch"]=="update")
 			
 			if($avatar)
 			{
+				$query="UPDATE $table SET avatar=1 WHERE username='$user'";
+				mysqli_query($db,$query);
+				
 				//store file locally, and delete it from filepicker
 				copy($imgurl, "images/avatars/".$user.".jpg");
 				chmod("images/avatars/".$user.".jpg", 0705); 
@@ -86,9 +89,8 @@ if($_POST["dispatch"]=="update")
 				// close cURL resource, and free up system resources
 				curl_close($ch);
 				$_SESSION['avatar']="images/avatars/".$user.".jpg";
-				
-				header( 'Location: index.php');
 			}
+			header( 'Location: index.php');
 		}
 	}
 	else
