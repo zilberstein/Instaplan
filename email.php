@@ -72,7 +72,7 @@ for ($i=0; $i<count($output); $i++) {
 }
 $message.="</body></html>";
 //define the headers we want passed. Note that they are separated with \r\n
-$headers = "Content-Type: text/html"."\r\n";
+$headers = "From: no-reply@instaplan.com\r\nReply-To: no-reply@instaplan.com\r\nContent-Type: text/html"."\r\n";
 //send the email
 $mail_sent = @mail( $to, $subject, $message, $headers );
 ?>
