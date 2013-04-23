@@ -1,3 +1,4 @@
+<!DOCTYPE HTML>
 <?
 error_reporting(0);
 session_start();
@@ -75,4 +76,15 @@ $headers = "From: no-reply@instaplan.com\r\nReply-To: no-reply@instaplan.com\r\n
 //send the email
 $mail_sent = @mail( $to, $subject, $message, $headers );
 ?>
-Email Sent. Noam, make this look pretty.
+<html>
+<head>
+  <link rel="stylesheet" type="text/css" href="style.css" />
+  <title>Instaplan Mailer</title>
+</head>
+<body>
+  <div id="container">
+    <a href="index.php"><img src='images/instaplan.png' width=600px /></a>
+    <h2 style="color:#fff;text-shadow:2px 2px 4px #000;margin: -75px 0 0; padding:50px;">Email Sent to <?echo $_SESSION['email'];?></h2>
+  </div>
+</body>
+</html>
