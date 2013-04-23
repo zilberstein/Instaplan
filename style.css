@@ -2,7 +2,7 @@ body {
     background-image: url('images/skyline.jpg');
     padding-top: 10px;
     margin-top: -10px;
-    font-family: FreightSans Medium,Avenir Next,arial;
+    font-family: FreightSans Medium,Avenir Next,sans-serif;
     background-attachment: fixed;
     background-position: center center;
 }
@@ -38,7 +38,7 @@ p.error {
     background: none;
     padding: 5px;
     box-shadow: none;
-    font-family: FreightSans Medium,Avenir Next;
+    font-family: FreightSans Medium,Avenir Next,sans-serif;
     border: 0 solid #000;
 }
 
@@ -163,7 +163,7 @@ table#login tr.login_row td.label {
 
 tr.login_row input.input {
     padding: 5px;
-    font-family: FreightSans Medium,Avenir Next;
+    font-family: FreightSans Medium,Avenir Next,sans-serif;
     font-size: 12pt;
     margin: 0;
     float: left;
