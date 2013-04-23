@@ -26,17 +26,17 @@ import com.google.gson.JsonObject;
 
 public class Main {
 
-	// yelpCategory -> set[OurCategory] map
 	static String[] categories = { "active", "breakfast", "college", "culture",
-			"dessert", "dinner", "family", "kids", "lunch", "nightlife",
-			"old_people", "pamper", "overnight", "restaurant" };
+		"dessert", "dinner", "family", "kids", "lunch", "nightlife",
+		"old_people", "pamper", "overnight", "restaurant" };
+
+	// yelpCategory -> set[OurCategory] map
 	static HashMap<String, HashSet<String>> ycatOurCat = new HashMap<String, HashSet<String>>();
 	// collections for DB
 	static ArrayList<Category> our_categories = new ArrayList<Category>();
 	static ArrayList<Business> businesses = new ArrayList<Business>();
 	static ArrayList<Review> reviews = new ArrayList<Review>();
 	static ArrayList<YelpUser> yusers = new ArrayList<YelpUser>();
-
 	static HashMap<String, Review> bestReviewMap = new HashMap<String, Review>();
 
 	public static void main(String[] args) throws Exception {
@@ -50,8 +50,8 @@ public class Main {
 		reviews.clear();
 
 		categorySetUp();
-
 		importData();
+		
 		System.out.println("businesses size = " + businesses.size()
 				+ " yusers =" + yusers.size() + " best reviews = "
 				+ bestReviewMap.size());
@@ -59,6 +59,7 @@ public class Main {
 		Connection conn = makeConnectionWithDatabase(args);
 		//DDLtemp(conn);
 		DMLtemp(conn);
+		/*THIS WILL DELETE TABLE AND RECREATE AND POPULATE ALL THE TABLES!*/
 		//DDLs(conn);
 		//DMLs(businesses, conn);
 	}
@@ -294,56 +295,45 @@ public class Main {
 			throws Exception {
 		Statement st = conn.createStatement();
 		
-		st.execute("DROP TABLE IF EXISTS belongs");
+		st.execute("DROP TABLE IF EXISTS review");
 		PreparedStatement pstmt;
-		System.out.println("Dropped belongs; Now create belongs table.");
-		String ddlBelongs = "CREATE TABLE belongs ("
+		System.out.println("Dropped belongs; Now create review table.");
+		String ddlReview = "CREATE TABLE review ("
 				+ "businessId VARCHAR(40), "
-				+ "name VARCHAR(11), "
-				+ "PRIMARY KEY (businessId, name), "
-				+ "FOREIGN KEY (businessId) REFERENCES business(id) ON DELETE CASCADE, "
-				+ "FOREIGN KEY (name) REFERENCES category(name) ON DELETE CASCADE)";
-		pstmt = conn.prepareStatement(ddlBelongs);
+				+ "userId VARCHAR(40), "
+				+ "text VARCHAR(3000), "
+				+ "PRIMARY KEY (businessId, userId), "
+				+ "FOREIGN KEY (businessId) REFERENCES business(id) ON DELETE CASCADE)";
+		pstmt = conn.prepareStatement(ddlReview);
 		pstmt.executeUpdate();
 
-		
-		
 		//DDL DONE
+		StringBuffer sql;
 		
-		System.out.println("LOAD business_belongsTo_categories");
-		int in = 0;
-		int count_cb_pair = 0;
-		for(Business b: businesses){
-			for(String cat: b.categories){
-				count_cb_pair++;
-			}
-		}
-		StringBuffer sql = new StringBuffer("INSERT INTO belongs VALUES (?,?)");
-		for(in = 1; in < count_cb_pair; in++){
-			sql.append(", (?,?)");
-		}
-		try{
-			pstmt= conn.prepareStatement(sql.toString());
-			in = 1;
-			for (Business b : businesses) {
-				for (String c : b.categories) {
-					try {
-						pstmt.setString(in++, b.id);
-						pstmt.setString(in++, c);
+		System.out.println("LOAD reviews");
+		sql = new StringBuffer("INSERT INTO review VALUES (?,?,?)");
+		int ir = 1;
+		for(ir=1; ir< bestReviewMap.size(); ir++) {
+	        sql.append(", (?,?,?)");
+	    }
 
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
+	    try {
+	        pstmt= conn.prepareStatement(sql.toString());
+	        int j = 1;
+	        for(Map.Entry<String, Review> entry : bestReviewMap.entrySet()) {
+	        	Review r = entry.getValue();
+	        	pstmt.setString(j++, r.b_id);
+				pstmt.setString(j++, r.u_id);
+				pstmt.setString(j++, r.text);
+	        	
+	        }
 
-				}
-				
-			}
-			pstmt.executeUpdate();
-		}
-		catch(SQLException e){
-			e.printStackTrace();
-		}
-		
+				pstmt.executeUpdate();
+				pstmt.close();
+
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    }
 	    
 	    
 
