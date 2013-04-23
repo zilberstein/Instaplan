@@ -7,8 +7,7 @@ if($_POST['events']===null)
 	header( 'Location: index.php');
 if($_SESSION['username']==null)
 {
-	echo "YOU ARE NOT LOGGED IN! Noam, make this pretty too.\r\n";
-	exit;
+	header( 'Location: index.php');
 }
 $db=mysqli_connect("SQL09.FREEMYSQL.NET", "instaplan", "cis330");
 /* check connection */

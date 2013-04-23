@@ -126,7 +126,7 @@ echo "
 	      echo "markers[$i] = new google.maps.Marker({";
 	      echo "position: coordinates[$i],";
               echo "map: map,";
-              echo "title: '".$output[$i][0]."'";
+              echo "title: '".urldecode($output[$i][0])."'";
               echo "});";
 	}
 	?>
@@ -175,7 +175,9 @@ echo "
 	   <input type="hidden" name="options" value="<?echo $_POST['options'] ?>" />
 	   <input type="hidden" name="distance" value="<?echo $_POST['distance'] ?>" />
 	   <input type="hidden" name="location" value="<?echo $_POST['location'] ?>" />
+	   <?if ($_SESSION['username'] != null){?>
 	  <input type="submit" value="Email Me!" />
+	  <?}else{?>Login First!<?}?>
 	</form>
       </div>
       <div class="account">
