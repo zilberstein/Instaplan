@@ -165,7 +165,7 @@ echo "
 	    <option value="w">Walking</option>
 	    <option value="b">Fixie</option>
 	  </select><br />
-	  <input type="submit" />
+	  <input type="submit" <?if (count($output) == 1 || count($output) > 10){echo "disabled";}?>/>
 	</form>
 	<h3>Email Page</h3>
 	 <form action="email.php" method="post" target="_blank">
@@ -175,9 +175,7 @@ echo "
 	   <input type="hidden" name="options" value="<?echo $_POST['options'] ?>" />
 	   <input type="hidden" name="distance" value="<?echo $_POST['distance'] ?>" />
 	   <input type="hidden" name="location" value="<?echo $_POST['location'] ?>" />
-	   <?if ($_SESSION['username'] != null){?>
-	  <input type="submit" value="Email Me!" />
-	  <?}else{?>Login First!<?}?>
+	  <input type="submit" value="Email Me!"   <?if ($_SESSION['username'] == null){echo "disabled";}?>/>
 	</form>
       </div>
       <div class="account">

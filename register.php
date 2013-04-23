@@ -263,7 +263,7 @@ function display_error($message) {
 	  <?php if ($errors[0] != null) {display_error($errors[0]);} ?>
 	  </td>
 	  <td>
-	    <input class="login_field input" type="text" name="fname" value="<?print $_POST["fname"];?>"/>
+	    <input class="login_field input" type="text" name="fname" value="<?print $_POST["fname"];?>" autofocus/>
 	  </td>
 	</tr>
 	<tr class="login_row">

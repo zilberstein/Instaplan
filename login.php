@@ -114,7 +114,7 @@ if($_POST["dispatch"]=="login")
 	<tr class="login_row first">
 	  <td class="label">Username:</td>
 	  <td>
-	    <input class="login_field input" maxlength="16" type="text" name="user" value="<?print $_POST["user"];?>"/>
+	    <input class="login_field input" maxlength="16" type="text" name="user" value="<?print $_POST["user"];?>" autofocus />
 	  </td>
 	</tr>
 	<tr class="login_row last">

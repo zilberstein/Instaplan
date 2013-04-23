@@ -78,7 +78,7 @@ if($_POST["dispatch"]=="query")
 	  <form action="index.php" method="post">
 	    <input type="hidden" name="type" value="language" />
 	    <td style="text-align:left" class="textfield">
-	      <input class="query" placeholder="What would you like to do?" type="text" name="plan" value="<?php if ($error != 0){echo $_POST['plan'];}?>" />
+	      <input class="query" placeholder="What would you like to do?" type="text" name="plan" value="<?php if ($error != 0){echo $_POST['plan'];}?>" autofocus />
 	    </td>
 	    <td style="text-align:right" class="submit_button">
 		  <input type="hidden" name="dispatch" value="query" />
