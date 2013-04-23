@@ -123,7 +123,7 @@ function display_error($message) {
 			document.getElementById("photo").innerHTML = "Converting...";
 			filepicker.convert(fpfiles[0], {width: 100, height: 100},
 				function(new_FPFile){
-				document.getElementById("photo").innerHTML = "<img src="+new_FPFile.url+" height=\"30px\"></img>";
+				document.getElementById("photo").innerHTML = "<img src="+new_FPFile.url+"></img>";
 				var string=JSON.stringify(new_FPFile);
 				while(string.indexOf("\"")!==-1){
 					string=string.replace("\"","'");
