@@ -114,18 +114,22 @@ function display_error($message) {
 	<script type="text/javascript" src="//api.filepicker.io/v1/filepicker.js"></script>
 	<script type="text/javascript">
 	filepicker.setKey("AzauR2MBSBeslVoQIcZ8gz");
+	var oldFpFile=null;
 	function getPic()
 	{
 		filepicker.pickAndStore({mimetype: 'image/*'},{},function(fpfiles){
+			if(oldFpFile!=null)
+				filepicker.remove(oldFpFile);
 			document.getElementById("photo").innerHTML = "Converting...";
 			filepicker.convert(fpfiles[0], {width: 100, height: 100},
 				function(new_FPFile){
-				document.getElementById("photo").innerHTML = "<img src="+new_FPFile.url+"></img>";
+				document.getElementById("photo").innerHTML = "<img src="+new_FPFile.url+" height=\"30px\"></img>";
 				var string=JSON.stringify(new_FPFile);
 				while(string.indexOf("\"")!==-1){
 					string=string.replace("\"","'");
 				}
 				document.getElementById("fpfile").value = string;
+				oldFpFile=new_FPFile;
 				filepicker.remove(fpfiles[0]);
 			});
 			document.getElementById("attach-photo").innerHTML = "Change Photo";

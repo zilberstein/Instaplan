@@ -139,9 +139,12 @@ function display_error($message) {
 	<script type="text/javascript" src="//api.filepicker.io/v1/filepicker.js"></script>
 	<script type="text/javascript">
 	filepicker.setKey("AzauR2MBSBeslVoQIcZ8gz");
+	var oldFpFile=null;
 	function getPic()
 	{
 		filepicker.pickAndStore({mimetype: 'image/*'},{},function(fpfiles){
+			if(oldFpFile!=null)
+				filepicker.remove(oldFpFile);
 			document.getElementById("photo").innerHTML = "Converting...";
 			filepicker.convert(fpfiles[0], {width: 100, height: 100},
 				function(new_FPFile){
@@ -151,6 +154,7 @@ function display_error($message) {
 					string=string.replace("\"","'");
 				}
 				document.getElementById("fpfile").value = string;
+				oldFpFile=new_FPFile;
 				filepicker.remove(fpfiles[0]);
 			});
 			document.getElementById("attach-photo").innerHTML = "Change Photo";
@@ -248,7 +252,7 @@ function display_error($message) {
   </head>
   <body>
     <div id="container">
-     <a href="https://fling.seas.upenn.edu/~noamz/cgi-bin/instaplan/"> <img src='images/instaplan.png' width=600px /></a>
+     <a href="index.php"> <img src='images/instaplan.png' width=600px /></a>
 	
 	<form name="input" action="register.php" method="post">
     <table id='login' border="0" cellspacing="0">
