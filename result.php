@@ -135,7 +135,7 @@ echo "
   </head>
   <body onload="initialize()">
     <div id="bar">
-      <a href="index.php"><img src='images/instaplan-mini.png' width=150px /></a>
+      <a href="index.php"><img src='images/instaplan-mini.png' style="width:125px;margin-top:2px;" /></a>
     </div>
     <div id="main">
       <div id="adjust"><h3>Fine Tuner</h3>
@@ -165,7 +165,7 @@ echo "
 	    <option value="w">Walking</option>
 	    <option value="b">Fixie</option>
 	  </select><br />
-	  <input type="submit" <?if (count($output) == 1 || count($output) > 10){echo "disabled";}?>/>
+	  <input type="submit" <?if (count($output) == 1 || count($output) > 16){echo "disabled";}?>/>
 	</form>
 	<h3>Email Page</h3>
 	 <form action="email.php" method="post" target="_blank">

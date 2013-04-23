@@ -219,6 +219,8 @@ function display_error($message) {
 	width: 150px;
 	height: 50px;
 	text-align: left;
+	text-shadow: 1px 1px 2px #000;
+	box-shadow: 0 0 4px: #000;
       }
 	div.error:hover div {
 	visibility:visible;

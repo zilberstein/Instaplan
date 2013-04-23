@@ -28,11 +28,7 @@ def get_keywords(query):
 	cities = [city.strip() for city in f]
 	f.close()
 	plan['location'] = regex_get(cities, query).title()
-#	location = re.search('(in|near|go to) (\w+)',query)
-#	if location:
-#		plan['location'] = location.group(2).title()
-#	else:
-#		plan['location'] = ''
+
 	days = re.search('([0-9]+) day',query)
 	if days and days.group(1) != '0':
 		plan['days'] = int(days.group(1))
@@ -42,7 +38,10 @@ def get_keywords(query):
 		for word in query.split(' '):
 			if word in EVENTMAP:
 				plan['events'] += EVENTMAP[word]
+		if plan['events'] == []:
+			plan['events'] = EVENTS
 		plan['days'] = 1
+
 	
 	# Find keywords
 	categories = make_cats()
