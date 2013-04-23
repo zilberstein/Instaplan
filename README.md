@@ -24,7 +24,7 @@ Folders:
         created a hashmap that maps a businessId to its most relevant review. This is then used to populate the review table.
         The connection with the database is made and the tables are created and inserted in to using the objects created earlier in the main.
     psd images:
-        Cotntains all of the images used in the website
+        Contains all of the images used in the website
     sortstuff.sh:
         Aided in sorting of Yelp cateogires into our categories
 
