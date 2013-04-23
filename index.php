@@ -96,7 +96,7 @@ if($_POST["dispatch"]=="query")
 	  } else if ($error == 1) {
 	    echo "<p class=\"error\">Oops! Your query does not have a location</p>";
 	  } else {
-	    echo "<p class=\"error\">Oops! You did not ask for any events</p>";
+	    echo "<p class=\"error\">Oops! How long will you be here?</p>";
 	  }?>
     </div>
   </body>

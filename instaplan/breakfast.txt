@@ -4,4 +4,3 @@ coffee
 donuts
 tea
 breakfast_brunch
-cafes

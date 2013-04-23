@@ -4,9 +4,19 @@
 error_reporting(0);
 session_start();
 
-//if not arrived through index, go back to index
+//if not arrived through index or fine tuner, go back to index
 if($_POST['events']===null)
 	header( 'Location: index.php');
+	
+//if days is more than 1, full set of events * days
+$fullset="Breakfast,Morning,Lunch,Afternoon,Dinner,Dessert,Evening,Overnight";
+$postevents = $_POST['events'];
+if($_POST['days']>1)
+{
+	$postevents=$fullset;
+	for($i=1;$i<$_POST['days'];$i++)
+		$postevents.=",".$fullset;
+}
 
 $db=mysqli_connect("SQL09.FREEMYSQL.NET", "instaplan", "cis330");
 /* check connection */
@@ -16,7 +26,7 @@ if (mysqli_connect_errno()) {
 }
 mysqli_select_db($db, "instaplan");
 
-$events = "\"[".$_POST['events']."]\"";
+$events = "\"[".$postevents."]\"";
 $keywords = "\"[".$_POST['categories']."]\"";
 $days= "\"".$_POST['days']."\"";
 $options = "\"".$_POST['options']."\"";
@@ -35,7 +45,7 @@ $command = "python query.py ".$events." ".$keywords." ".$days." ".$options." ".$
 $sql= exec($command);
 
 $commands= explode("~",$sql);
-$events= explode(",",$_POST['events']);
+$events= explode(",",$postevents);
  
 $output= array();
 $seen="''";
@@ -116,7 +126,7 @@ echo "
 	      echo "markers[$i] = new google.maps.Marker({";
 	      echo "position: coordinates[$i],";
               echo "map: map,";
-              echo "title: '".$output[$i][0]."'";
+              echo "title: '".urldecode($output[$i][0])."'";
               echo "});";
 	}
 	?>
@@ -130,13 +140,13 @@ echo "
     <div id="main">
       <div id="adjust"><h3>Fine Tuner</h3>
 	<form action="result.php" method="post">
-	  <input type="hidden" name="type" value="adjust">
 	  <input type="hidden" name="categories" value="<?php echo $_POST['categories'];?>"/>
+	  <input type="hidden" name="events" value="<?php echo $_POST['events'];?>"/>
+	  <input type="hidden" name="options" value="<?php echo $_POST['options'];?>"/>
 	  <h5>Location</h5>
 	  <input type="text" name="location" value="<?php echo $_POST['location'];?>" />
 	  <h5>Max Distance</h5>
-	  <input type="hidden" name="type" value="update" />
-	  <input class="slide" name="distance" type="range" min="0" max="4" step="0.2" value="<?php echo $_POST['distance'];?>" width="100px">
+	  <input class="slide" name="distance" type="range" min=".2" max="4" step="0.2" value="<?php echo $_POST['distance'];?>" width="100px">
 	  <h5>Duration</h5>
 	  <input name="days" type="number" min="1" max="20" value="<?php echo $_POST['days'];?>" /> Days
 	  <br />
@@ -165,7 +175,9 @@ echo "
 	   <input type="hidden" name="options" value="<?echo $_POST['options'] ?>" />
 	   <input type="hidden" name="distance" value="<?echo $_POST['distance'] ?>" />
 	   <input type="hidden" name="location" value="<?echo $_POST['location'] ?>" />
+	   <?if ($_SESSION['username'] != null){?>
 	  <input type="submit" value="Email Me!" />
+	  <?}else{?>Login First!<?}?>
 	</form>
       </div>
       <div class="account">

@@ -58,6 +58,10 @@ for e in event.split(","):
 		       'AND  (select SQRT(POWER(latitude-'+str(lat)+',2)*69 + POWER(longitude-'+str(lon)+',2)*53) '
 		       'from business as b1 where b.id = b1.id) <= '+str(distance) + ' '
 		       'AND r.businessId = b.id '
+		       'AND (\'restaurant\') not in (select be1.name from belongs as be1 where b.id = be1.businessId )'
+			   'AND (\'breakfast\') not in (select be1.name from belongs as be1 where b.id = be1.businessId )'
+			   'AND (\'lunch\') not in (select be1.name from belongs as be1 where b.id = be1.businessId )'
+			   'AND (\'dinner\') not in (select be1.name from belongs as be1 where b.id = be1.businessId )'
 		       + catSearch + 
 		       'order by metric desc '
 		       'limit 0,1 ')

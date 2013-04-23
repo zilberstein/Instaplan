@@ -7,8 +7,7 @@ if($_POST['events']===null)
 	header( 'Location: index.php');
 if($_SESSION['username']==null)
 {
-	echo "YOU ARE NOT LOGGED IN! Noam, make this pretty too.\r\n";
-	exit;
+	header( 'Location: index.php');
 }
 $db=mysqli_connect("SQL09.FREEMYSQL.NET", "instaplan", "cis330");
 /* check connection */
@@ -72,7 +71,7 @@ for ($i=0; $i<count($output); $i++) {
 }
 $message.="</body></html>";
 //define the headers we want passed. Note that they are separated with \r\n
-$headers = "Content-Type: text/html"."\r\n";
+$headers = "From: no-reply@instaplan.com\r\nReply-To: no-reply@instaplan.com\r\nContent-Type: text/html"."\r\n";
 //send the email
 $mail_sent = @mail( $to, $subject, $message, $headers );
 ?>
