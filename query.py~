@@ -30,8 +30,13 @@ for e in event.split(","):
 		catSearch = ""
 	else:
 		catSearch = "AND be.name in (" + str(cat) + ") "
+		
+	if e=='breakfast' or e=='lunch' or  e=='dinner' or e=='dessert':
+		restSearch = "AND \'restaurant\' in (select be2.name from belongs as be2 where b.id = be2.businessId) "
+	else:
+		restSearch = ""
 	
-	if e=='breakfast' or e=='lunch' or  e=='dinner' or  e=='nightlife' or  e=='overnight' or e=='desert':
+	if e=='breakfast' or e=='lunch' or  e=='dinner' or  e=='nightlife' or  e=='overnight' or e=='dessert':
 		sql = ('select b.name, address, city, state, latitude, longitude, stars, photoUrl, text, id '
 		       'from business as b, belongs as be, review as r '
 		       'where id = be.businessId '  
@@ -40,11 +45,7 @@ for e in event.split(","):
 		       'AND (\''+ str(e) +'\')  in (select be1.name '
 		       'from belongs as be1 '
 		       'where b.id = be1.businessId) '
-		       'AND '
-		       'if e == \'breakfast\' or e == \'lunch\' or e==\'dinner\' then '
-		       '(\'restaurant\') in (select be2.name '
-		       'from belongs as be2 '
-		       'where b.id = be2.businessId) '
+			   + restSearch + 
 		       'AND r.businessId = b.id '
 		       + catSearch + 
 		       'order by metric desc '
