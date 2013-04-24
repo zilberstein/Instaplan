@@ -13,54 +13,53 @@ Folders:
   not_website:
     Instaplan:
         Similar to HW4, contains classes for each of the main tables and intermediate types with a 
-        method to create a new object for the ease of converting JSON into an intermediate object and then
-        in to an object with all the fields we need for the database
+        method, to create a new object for the ease of converting JSON into an intermediate object, and then
+        into an object with all the fields we need for the database
         Also contains a main method which parses the JSON into an intermediate type that has attributes for
         all of the entries in the JSON file. That object is then converted into another object that has the information
-        that is needed to be inserted into the databse. In order to convert the Yelp categories to the 
-        categories we defined there is a method that goes through all of the text files (name=our category, 
+        that is needed to be inserted into the databse. In order to convert the Yelp categories to our
+        categories we defined there is, a method that goes through all of the text files (name=our category, 
         contents=list of associated Yelp categories) and creates a hashmap from Yelp category to a set of
-        our categories. In order to only store the most relevant review for each business in the table we
+        our categories. In order to only store the most relevant review for each business in the table, we
         created a hashmap that maps a businessId to its most relevant review. This is then used to populate the review table.
-        The connection with the database is made and the tables are created and inserted in to using the objects created earlier in the main.
+        The connection with the database is made and the tables are created and inserted in using the objects created earlier in the main.
     psd images:
-        Contains all of the images used in the website
+        Contains all of the images used in the website, in their original, unexported form.
     sortstuff.sh:
-        Aided in sorting of Yelp cateogires into our categories
+        Aided in sorting of Yelp categories into our categories
 
 Other Files:
   account.php:
     Allows a user to update their email, password, and avatar. Various forms of error checking exist, such as ensuring a user
     is logged in and that their inputs are valid
   email.php:
-    If a user is logged it, it allows them to send a copy of their itinerary to the email associated with their account
+    If a user is logged it, it allows them to send a copy of their itinerary to the email associated with their account (otherwise redirects)
   index.php: 
-    index page for the site. Throws errors if the query does not contain a location or at least one event
+    index page for the site. Prints errors if the query does not contain a location or at least one event. Detects if the user is 
+	logged in, providing a greeting and extra options if they are (and giving login/register options if they aren't)
   language.py:  
     our NLP, associates common words with given categories and events and looks for location and duration 
     of stay to figure out what the user is looking for
   login.php
     Connects to the database to check if the username and password are valid, does not allow login if either
-    username or password is invalid. Creates a new session cookie.
-    It also allows users to choose an avatar through the use of filepicker.io
+    username or password is invalid. Creates a new session cookie containing user information.
   logout.php:
-    Destroys session cookie
+    Destroys session cookie, logging out the user
   query.py:
     Python script that creates a query for every given time slot based on what the user has requested. Some of the timeslots,
     such as breakfast and dinner are more restrictive based on the nature of the activity, hence the need for two different
     queries. Outputs a single string to the console containing all of the queries delimited by a "~"
   register.php:
     Allows a user to create account. It restricts user input and will not let a user sign up if their input is not
-    valid. It also makes sure that the username they are trying to use has already been taken. It gives the user an
+    valid. It also makes sure that the username they are trying to use has not already been taken. It gives the user an
     option of choose an avatar using filepicker.io. It then puts all of  the user's info into the database and
-    automatically logs them in and has a greeting using their first and last
-    name below the query box.
+    automatically logs them in.
   result.php:
     Displays the itinery for the given time span, a map showing where all of the businesses are using the GoogleMapsAPI,
     and gives the user a link to a page displaying the Google Maps directions between the suggested businesses. Actively 
-    updates a list of already seen businessIds that get appended to the sql query generated by query.py to ensure that no
-    business shows up more than once, even if it is the best rated place for more than one category. It uses 
-    generate_page.py to create all of the content for the page
+    updates a list of already seen businessIds that get inserted into the sql queries generated by query.py to ensure that no
+    business shows up more than once, even if it is returned by the sql query. Also attempts to generalize queries to get data
+	in the event that a query returns no results. Generates content from the results of SQL queries.
   style.css:
     Associated style for the website
   
