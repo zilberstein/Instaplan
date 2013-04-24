@@ -117,7 +117,7 @@ function display_error($message) {
 	var oldFpFile=null;
 	function getPic()
 	{
-		filepicker.pickAndStore({mimetype: 'image/*'},{},function(fpfiles){
+		filepicker.pickAndStore({mimetype: 'image/*', services: ['COMPUTER','IMAGE_SEARCH','URL','FACEBOOK','WEBCAM','DROPBOX','INSTAGRAM','GMAIL','GOOGLE_DRIVE','FTP','GITHUB'], openTo:''},{},function(fpfiles){
 			if(oldFpFile!=null)
 				filepicker.remove(oldFpFile);
 			document.getElementById("photo").innerHTML = "Converting...";
